@@ -56,9 +56,9 @@ def play_game():
         print(f"|| Hora de pegar informações da sua fazenda!")
         random_sleep()
 
-        # print("|| Pegando as informações do usuário")
-        # random_sleep()
-        # user_info = get_user_info()
+        print("|| Pegando as informações do usuário")
+        random_sleep()
+        get_user_info()
 
         print("|| Pegando as informações das plantas")
         random_sleep()

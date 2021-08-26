@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from browser import get_browser
 from pvu.utils import get_headers, random_sleep
+from pvu.items import get_items
 
 
 def get_pvu():
@@ -22,9 +23,9 @@ def get_pvu():
             EC.presence_of_element_located((By.XPATH, xpath_pvu))
         )
 
-        return {"pvu": pvus.text}
+        return float(pvus.text)
     except:
-        return {"pvu": "0"}
+        return 0.0
 
 
 def get_le():
@@ -39,36 +40,7 @@ def get_le():
     user_info = json.loads(response.text)
     le = user_info.get("data").get("leWallet")
 
-    return {"le": le}
-
-
-def get_tools():
-    available_tools = {
-        "Water": 0,
-        "Scarecrow": 0,
-        "Big Pot": 0,
-        "Small Pot": 0,
-        "Greenhouse": 0,
-    }
-
-    url = "https://backend-farm.plantvsundead.com/my-tools"
-    headers = get_headers()
-
-    print("|| Pegando suas ferramentas")
-
-    random_sleep()
-    response = requests.request("GET", url, headers=headers)
-
-    user_info = json.loads(response.text)
-
-    tools = user_info.get("data")
-
-    for tool in tools:
-        name = tool.get("name")
-        count = tool.get("usages")
-        available_tools[name] = count
-
-    return available_tools
+    return int(le)
 
 
 def get_user_info():
@@ -88,22 +60,10 @@ def get_user_info():
 
     pvu = get_pvu()
     le = get_le()
-    tools = get_tools()
+    items = get_items()
 
     print("|| Você possui:")
-    print(f"|| => {pvu['pvu']} PVU's")
-    print(f"|| => {le['le']} LE's")
-    print(f"|| => {tools['Small Pot']} Vasos Pequenos")
-    print(f"|| => {tools['Big Pot']} Vasos Grandes")
-    print(f"|| => {tools['Water']} Águas")
-    print(f"|| => {tools['Scarecrow']} Espantalhos")
-    print(f"|| => {tools['Greenhouse']} Estufas")
-
-    user_info = pvu
-    user_info.update(le)
-    user_info.update(tools)
-
-    for info in user_info.keys():
-        user_info[info] = float(user_info[info])
-
-    return user_info
+    print(f"|| => {pvu} PVU's")
+    print(f"|| => {le} LE's")
+    for item in items:
+        print(f"|| => {item.get('current_amount')} {item.get('name')}")

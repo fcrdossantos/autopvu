@@ -13,7 +13,6 @@ def login_pvu():
     random_sleep(min_time=1)
     login_btn = locate_click("login.png", regions("full"))
     random_sleep(min_time=1)
-    random_sleep()
 
     if not login_btn:
         print("|| Não achamos o botão para logar no jogo!")
@@ -30,16 +29,20 @@ def confirm_access():
     print("|| Vamos confirmar (assinar) o acesso (login)")
 
     random_sleep(min_time=1)
-    login_btn = locate_click("assinar.png", regions("full"))
+    login_btn = locate_click("sign.png", regions("full"))
     random_sleep(min_time=1)
-    random_sleep()
 
     if not login_btn:
-        print("|| Não achamos o botão para confirmar o acesso!")
-        print("|| Logue no jogo manualmente")
-        print("|| Após isso, pressione [ENTER] (aqui) continuar")
-        input()
-        return False
+        random_sleep(min_time=1)
+        login_btn2 = locate_click("sign2.png", regions("full"))
+        random_sleep(min_time=1)
+
+        if not login_btn2:
+            print("|| Não achamos o botão para confirmar o acesso!")
+            print("|| Logue no jogo manualmente")
+            print("|| Após isso, pressione [ENTER] (aqui) continuar")
+            input()
+            return False
 
     random_sleep(6, min_time=3, max_time=5)
     return True

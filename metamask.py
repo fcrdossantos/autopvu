@@ -36,14 +36,10 @@ def unlock_mask():
 
     print("|| Desbloqueando MetaMask")
 
-    unlock = locate_click(
-        "button_unlock.png",
-        regions("mask_open"),
-        grayscale=True,
-    )
+    unlock = locate_click("button_unlock.png")
 
     if not unlock:
-        unlock = locate_click("button_unlock.png", grayscale=True)
+        unlock = locate_click("button_unlock2.png")
         if not unlock:
             print("|| Não achamos o botão para desbloquear o MetaMask!")
             print("|| Desbloqueie o MetaMask manualmente")
@@ -58,6 +54,6 @@ def unlock_mask():
 def login():
     if open_mask():
         if unlock_mask():
-            if locate("aberto.png"):
+            if locate("open.png"):
                 print("|| Ocultando a extensão do MetaMask!")
                 locate_click("mask_icon.png", regions("icon_mask"))

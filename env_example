@@ -6,12 +6,12 @@ USER=1
 #
 # Account 1:
 HWID_1=YOUR_HWID(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\MachineGuid)
-DATA_DIR_1=YOUR_CHROME_USER_PATH(chrome:\\version)
+DATA_DIR_1=YOUR_CHROME_USER_PATH(get it in chrome://version WITHOUT \Default)
 DRIVER_DIR_1=chromedriver.exe
 #
 # Account 2:
 HWID_2=YOUR_HWID(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\MachineGuid)
-DATA_DIR_2=YOUR_CHROME_USER_PATH(chrome:\\version)
+DATA_DIR_2=YOUR_CHROME_USER_PATH(get it in chrome://version WITHOUT \Default)
 DRIVER_DIR_2=chromiumdriver.exe
 PATH_BROWSER_2=chromium/chrome.exe
 #

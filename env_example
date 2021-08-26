@@ -1,0 +1,46 @@
+# MetaMask:
+PASSWORD=YOUR_PASS
+#
+# Current Account:
+USER=1
+#
+# Account 1:
+HWID_1=YOUR_HWID(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\MachineGuid)
+DATA_DIR_1=YOUR_CHROME_USER_PATH(chrome:\\version)
+DRIVER_DIR_1=chromedriver.exe
+#
+# Account 2:
+HWID_2=YOUR_HWID(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\MachineGuid)
+DATA_DIR_2=YOUR_CHROME_USER_PATH(chrome:\\version)
+DRIVER_DIR_2=chromiumdriver.exe
+PATH_BROWSER_2=chromium/chrome.exe
+#
+# Group Reset Info:
+GROUP_RESET_MINUTE=THE_MINUTE_THAT_GROUPS_RESET(Ex: For 13:05 => 05)
+#
+# Routines:
+BUY_SELL=True
+HARVEST=True
+PLANT=True
+DAILY=True
+#
+# Security: (Make things slow)
+RANDOM_SLEEPS=True
+HUMANIZE=True
+#
+# HWID: (Multi Account)
+CLEAN_HWID=False
+SET_HWID=True
+#
+# Items:
+POT_TYPE=SMALL
+MIN_SMALL_POT=6
+MIN_BIG_POT=0
+MIN_WATER=50
+MIN_GREENHOUSE=0
+MIN_SUNFLOWER_SAPLING=6
+MIN_SUNFLOWER_MAMA=1
+#
+# Debug
+DEBUG=True
+

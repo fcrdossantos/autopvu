@@ -20,7 +20,8 @@ try:
     print("|| Carregando o ambiente (.env)")
     dotenv.load_dotenv()
 
-    set_hwid()
+    if os.getenv("SET_HWID", "False").lower() in ("true", "1"):
+        set_hwid()
 
     random_sleep()
     driver = browser.get_browser()

@@ -8,6 +8,28 @@ from selenium.webdriver.support import expected_conditions as EC
 from pvu.utils import random_sleep
 
 
+import json
+import requests
+from pvu.utils import get_headers, random_sleep
+
+
+def maintenance_request():
+    url = "https://backend-farm.plantvsundead.com/farming-stats"
+    headers = get_headers()
+
+    print("|| Verificando se está em manutenção")
+
+    random_sleep()
+    response = requests.request("GET", url, headers=headers)
+
+    user_info = json.loads(response.text)
+
+    status = user_info.get("status")
+
+    # 444 = maintenance
+    return status == 444
+
+
 def get_next_group_time():
     random_sleep()
     now = datetime.now()
@@ -42,6 +64,10 @@ def can_login_maintenance(next_group_date):
 
 def check_maintenance():
     try:
+
+        if maintenance_request():
+            return True
+
         driver = get_browser()
 
         game_url = "https://marketplace.plantvsundead.com/farm#/farm/"
@@ -73,6 +99,7 @@ def check_maintenance():
 
         return False
     except Exception as e:
+        print("Erro da manutencao", e)
         random_sleep(3)
         print("|| Jogo liberado! Pode jogar")
         return False
@@ -95,3 +122,5 @@ def wait_maintenance():
                 if not check_maintenance():
                     break
                 waited = 0
+    else:
+        print("|| Não está em manutenção")

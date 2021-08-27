@@ -29,49 +29,49 @@ def play_game():
         )
 
     random_sleep(min_time=3)
-    # wait_maintenance()
+    wait_maintenance()
 
     now = datetime.now().strftime("%H:%M:%S")
     print(f"|| [{now}] Jogo disponível! Iniciando")
 
     print(f"|| Hora de pegar informações da sua fazenda!")
     random_sleep(3)
-    # get_user_info()
+    get_user_info()
 
     if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
         print("|| Hora de comprar os itens")
         random_sleep(3)
-        # buy_items()
+        buy_items()
 
     if os.getenv("POT", "TRUE").lower() in ("true", "1"):
         print("|| Hora de colocar os vasos")
         random_sleep(3)
-        # use_pots()
+        use_pots()
 
     if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
         print("|| Hora de regar plantas!")
         random_sleep(3)
-        # water_plants()
+        water_plants()
 
     if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
         print("|| Hora de remover corvos")
         random_sleep(3)
-        # remove_crows()
+        remove_crows()
 
     if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
         print("|| Hora de colher as plantas")
         random_sleep(3)
-        # harvest_plants()
+        harvest_plants()
 
     if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
         print("|| Hora de adicionar novas plantas")
         random_sleep(3)
-        # add_plants()
+        add_plants()
 
     if os.getenv("DAILY").lower() in ("true", "1"):
         print("|| Hora de fazer a missão diária")
         random_sleep(3)
-        # do_daily()
+        do_daily()
 
     print(f"|| [{now}] Tudo feito! Até mais tarde :)")
     random_sleep(60 * 15)

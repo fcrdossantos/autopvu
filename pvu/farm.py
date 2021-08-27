@@ -47,8 +47,9 @@ def get_plants():
             if has_crow is not None:
                 _plant["crow"] = has_crow
 
-            if plant["stage"] == "farming" or plant["stage"] == "paused":
-                plants.append(_plant)
+            _plant["stage"] = plant["stage"]
+
+            plants.append(_plant)
 
     return plants
 
@@ -167,7 +168,7 @@ def remove_crows(plants=None):
 
 
 def use_pot(plant_id):
-    print("|| Removendo corvo da planta:", plant_id)
+    print("|| Colocando pote na planta:", plant_id)
 
     url = "https://backend-farm.plantvsundead.com/farms/apply-tool"
 
@@ -215,6 +216,12 @@ def use_pots(plants=None):
         plants = get_plants()
 
     for plant in plants:
+
+        if plant["stage"] == "new":
+            print(f"|| A planta é nova e precisa de um vaso")
+            use_pot(plant["id"])
+            continue
+
         while plant["pot"] == 0:
             random_sleep()
             if use_pot(plant["id"]):

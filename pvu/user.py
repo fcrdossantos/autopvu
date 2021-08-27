@@ -44,8 +44,6 @@ def get_le():
 
 
 def get_user_info():
-    print("|| Pegando as informações do usuário")
-
     farm_url = "https://marketplace.plantvsundead.com/farm#/farm/"
 
     try:

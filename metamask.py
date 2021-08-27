@@ -28,7 +28,7 @@ def open_mask():
 
 
 def unlock_mask():
-    print("|| Digitando PASSWORD")
+    print("|| Digitando a senha")
 
     pyperclip.copy(os.getenv("PASSWORD"))
     pyautogui.hotkey("ctrl", "v")

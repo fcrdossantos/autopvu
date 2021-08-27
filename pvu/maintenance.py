@@ -44,14 +44,16 @@ def check_maintenance():
     try:
         driver = get_browser()
 
-        game_url = "https://marketplace.plantvsundead.com/farm#/farm"
+        game_url = "https://marketplace.plantvsundead.com/farm#/farm/"
 
         random_sleep(min_time=1)
 
         random_sleep(3)
 
         if driver is not None:
-            while driver.current_url != game_url:
+            current_url = driver.current_url
+            while current_url != game_url and current_url != game_url[:-1]:
+                print("|| Não está no link certo", current_url, game_url)
                 driver.get(game_url)
                 random_sleep(min_time=1)
 
@@ -69,7 +71,26 @@ def check_maintenance():
             return True
 
         return False
-    except:
+    except Exception as e:
         random_sleep(3)
         print("|| Jogo liberado! Pode jogar")
         return False
+
+
+def wait_maintenance():
+    if check_maintenance():
+        next_group_time = get_next_group_time()
+        now = datetime.now().strftime("%H:%M:%S")
+
+        print(f"|| [{now}] Jogo indisponível no momento (Manutenção)")
+
+        waited = 0
+        while not can_login_maintenance(next_group_time):
+            now = datetime.now().strftime("%H:%M:%S")
+            print(f"|| [{now}] Esperando até", next_group_time)
+            random_sleep(6 * 60, min_time=3 * 60, max_time=5 * 60, verbose=True)
+
+            if waited == 5:
+                if not check_maintenance():
+                    break
+                waited = 0

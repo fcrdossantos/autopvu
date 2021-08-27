@@ -31,7 +31,9 @@ def get_reg(name):
         value, regtype = winreg.QueryValueEx(registry_key, name)
         winreg.CloseKey(registry_key)
         return value
-    except WindowsError:
+    except WindowsError as e:
+        print("|| Problema ao recuperar o valor da chave")
+        print(e)
         return None
 
 

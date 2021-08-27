@@ -15,9 +15,10 @@ def isUserAdmin():
         # WARNING: requires Windows XP SP2 or higher!
         try:
             return ctypes.windll.shell32.IsUserAnAdmin()
-        except:
+        except Exception as e:
             traceback.print_exc()
             print("Admin check failed, assuming not an admin.")
+            print(e)
             return False
     else:
         # Check for root on Posix
@@ -79,18 +80,4 @@ def runAsAdmin(cmdLine=None, wait=True):
     else:
         rc = None
 
-    return rc
-
-
-def test():
-    """A simple test function; check if we're admin, and if not relaunch
-    the script as admin.""",
-    rc = 0
-    if not isUserAdmin():
-        print("You're not an admin.", os.getpid(), "params: ", sys.argv)
-        rc = runAsAdmin()
-    else:
-        print("You are an admin!", os.getpid(), "params: ", sys.argv)
-        rc = 0
-    input("Press Enter to exit.")
     return rc

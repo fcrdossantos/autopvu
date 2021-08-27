@@ -110,19 +110,6 @@ def get_page_plants(land, plants_to_water, watered_plants):
                 if water_count <= 150:
                     print("|| Regando a planta", plant)
 
-                    if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
-                        try:
-                            driver = get_browser()
-
-                            if driver is not None:
-                                driver.get(
-                                    f"https://marketplace.plantvsundead.com/farm#/farm/{plant}"
-                                )
-                        except:
-                            print(
-                                "|| Erro ao redirecionar para página da plata a ser regada"
-                            )
-
                     if water_plant(plant):
                         plants += 1
 

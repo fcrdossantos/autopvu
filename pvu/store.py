@@ -1,7 +1,9 @@
 import math
 import requests
+import os
 from pvu.utils import get_headers, random_sleep
 from pvu.items import get_items
+from browser import get_browser
 
 
 def buy_item(item, buy_times):
@@ -44,6 +46,17 @@ def buy_items():
 
     print("|| Pegando seus itens atuais e necessidades de compra")
     items = get_items()
+
+    if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
+        try:
+            driver = get_browser()
+            store_url = "https://marketplace.plantvsundead.com/farm#/farm/shop/"
+
+            if driver is not None:
+                driver.get(store_url)
+                random_sleep()
+        except:
+            print("Erro ao redirecionar para a página da loja")
 
     print("|| Verificando se é necessário comprar algum item")
     for item in items:

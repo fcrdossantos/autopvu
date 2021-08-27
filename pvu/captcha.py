@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 from twocaptcha import TwoCaptcha
@@ -26,7 +27,7 @@ def get_challenge_gt():
 def upload_captcha():
     print("|| Enviando Captcha para ser resolvido")
 
-    solver = TwoCaptcha("06a3fe539e77c6236f8df7da9709922a")
+    solver = TwoCaptcha(os.getenv("2CAPTCHA_API"))
     url = "https://marketplace.plantvsundead.com/farm#/farm/"
 
     challenge, gt = get_challenge_gt()

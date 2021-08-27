@@ -271,6 +271,8 @@ As rotinas padrões não serão executadas no Debug!
 
 Recomendo deixar em False se você não for programador e/ou quiser rodar as minhas rotinas padrões
 
+Lembre-se de Reiniciar o Kernel sempre que for querer reabrir/reiniciar o debug (ex: fechou o navegador)
+
 # Rodando o automatizador
 
 Novamente, abra o terminal (CMD/Powershell) e digite:

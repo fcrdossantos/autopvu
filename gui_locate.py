@@ -1,6 +1,9 @@
 import os
 import pyautogui
 import pydirectinput
+import mss
+import cv2
+import numpy as np
 
 # Regions that will be used to analyse the screen
 def regions(region="full"):
@@ -29,28 +32,56 @@ if os.getenv("DEBUG", "FALSE").lower() in ("true", "1"):
     pyautogui.screenshot("print/unlock.png", region=regions("button_unlock"))
 
 
-# Just locate an image in your region
-def locate(image, region=regions(), grayscale=False, confidence=0.75):
+def take_ss(region, name=None):
+    with mss.mss() as sct:
+        sct_img = sct.grab(region)
+
+        if name is not None:
+            mss.tools.to_png(sct_img.rgb, sct_img.size, output=name)
+        return sct_img
+
+
+def locate(image, region=regions(), confidence=0.8, grayscale=False):
     image_path = f"images/{image}"
 
-    return pyautogui.locateOnScreen(
-        image_path,
-        confidence=confidence,
-        region=region,
-        grayscale=grayscale,
-    )
+    with mss.mss() as sct:
+
+        ss = np.array(sct.grab(region))
+        ss = ss[:, :, :3]
+
+        needle = cv2.imread(image_path)
+
+        if grayscale:
+            ss = cv2.cvtColor(ss, cv2.COLOR_BGR2GRAY)
+            needle = cv2.cvtColor(needle, cv2.COLOR_BGR2GRAY)
+
+        needle_h, needle_w = needle.shape[:2]
+        # print(needle_h, needle_w)
+
+        result = cv2.matchTemplate(ss, needle, cv2.TM_CCORR_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+        # print(min_val, max_loc, min_loc, max_loc)
+
+        if max_val > confidence:
+            position_x = max_loc[0] + needle_w // 2
+            position_y = max_loc[1] + needle_h // 2
+            return position_x, position_y
+
+        return False
 
 
 # Locate the image but also perform a click
 def locate_click(image, region=regions(), grayscale=False, confidence=0.75):
-    btn = locate(image, region, grayscale, confidence)
+    pos = locate(image, region, grayscale, confidence)
 
-    if btn is not None:
-        btn_pos = pyautogui.center(btn)
+    if pos is not None and pos is not False:
+        pos_x = pos[0]
+        pos_y = pos[1]
 
-        pydirectinput.moveTo(btn_pos.x, btn_pos.y)
-        pydirectinput.click(btn_pos.x, btn_pos.y)
-        print(f"|| Clicando na posição: ({btn_pos.x},{btn_pos.y})")
+        pydirectinput.moveTo(pos_x, pos_y)
+        pydirectinput.click(pos_x, pos_y)
+        print(f"|| Clicando na posição: ({pos_x},{pos_y})")
 
         return True
 

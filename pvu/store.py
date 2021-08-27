@@ -4,10 +4,21 @@ import os
 from pvu.utils import get_headers, random_sleep
 from pvu.items import get_items
 from browser import get_browser
+from pvu.user import get_le
 
 
 def buy_item(item, buy_times):
     item_id = item["id"]
+
+    total_price = item["price"] * buy_times
+    total_le = get_le()
+
+    if total_le < total_price:
+        buy_times = total_le // item["price"]
+
+    if buy_times == 0:
+        print("Você não tem dinheiro pra comprar tudo o que precisa")
+        return False
 
     times_text = "vez" if buy_times == 1 else "vezes"
     print(f"|| Vou comprar {item['name']} {item['buy_times']} {times_text}")

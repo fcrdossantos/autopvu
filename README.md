@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 Isso irá instalar todas as dependências do projeto.
 
-## Preparativos
+## Preparativos do Navegador
 
 Antes de configurar o bot você vai precisar abrir o seu navegador, instalar o MetaMask, configurá-lo normalmente e acessar o jogo pelo menos uma vez, para o navegador salvar suas contas e configurações.
 
@@ -52,6 +52,28 @@ Caso use mais de uma conta, é necessário fazer isso em todos os navegadores.
 
 Além de prático, esse passo te dá uma maior segurança, visto que nunca terá
 que ficar inserindo sua frase de recuperação do MetaMask via automatizador.
+
+## Configuração do certificado
+
+Você precisa ativar o certificado ca.crt no seu computador para acessar livremente o navegador que usamos no automatizador.
+
+Para isso, vá ao Chrome e acesse suas configurações (chrome://settings/)
+
+Procure por certificado (ou certificate se estiver em inglês).
+
+Ele ficará na parte de segurança.
+
+Para um link rápido acesse: chrome://settings/security?search=certific
+
+( o link acima funcionará para ingles e português)
+
+Selecione a opção "Gerenciar Certificados" ou "Manage Certificates"
+
+Abrirá uma janela, vá até a aba "Autoridades de Certificação Raiz Confiáveis" ou "Trusted Root Certification Authorities"
+
+Escolha a opção de Importar um novo Certificado e importe o ca.crt.
+
+Pronto! Agora o certificado está pronto para uso :)
 
 ## 2Captcha
 
@@ -94,8 +116,6 @@ Vá até o site do Chromium e escolha a sua versão para download nos [snapshots
 Para os testes foi utilizada a versão 915642 e você pode baixá-la clicando [aqui](https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html?prefix=Win_x64/915642/).
 
 Na página de download você irá baixar tanto o arquivo "chrome-win.zip" quanto o "chromedriver_win32.zip".
-
-Altere o nome do driver para "chromiumdriver.exe"e a pasta do chromium para "chromium".
 
 Em seguida, descompacte ambos na pasta do **Auto PvU**.
 

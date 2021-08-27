@@ -101,70 +101,69 @@ def get_land_pages(land):
         return 0
 
 
-def get_page_plants(land):
-    plants = []
+def get_page_plants(land, plants_to_water, watered_plants):
+    plants = 0
     for plant in land["data"]:
         for tool in plant["activeTools"]:
             if tool["type"] == "WATER":
                 water_count = tool["count"]
                 if water_count <= 150:
-                    plants.append(plant["_id"])
+                    print("|| Regando a planta", plant)
+
+                    if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
+                        try:
+                            driver = get_browser()
+
+                            if driver is not None:
+                                driver.get(
+                                    f"https://marketplace.plantvsundead.com/farm#/farm/{plant}"
+                                )
+                        except:
+                            print(
+                                "|| Erro ao redirecionar para página da plata a ser regada"
+                            )
+
+                    if water_plant(plant):
+                        plants += 1
+
+                    print(f"|| {watered_plants}/{plants_to_water} plantas regadas")
+
+                    if watered_plants >= plants_to_water:
+                        random_sleep()
+                        print("|| Todas as plantas necessárias foram regadas")
+                        return -1
 
     random_sleep()
     return plants
 
 
-def get_land_plants(owner):
-    plants = []
+def get_land_plants(owner, plants_to_water, watered_plants):
+    new_watered_plants = 0
 
     land_info = get_land_page_info(owner)
 
     for page in range(get_land_pages(land_info)):
         page_info = get_land_page_info(owner, page)
-        plants += get_page_plants(page_info)
+        plants = get_page_plants(page_info, plants_to_water, watered_plants)
+        if plants == -1:
+            return -1
+        else:
+            new_watered_plants += new_watered_plants
 
-    return plants
+    return new_watered_plants
 
 
 def water_land(plants_to_water=15):
+    print(f"|| Vamos regar {plants_to_water} plantas")
+
     print("|| Buscando uma fazenda para regar")
     owner = get_owner()
 
     print("|| Vamos regar a fazenda", owner)
 
     print("|| Vamos buscar todas as plantas dessa fazenda")
-    plants = get_land_plants(owner)
-
-    watered_plants = 0
-
-    print(f"|| Encontrei {len(plants)} plantas na fazenda {owner}")
-
-    print(f"|| Vamos regar {plants_to_water} plantas")
-
-    for plant in plants:
-        print("|| Regando a planta", plant)
-
-        if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
-            try:
-                driver = get_browser()
-
-                if driver is not None:
-                    driver.get(
-                        f"https://marketplace.plantvsundead.com/farm#/farm/{plant}"
-                    )
-            except:
-                print("|| Erro ao redirecionar para página da plata a ser regada")
-
-        if water_plant(plant):
-            watered_plants += 1
-
-        print(f"|| {watered_plants}/{plants_to_water} plantas regadas")
-        if watered_plants >= plants_to_water:
-            random_sleep()
-            print("|| Todas as plantas necessárias foram regadas")
-            break
+    watered_plants = get_land_plants(owner, plants_to_water, watered_plants=0)
 
     if watered_plants < plants_to_water:
         plants_to_water = plants_to_water - watered_plants
         water_land(plants_to_water)
-    return plants

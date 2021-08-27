@@ -34,7 +34,13 @@ def get_plants():
     if farm.get("status") == 0:
         farm_data = farm.get("data")
         for plant in farm_data:
-            _plant = {"id": plant["_id"], "water": 0, "crow": False}
+            _plant = {
+                "id": plant["_id"],
+                "water": 0,
+                "crow": False,
+                "stage": "farming",
+                "temp": False,
+            }
 
             for tool in plant["activeTools"]:
                 if tool["type"] == "WATER":
@@ -48,6 +54,8 @@ def get_plants():
                 _plant["crow"] = has_crow
 
             _plant["stage"] = plant["stage"]
+
+            _plant["temp"] = plant.get("isTempPlant")
 
             plants.append(_plant)
 
@@ -89,7 +97,7 @@ def water_plant(plant_id):
     else:
         print("|| Erro ao regar a planta", plant_id)
         print("|| => Resposta:", response.text)
-        print("|| Tentarei novamente!")
+        print("|| Tentarei novamente mais tarde!")
         return False
     return True
 
@@ -144,7 +152,7 @@ def remove_crow(plant_id):
     else:
         print("|| Erro ao remover o corvo da planta", plant_id)
         print("|| => Resposta:", response.text)
-        print("|| Tentarei novamente!")
+        print("|| Tentarei novamente mais tarde!")
         return False
     return True
 
@@ -204,7 +212,7 @@ def use_pot(plant_id):
     else:
         print("|| Erro ao colocar o vaso na planta", plant_id)
         print("|| => Resposta:", response.text)
-        print("|| Tentarei novamente!")
+        print("|| Tentarei novamente mais tarde!")
         return False
     return True
 
@@ -249,7 +257,7 @@ def remove_plant(plant_id):
     else:
         print("|| Erro ao remover a planta", plant_id)
         print("|| => Resposta:", response.text)
-        print("|| Tentarei novamente!")
+        print("|| Tentarei novamente mais tarde!")
         return False
 
     return True
@@ -269,7 +277,7 @@ def harvest_plant(plant_id):
     if '"status":0' in response.text:
         print("|| Sucesso ao colher planta:", plant_id)
     elif '"status":11' in response.text:
-        print("|| A planta ainda não pode mais ser colhida:", plant_id)
+        print("|| A planta não pode mais ser colhida:", plant_id)
         return 11
     elif '"status":15' in response.text:
         print("|| A planta já está com o limite de colheita:", plant_id)
@@ -280,7 +288,7 @@ def harvest_plant(plant_id):
     else:
         print("|| Erro ao colher a planta", plant_id)
         print("|| => Resposta:", response.text)
-        print("|| Tentarei novamente!")
+        print("|| Tentarei novamente mais tarde!")
         return False
 
     return True
@@ -295,8 +303,9 @@ def harvest_plants(plants=None):
     for plant in plants:
         if plant["stage"] == "cancelled":
             status = harvest_plant(plant["id"])
-            if status == 11:
-                remove_plant(plant["id"])
+            if status == 11 or status == True:
+                if plant["temp"]:
+                    remove_plant(plant["id"])
     random_sleep()
     print(f"|| Planta {plant['id']} foi colhida")
 
@@ -318,8 +327,6 @@ def add_plant(plant_id):
     random_sleep()
     response = requests.request("POST", url, json=payload, headers=headers)
 
-    print(response.text)
-
     if '"status":0' in response.text:
         print("|| Sucesso ao adicionar a planta:")
     elif '"status":14' in response.text:
@@ -327,7 +334,7 @@ def add_plant(plant_id):
     else:
         print("|| Erro ao adicionar a planta")
         print("|| => Resposta:", response.text)
-        print("|| Tentarei novamente!")
+        print("|| Tentarei novamente mais tarde!")
         return False
 
     return True
@@ -364,10 +371,16 @@ def add_plants():
     print("|| Iniciando rotina de adicionar novas plantas")
     available_lands = get_available_spaces()
 
-    for _ in range(available_lands["tree"]):
+    available_trees = available_lands["tree"]
+    for _ in range(available_trees):
         add_plant(1)
 
-    for _ in range(available_lands["mother"]):
+    available_mothers = available_lands["mother"]
+    for _ in range(available_mothers):
         add_plant(2)
+
+    if available_trees > 0 or available_mothers > 0:
+        use_pots()
+        water_plants()
 
     print("|| Fim da rotina de adicionar novas plantas")

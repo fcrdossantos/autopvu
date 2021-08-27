@@ -16,7 +16,7 @@ def get_items_info(all_items, my_items, _type):
             print(item)
 
         price = item.get("price")
-        usages = item.get("usage")
+        usages = item.get("usages")
 
         if not usages:
             usages = 1
@@ -36,7 +36,7 @@ def get_items_info(all_items, my_items, _type):
         _item = {
             "name": name,
             "id": int(_id),
-            "_type": _type,
+            "type": _type,
             "price": int(price),
             "buy_amount": int(usages),
             "min_amount": int(min_amount),

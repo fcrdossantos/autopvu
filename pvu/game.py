@@ -12,6 +12,7 @@ from pvu.farm import (
 from pvu.daily import do_daily
 from pvu.user import get_user_info
 from pvu.utils import random_sleep
+from pvu.store import buy_items
 
 
 def play_game():
@@ -37,25 +38,35 @@ def play_game():
     random_sleep(3)
     get_user_info()
 
-    print("|| Hora de colocar os vasos")
-    random_sleep(3)
-    use_pots()
+    if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
+        print("|| Hora de comprar os itens")
+        random_sleep(3)
+        buy_items()
 
-    print("|| Hora de regar plantas!")
-    random_sleep(3)
-    water_plants()
+    if os.getenv("POT", "TRUE").lower() in ("true", "1"):
+        print("|| Hora de colocar os vasos")
+        random_sleep(3)
+        use_pots()
 
-    print("|| Hora de remover corvos")
-    random_sleep(3)
-    remove_crows()
+    if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
+        print("|| Hora de regar plantas!")
+        random_sleep(3)
+        water_plants()
 
-    print("|| Hora de colher as plantas")
-    random_sleep(3)
-    harvest_plants()
+    if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
+        print("|| Hora de remover corvos")
+        random_sleep(3)
+        remove_crows()
 
-    print("|| Hora de adicionar novas plantas")
-    random_sleep(3)
-    add_plants()
+    if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
+        print("|| Hora de colher as plantas")
+        random_sleep(3)
+        harvest_plants()
+
+    if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
+        print("|| Hora de adicionar novas plantas")
+        random_sleep(3)
+        add_plants()
 
     if os.getenv("DAILY").lower() in ("true", "1"):
         print("|| Hora de fazer a missão diária")

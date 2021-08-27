@@ -92,25 +92,13 @@ except Exception as e:
 # --- Temos que ver se está retornando certo e regando certo também
 # --- Funções: water_land(); get_land_plants(); get_page_plants()
 #
-# --------- FARM  ---------
-# 1) Pegamos as terras disponíveis na fazenda
-# --- Função: get_farm_lands()
-# 2) Pegamos a quantidade máxima suportada na terra
-# --- Isso vai falar que a terra 0 cabe 5 plantas e 1 mãe
-# --- Função: get_available_spaces()
 
 
-# 1) Adicionar verbose nos sleeps
-
-# 4) Comprar item na loja
-
-# 5) Pegar valor de compra minimo para SUN BOX
-# 6) Verificar se quer comprar a SUN BOX
-# 7) Se sim, gasta LE até chegar no minimo
-
-
-# 10) Modo Turbo: Armazenar 10 Captchas (thread) e ir pegando de lá sempre que precisar
-# 11) Api do Discord: O bot vai virar uma webapi e printar quais lugares regar
+# Longo Prazo
+# 1) Deixar Mais Seguro (humanizado)
+# 2) Analisar melhores tempos de sleep
+# 3) Modo Turbo: Armazenar 10 captchas (thread) e ir pegando de lá sempre que precisar
+# 4) Api do Discord: O bot vai virar uma webapi e printar quais lugares regar
 # PS: Precisamos pegar um token vitalício (ou quase isso) -> Login Selenium :) P
 
 

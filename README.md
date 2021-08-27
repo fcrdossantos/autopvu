@@ -257,21 +257,7 @@ Aceita os valores **SMALL** para o vaso pequeno e **BIG** para o vaso grande
 
 ## Debug: (Utilize o debug.ipynb) => Para depuração e testes
 
-Você pode fazer depuração e testes no código do jogo, vendo como estão as funções, criando rotinas próprias, editando as atuais e afins...
-
-Para isso, implementamos um arquivo do Jupyter Notebook que tornará vitalício o acesso ao navegador do automatizador e te permitirá executar e manipular qualquer função nele.
-
-Para isso, habilite (True) a variável abaixo.
-
-Para o uso do automatizador padrão (sem alterações suas), o Debug deve ficar desativado!
-
-As rotinas padrões não serão executadas no Debug!
-
 **DEBUG**= Se você irá ou não ativar o Debug. (True/False)
-
-Recomendo deixar em False se você não for programador e/ou quiser rodar as minhas rotinas padrões
-
-Lembre-se de Reiniciar o Kernel sempre que for querer reabrir/reiniciar o debug (ex: fechou o navegador)
 
 # Rodando o automatizador
 
@@ -285,3 +271,21 @@ python main.py
 Ele então carregará as informações do arquivo _.env_ e iniciará o automatizador
 
 Para usar uma segunda conta, volte ao _.env_ e modifique o valor de "USER" na sessão "Current Account", feito isso, abra outro terminal e execute novamente o automatizador.
+
+# Debug
+
+Você pode fazer depuração e testes no código do jogo, vendo como estão as funções, criando rotinas próprias, editando as atuais e afins...
+
+Para isso, implementamos um arquivo do Jupyter Notebook que tornará vitalício o acesso ao navegador do automatizador e te permitirá executar e manipular qualquer função nele.
+
+Para isso, habilite (True) a variável abaixo.
+
+Para o uso do automatizador padrão (sem alterações suas), o Debug deve ficar desativado!
+
+As rotinas padrões não serão executadas no Debug!
+
+Recomendo deixar em False se você não for programador e/ou quiser rodar as minhas rotinas padrões
+
+Lembre-se de Reiniciar o Kernel sempre que for querer reabrir/reiniciar o debug (ex: fechou o navegador)
+
+Por fim, você deve SEMPRE abrir/executar em modo de Administrador, para isso, recomendo usar o VS Code e editar o arquivo por lá (abrindo o VS como admin)

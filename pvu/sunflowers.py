@@ -13,9 +13,9 @@ def get_all_sunflowers():
     random_sleep()
     response = requests.request("GET", url, headers=headers)
 
-    user_info = json.loads(response.text)
+    sunflower_info = json.loads(response.text)
 
-    all_sunflowers = user_info.get("data")
+    all_sunflowers = sunflower_info.get("data")
 
     all_sunflowers = [
         sunflower for sunflower in all_sunflowers if sunflower.get("name") != "Sun Box"
@@ -33,8 +33,8 @@ def get_my_sunflowers():
     random_sleep()
     response = requests.request("GET", url, headers=headers)
 
-    user_info = json.loads(response.text)
+    sunflower_info = json.loads(response.text)
 
-    tools = user_info.get("data")
+    tools = sunflower_info.get("data")
 
     return tools

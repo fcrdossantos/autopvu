@@ -30,7 +30,7 @@ def get_items_info(all_items, my_items, _type):
 
         current_amount = 0
         for my_item in my_items:
-            if my_item.get("name") == my_item:
+            if my_item.get("name") == name:
                 current_amount = my_item.get("usages")
 
         _item = {
@@ -48,16 +48,16 @@ def get_items_info(all_items, my_items, _type):
 
 
 def get_items():
-    sunflowers = get_items_info(
-        get_all_sunflowers(),
-        get_my_sunflowers(),
-        "sunflower",
-    )
-
     tools = get_items_info(
         get_all_tools(),
         get_my_tools(),
         "tool",
     )
 
-    return sunflowers + tools
+    sunflowers = get_items_info(
+        get_all_sunflowers(),
+        get_my_sunflowers(),
+        "sunflower",
+    )
+
+    return tools + sunflowers

@@ -85,8 +85,6 @@ except Exception as e:
 
 # 1) Adicionar verbose nos sleeps
 
-# 2) Verificar quantidade de cada semente
-# 3) Verificar quantidade de cada item necessário
 # 4) Comprar item na loja
 
 # 5) Pegar valor de compra minimo para SUN BOX
@@ -99,3 +97,6 @@ except Exception as e:
 # 10) Modo Turbo: Armazenar 10 Captchas (thread) e ir pegando de lá sempre que precisar
 # 11) Api do Discord: O bot vai virar uma webapi e printar quais lugares regar
 # PS: Precisamos pegar um token vitalício (ou quase isso) -> Login Selenium :) P
+
+
+# farm status 444 => manutenção (not in the list)

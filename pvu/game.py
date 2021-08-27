@@ -2,7 +2,13 @@ import os
 from datetime import datetime
 from browser import get_browser
 from pvu.maintenance import wait_maintenance
-from pvu.farm import water_plants, remove_crows, get_plants, use_pots
+from pvu.farm import (
+    water_plants,
+    remove_crows,
+    use_pots,
+    harvest_plants,
+    add_plants,
+)
 from pvu.daily import do_daily
 from pvu.user import get_user_info
 from pvu.utils import random_sleep
@@ -28,27 +34,28 @@ def play_game():
     print(f"|| [{now}] Jogo disponível! Iniciando")
 
     print(f"|| Hora de pegar informações da sua fazenda!")
-    random_sleep()
-
-    print("|| Pegando as informações do usuário")
-    random_sleep()
+    random_sleep(3)
     get_user_info()
-
-    print("|| Pegando as informações das plantas")
-    random_sleep()
-    plants = get_plants()
-
-    print("|| Hora de regar plantas!")
-    random_sleep(3)
-    water_plants(plants)
-
-    print("|| Hora de remover corvos")
-    random_sleep(3)
-    remove_crows(plants)
 
     print("|| Hora de colocar os vasos")
     random_sleep(3)
-    use_pots(plants)
+    use_pots()
+
+    print("|| Hora de regar plantas!")
+    random_sleep(3)
+    water_plants()
+
+    print("|| Hora de remover corvos")
+    random_sleep(3)
+    remove_crows()
+
+    print("|| Hora de colher as plantas")
+    random_sleep(3)
+    harvest_plants()
+
+    print("|| Hora de adicionar novas plantas")
+    random_sleep(3)
+    add_plants()
 
     if os.getenv("DAILY").lower() in ("true", "1"):
         print("|| Hora de fazer a missão diária")

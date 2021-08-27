@@ -109,7 +109,7 @@ def water_plants(plants=None):
         random_sleep()
         print(f"|| Planta {plant['id']} terminou de ser regada")
 
-    print("|| Todas as plantas foram regadas")
+    print("|| Fim da rotina de regar plantas")
 
 
 def remove_crow(plant_id):
@@ -164,7 +164,7 @@ def remove_crows(plants=None):
         random_sleep()
         print(f"|| Planta {plant['id']} não tem mais corvos")
 
-    print("|| Todos os corvos foram retirados")
+    print("|| Fim da rotina de remover corvos")
 
 
 def use_pot(plant_id):
@@ -229,4 +229,145 @@ def use_pots(plants=None):
         random_sleep()
         print(f"|| Planta {plant['id']} não precisa de vasos")
 
-    print("|| Todas as plantas estão com vasos")
+    print("|| || Fim da rotina de colocar vasos")
+
+
+def remove_plant(plant_id):
+
+    print("|| Removendo a planta:", plant_id)
+
+    url = f"https://backend-farm.plantvsundead.com/farms/{plant_id}/deactivate"
+    headers = get_headers()
+
+    payload = {}
+
+    random_sleep()
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    if '"status":0' in response.text:
+        print("|| Sucesso ao remover a planta:", plant_id)
+    else:
+        print("|| Erro ao remover a planta", plant_id)
+        print("|| => Resposta:", response.text)
+        print("|| Tentarei novamente!")
+        return False
+
+    return True
+
+
+def harvest_plant(plant_id):
+    print("|| Colhendo a planta:", plant_id)
+
+    url = f"https://backend-farm.plantvsundead.com/farms/{plant_id}/harvest"
+    headers = get_headers()
+
+    payload = {}
+
+    random_sleep()
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    if '"status":0' in response.text:
+        print("|| Sucesso ao colher planta:", plant_id)
+    elif '"status":11' in response.text:
+        print("|| A planta ainda não pode mais ser colhida:", plant_id)
+        return 11
+    elif '"status":15' in response.text:
+        print("|| A planta já está com o limite de colheita:", plant_id)
+    elif '"status":20' in response.text:
+        print("|| Não precisa colher a planta novamente:", plant_id)
+    elif '"status":28' in response.text:
+        print("|| Você já atingiu o limite diário de colher plantas.")
+    else:
+        print("|| Erro ao colher a planta", plant_id)
+        print("|| => Resposta:", response.text)
+        print("|| Tentarei novamente!")
+        return False
+
+    return True
+
+
+def harvest_plants(plants=None):
+    print("|| Iniciando a rotina de colher plantas")
+
+    if plants is None:
+        plants = get_plants()
+
+    for plant in plants:
+        if plant["stage"] == "cancelled":
+            status = harvest_plant(plant["id"])
+            if status == 11:
+                remove_plant(plant["id"])
+    random_sleep()
+    print(f"|| Planta {plant['id']} foi colhida")
+
+    print("|| Fim da rotina de colher plantas")
+
+
+def add_plant(plant_id):
+
+    if plant_id == 1:
+        print("|| Adicionando uma planta Sunflower Sapling")
+    else:
+        print("|| Adicionando uma planta Sunflower Mama")
+
+    url = f"https://backend-farm.plantvsundead.com/farms"
+    headers = get_headers()
+
+    payload = {"landId": 0, "sunflowerId": plant_id}
+
+    random_sleep()
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    print(response.text)
+
+    if '"status":0' in response.text:
+        print("|| Sucesso ao adicionar a planta:")
+    elif '"status":14' in response.text:
+        print("|| Você está no limite de plantas")
+    else:
+        print("|| Erro ao adicionar a planta")
+        print("|| => Resposta:", response.text)
+        print("|| Tentarei novamente!")
+        return False
+
+    return True
+
+
+def get_farm_lands():
+    url = "https://backend-farm.plantvsundead.com/my-lands?limit=9&offset=0"
+
+    headers = get_headers()
+
+    print("|| Pegando as minhas Sunflowers")
+
+    random_sleep()
+    response = requests.request("GET", url, headers=headers)
+
+    farm_info = json.loads(response.text)
+
+    lands = farm_info.get("data")
+
+    return lands
+
+
+def get_available_spaces():
+    land = get_farm_lands()[0]
+    capacity = land["land"]["capacity"]
+    current = land["totalFarming"]
+    available_tree = capacity["plant"] - current["plant"]
+    available_mother = capacity["motherTree"] - current["motherTree"]
+
+    return {"tree": available_tree, "mother": available_mother}
+
+
+def add_plants():
+    print("|| Iniciando rotina de adicionar novas plantas")
+    available_lands = get_available_spaces()
+
+    for _ in range(available_lands["tree"]):
+        add_plant(1)
+
+    for _ in range(available_lands["mother"]):
+        add_plant(2)
+
+    print("|| Fim da rotina de adicionar novas plantas")

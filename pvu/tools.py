@@ -13,9 +13,9 @@ def get_all_tools():
     random_sleep()
     response = requests.request("GET", url, headers=headers)
 
-    user_info = json.loads(response.text)
+    tool_info = json.loads(response.text)
 
-    tools = user_info.get("data")
+    tools = tool_info.get("data")
 
     return tools
 
@@ -29,8 +29,8 @@ def get_my_tools():
     random_sleep()
     response = requests.request("GET", url, headers=headers)
 
-    user_info = json.loads(response.text)
+    tool_info = json.loads(response.text)
 
-    tools = user_info.get("data")
+    tools = tool_info.get("data")
 
     return tools

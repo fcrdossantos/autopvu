@@ -41,7 +41,7 @@ def take_ss(region, name=None):
         return sct_img
 
 
-def locate(image, region=regions(), confidence=0.8, grayscale=False):
+def locate(image, region=regions(), grayscale=False, confidence=0.8):
     image_path = f"images/{image}"
 
     with mss.mss() as sct:
@@ -58,12 +58,13 @@ def locate(image, region=regions(), confidence=0.8, grayscale=False):
         needle_h, needle_w = needle.shape[:2]
         # print(needle_h, needle_w)
 
-        result = cv2.matchTemplate(ss, needle, cv2.TM_CCORR_NORMED)
+        result = cv2.matchTemplate(ss, needle, cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 
-        # print(min_val, max_loc, min_loc, max_loc)
+        # print(min_val, max_val, min_loc, max_loc)
 
         if max_val > confidence:
+            # print("max > confidence", max_val, confidence, max_val > con)
             position_x = max_loc[0] + needle_w // 2
             position_y = max_loc[1] + needle_h // 2
             return position_x, position_y

@@ -95,6 +95,8 @@ Para os testes foi utilizada a versão 915642 e você pode baixá-la clicando [a
 
 Na página de download você irá baixar tanto o arquivo "chrome-win.zip" quanto o "chromedriver_win32.zip".
 
+Altere o nome do driver para "chromiumdriver.exe"e a pasta do chromium para "chromium".
+
 Em seguida, descompacte ambos na pasta do **Auto PvU**.
 
 ### HWID

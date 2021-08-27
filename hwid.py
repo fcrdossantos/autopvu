@@ -74,4 +74,4 @@ def check_hwid_clean():
             if reg != HWID_1 and reg != HWID_2:
                 clear_hwid()
 
-        random_sleep(13, min_time=5, max_time=10, verbose=False)
+        random_sleep()

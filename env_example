@@ -1,17 +1,20 @@
+# Captcha:
+# 2CAPTCHA_API=1234abc56de7f890fgh123ijk456789l
+#
 # MetaMask:
-PASSWORD=YOUR_PASS
+PASSWORD=YOUR_PASS#123
 #
 # Current Account:
 USER=1
 #
 # Account 1:
-HWID_1=YOUR_HWID(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\MachineGuid)
-DATA_DIR_1=YOUR_CHROME_USER_PATH(get it in chrome://version WITHOUT \Default)
+HWID_1=123abc45-6789-de01-fg23-hij456kl7m8
+DATA_DIR_1=C:\Users\usuario\AppData\Local\Microsoft\Chrome\User Data\
 DRIVER_DIR_1=chromedriver.exe
 #
 # Account 2:
-HWID_2=OTHER_HWID(delete the key, open chrome, get the new key)
-DATA_DIR_2=YOUR_CHROMIUM_USER_PATH(get the same way as chrome)
+HWID_2=abc123de-fghi-45jk-67lm-890nop12q3r
+DATA_DIR_2=C:\Users\usuario\AppData\Local\Microsoft\Chromium\User Data\
 DRIVER_DIR_2=chromiumdriver.exe
 PATH_BROWSER_2=chromium/chrome.exe
 #
@@ -45,5 +48,5 @@ MIN_GREENHOUSE=0
 MIN_SUNFLOWER_SAPLING=6
 MIN_SUNFLOWER_MAMA=1
 #
-# Debug
+# Debug: (Use the file debug.ipynb)
 DEBUG=False

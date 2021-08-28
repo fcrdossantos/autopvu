@@ -34,44 +34,68 @@ def play_game():
     now = datetime.now().strftime("%H:%M:%S")
     print(f"|| [{now}] Jogo disponível! Iniciando")
 
-    print(f"|| Hora de pegar informações da sua fazenda!")
-    random_sleep(3)
-    get_user_info()
-
-    if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
-        print("|| Hora de comprar os itens")
+    try:
+        print(f"|| Hora de pegar informações da sua fazenda!")
         random_sleep(3)
-        buy_items()
+        get_user_info()
+    except Exception as e:
+        print("|| Erro na rotina de pegar informações do usuário:", e)
 
-    if os.getenv("POT", "TRUE").lower() in ("true", "1"):
-        print("|| Hora de colocar os vasos")
-        random_sleep(3)
-        use_pots()
+    try:
+        if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
+            print("|| Hora de comprar os itens")
+            random_sleep(3)
+            buy_items()
+    except Exception as e:
+        print("|| Erro na rotina de comprar itens:", e)
 
-    if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
-        print("|| Hora de regar plantas!")
-        random_sleep(3)
-        water_plants()
+    try:
+        if os.getenv("POT", "TRUE").lower() in ("true", "1"):
+            print("|| Hora de colocar os vasos")
+            random_sleep(3)
+            use_pots()
+    except Exception as e:
+        print("|| Erro na rotina de colocar vasos:", e)
 
-    if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
-        print("|| Hora de remover corvos")
-        random_sleep(3)
-        remove_crows()
+    try:
+        if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
+            print("|| Hora de regar plantas!")
+            random_sleep(3)
+            water_plants()
+    except Exception as e:
+        print("|| Erro na rotina de aguar plantas:", e)
 
-    if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
-        print("|| Hora de colher as plantas")
-        random_sleep(3)
-        harvest_plants()
+    try:
+        if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
+            print("|| Hora de remover corvos")
+            random_sleep(3)
+            remove_crows()
+    except Exception as e:
+        print("|| Erro na rotina de remover corvos:", e)
 
-    if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
-        print("|| Hora de adicionar novas plantas")
-        random_sleep(3)
-        add_plants()
+    try:
+        if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
+            print("|| Hora de colher as plantas")
+            random_sleep(3)
+            harvest_plants()
+    except Exception as e:
+        print("|| Erro na rotina de colher plantas:", e)
 
-    if os.getenv("DAILY").lower() in ("true", "1"):
-        print("|| Hora de fazer a missão diária")
-        random_sleep(3)
-        do_daily()
+    try:
+        if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
+            print("|| Hora de adicionar novas plantas")
+            random_sleep(3)
+            add_plants()
+    except Exception as e:
+        print("|| Erro na rotina de plantas arvores:", e)
+
+    try:
+        if os.getenv("DAILY").lower() in ("true", "1"):
+            print("|| Hora de fazer a missão diária")
+            random_sleep(3)
+            do_daily()
+    except Exception as e:
+        print("|| Erro na rotina de missão diária:", e)
 
     print(f"|| [{now}] Tudo feito! Até mais tarde :)")
     random_sleep(60 * 15)

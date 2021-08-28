@@ -21,7 +21,8 @@ def buy_item(item, buy_times):
         return False
 
     times_text = "vez" if buy_times == 1 else "vezes"
-    print(f"|| Vou comprar {item['name']} {item['buy_times']} {times_text}")
+
+    print(f"|| Vou comprar {item['name']} {buy_times} {times_text}")
 
     if item["type"] == "tool":
         url = "https://backend-farm.plantvsundead.com/buy-tools"

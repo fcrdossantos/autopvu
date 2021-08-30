@@ -55,6 +55,14 @@ def unlock_mask():
 def login():
     if open_mask():
         if unlock_mask():
+            random_sleep(15)
             if locate("open.png"):
                 print("|| Ocultando a extensão do MetaMask!")
                 locate_click("mask_icon.png", regions("icon_mask"))
+            else:
+                random_sleep(15)
+                if locate("open.png"):
+                    print("|| Ocultando a extensão do MetaMask!")
+                    locate_click("mask_icon.png", regions("icon_mask"))
+                else:
+                    print("|| Não achei a extensão do Metamask aberta para ocultá-la")

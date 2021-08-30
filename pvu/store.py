@@ -17,7 +17,7 @@ def buy_item(item, buy_times):
         buy_times = total_le // item["price"]
 
     if buy_times == 0:
-        print("Você não tem dinheiro pra comprar tudo o que precisa")
+        print("|| Você não tem dinheiro pra comprar tudo o que precisa")
         return False
 
     times_text = "vez" if buy_times == 1 else "vezes"

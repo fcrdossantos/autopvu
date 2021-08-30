@@ -40,7 +40,12 @@ def get_le():
     user_info = json.loads(response.text)
     le = user_info.get("data").get("leWallet")
 
-    return int(le)
+    if le is not None and len(le) > 0:
+        return int(le)
+    else:
+        print("|| Errro ao pegar os LES:")
+        print(user_info)
+        return 0
 
 
 def get_user_info():

@@ -99,7 +99,6 @@ def check_maintenance():
 
         return False
     except Exception as e:
-        print("Erro da manutencao", e)
         random_sleep(3)
         print("|| Jogo liberado! Pode jogar")
         return False

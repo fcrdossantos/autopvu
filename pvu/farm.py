@@ -306,8 +306,9 @@ def harvest_plants(plants=None):
             if status == 11 or status == True:
                 if plant["temp"]:
                     remove_plant(plant["id"])
-    random_sleep()
-    print(f"|| Planta {plant['id']} foi colhida")
+
+        random_sleep()
+        print(f"|| Planta {plant['id']} foi colhida")
 
     print("|| Fim da rotina de colher plantas")
 

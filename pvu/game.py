@@ -1,4 +1,5 @@
 import os
+import traceback
 from datetime import datetime
 from browser import get_browser
 from pvu.maintenance import wait_maintenance
@@ -40,6 +41,7 @@ def play_game():
         get_user_info()
     except Exception as e:
         print("|| Erro na rotina de pegar informações do usuário:", e)
+        traceback.print_exc()
 
     try:
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
@@ -48,6 +50,7 @@ def play_game():
             buy_items()
     except Exception as e:
         print("|| Erro na rotina de comprar itens:", e)
+        traceback.print_exc()
 
     try:
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):
@@ -56,6 +59,7 @@ def play_game():
             use_pots()
     except Exception as e:
         print("|| Erro na rotina de colocar vasos:", e)
+        traceback.print_exc()
 
     try:
         if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
@@ -64,6 +68,7 @@ def play_game():
             water_plants()
     except Exception as e:
         print("|| Erro na rotina de aguar plantas:", e)
+        traceback.print_exc()
 
     try:
         if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
@@ -72,6 +77,7 @@ def play_game():
             remove_crows()
     except Exception as e:
         print("|| Erro na rotina de remover corvos:", e)
+        traceback.print_exc()
 
     try:
         if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
@@ -80,6 +86,7 @@ def play_game():
             harvest_plants()
     except Exception as e:
         print("|| Erro na rotina de colher plantas:", e)
+        traceback.print_exc()
 
     try:
         if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
@@ -88,6 +95,7 @@ def play_game():
             add_plants()
     except Exception as e:
         print("|| Erro na rotina de plantas arvores:", e)
+        traceback.print_exc()
 
     try:
         if os.getenv("DAILY").lower() in ("true", "1"):
@@ -96,6 +104,7 @@ def play_game():
             do_daily()
     except Exception as e:
         print("|| Erro na rotina de missão diária:", e)
+        traceback.print_exc()
 
     print(f"|| [{now}] Tudo feito! Até mais tarde :)")
     random_sleep(60 * 15)

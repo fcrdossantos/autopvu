@@ -82,7 +82,7 @@ def locate_click(image, region=regions(), grayscale=False, confidence=0.75):
 
         pydirectinput.moveTo(pos_x, pos_y)
         pydirectinput.click(pos_x, pos_y)
-        log(f" Clicando na posição: ({pos_x},{pos_y})")
+        log(f"Clicando na posição: ({pos_x},{pos_y})")
 
         return True
 

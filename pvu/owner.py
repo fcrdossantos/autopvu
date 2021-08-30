@@ -35,15 +35,15 @@ def find_random_land_owner():
 
     coord_x = random.randint(-16, 16)
     coord_y = random.randint(-16, 16)
-    log(f" Buscando a fazenda: {coord_x}x{coord_y}")
+    log(f"Buscando a fazenda: {coord_x}x{coord_y}")
 
     owner = get_land_owner(coord_x, coord_y)
 
     if owner:
-        log(f" O dono (ID) da fazenda {coord_x}x{coord_y} é {owner}")
+        log(f"O dono (ID) da fazenda {coord_x}x{coord_y} é {owner}")
         return owner
     else:
-        log(f" A fazenda {coord_x}x{coord_y} ainda não tem dono")
+        log(f"A fazenda {coord_x}x{coord_y} ainda não tem dono")
         return False
 
 

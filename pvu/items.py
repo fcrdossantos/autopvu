@@ -25,8 +25,8 @@ def get_items_info(all_items, my_items, _type):
         # current_amount = tool.get('usages')
         min_amount = int(os.getenv(env_name, "-1"))
         if min_amount == -1:
-            log(f" Não encontramos um valor para {env_name} no arquivo .env")
-            log(f" Vamos colocar o valor mínimo para {name} como sendo 0")
+            log(f"Não encontramos um valor para {env_name} no arquivo .env")
+            log(f"Vamos colocar o valor mínimo para {name} como sendo 0")
             min_amount = 0
 
         current_amount = 0

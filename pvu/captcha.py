@@ -49,7 +49,7 @@ def upload_captcha():
 
 def get_captcha_result():
     for i in range(5):
-        log(f" Tentativa {i+1}/5 de solucionar o captcha")
+        log(f"Tentativa {i+1}/5 de solucionar o captcha")
         result = upload_captcha()
         if result is not None:
             break

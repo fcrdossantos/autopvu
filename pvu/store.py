@@ -23,7 +23,7 @@ def buy_item(item, buy_times):
 
     times_text = "vez" if buy_times == 1 else "vezes"
 
-    log(f" Vou comprar {item['name']} {buy_times} {times_text}")
+    log(f"Vou comprar {item['name']} {buy_times} {times_text}")
 
     if item["type"] == "tool":
         url = "https://backend-farm.plantvsundead.com/buy-tools"
@@ -32,7 +32,7 @@ def buy_item(item, buy_times):
         url = "https://backend-farm.plantvsundead.com/buy-sunflowers"
         payload = {"amount": buy_times, "sunflowerId": item_id}
 
-    log(f" Sucesso ao comprar {item['name']}")
+    log(f"Sucesso ao comprar {item['name']}")
 
     headers = get_headers()
 

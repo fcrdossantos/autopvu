@@ -67,7 +67,7 @@ def get_user_info():
     items = get_items()
 
     log("Você possui:")
-    log(f" => {pvu} PVU's")
-    log(f" => {le} LE's")
+    log(f"=> {pvu} PVU's")
+    log(f"=> {le} LE's")
     for item in items:
-        log(f" => {item.get('current_amount')} {item.get('name')}")
+        log(f"=> {item.get('current_amount')} {item.get('name')}")

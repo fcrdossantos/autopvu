@@ -131,7 +131,7 @@ def water_plants(plants=None):
                 plant["water"] += 1
 
         random_sleep()
-        log(f" Planta {plant['id']} terminou de ser regada")
+        log(f"Planta {plant['id']} terminou de ser regada")
 
     log("Fim da rotina de regar plantas")
 
@@ -201,7 +201,7 @@ def remove_crows(plants=None):
                 plant["crow"] = False
 
         random_sleep()
-        log(f" Planta {plant['id']} não tem mais corvos")
+        log(f"Planta {plant['id']} não tem mais corvos")
 
     log("Fim da rotina de remover corvos")
 
@@ -267,7 +267,7 @@ def use_pots(plants=None):
     for plant in plants:
 
         if plant["stage"] == "new":
-            log(f" A planta é nova e precisa de um vaso")
+            log(f"A planta é nova e precisa de um vaso")
             result_pot = use_pot(plant["id"])
 
             if result_pot == 556:
@@ -286,7 +286,7 @@ def use_pots(plants=None):
                 plant["pot"] = 1
 
         random_sleep()
-        log(f" Planta {plant['id']} não precisa de vasos")
+        log(f"Planta {plant['id']} não precisa de vasos")
 
     log("Fim da rotina de colocar vasos")
 
@@ -359,7 +359,7 @@ def harvest_plants(plants=None):
                     remove_plant(plant["id"])
 
         random_sleep()
-        log(f" Planta {plant['id']} foi colhida")
+        log(f"Planta {plant['id']} foi colhida")
 
     log("Fim da rotina de colher plantas")
 

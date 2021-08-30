@@ -91,15 +91,21 @@ def random_sleep(multiplier=2, min_time=0, max_time=None, verbose=False):
     random_time = random.random() * multiplier
 
     if random_time < min_time:
-        random_time += min_time
+        random_time = min_time + (random.random() * (min_time / 5))
+        # Min time + [0...20%]
 
     if max_time is not None:
         if random_time > max_time:
             random_time = random.randint(min_time, max_time)
-            if random_time == max_time:
-                random_time -= random.random()
+            if random_time >= max_time * 0.9:
+                random_time -= random.random() * (max_time / 10)
+                # Random - [0...10%]
+            if random_time <= max_time / 2:
+                random_time += random.random() * (max_time / 5)
+                # Random + [0...20%]
             else:
-                random_time += random.random()
+                random_time += random.random() * (max_time / 10)
+                # Random + [0...10%]
 
     if verbose:
         if random_time > 60:
@@ -109,6 +115,6 @@ def random_sleep(multiplier=2, min_time=0, max_time=None, verbose=False):
                 f"Esperando {minutes:.0f} minutos e {seconds:.2f} segundos para a próxima ação"
             )
         else:
-            log(f" Esperando {random_time:.2f} segundos para a próxima ação")
+            log(f"Esperando {random_time:.2f} segundos para a próxima ação")
 
     time.sleep(random_time)

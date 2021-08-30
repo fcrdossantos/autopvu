@@ -50,7 +50,7 @@ def get_land_page_info(owner, page=0):
 
 
 def get_land_info(owner, page=0, retry=0):
-    log(f" Buscando informações da fazenda {owner} na página {page+1}")
+    log(f"Buscando informações da fazenda {owner} na página {page+1}")
 
     offset = page * 10
 
@@ -114,7 +114,7 @@ def get_page_plants(land, plants_to_water, watered_plants):
                     if water_plant(plant):
                         plants += 1
 
-                    log(f" {watered_plants}/{plants_to_water} plantas regadas")
+                    log(f"{watered_plants}/{plants_to_water} plantas regadas")
 
                     if watered_plants >= plants_to_water:
                         random_sleep()
@@ -142,7 +142,7 @@ def get_land_plants(owner, plants_to_water, watered_plants):
 
 
 def water_land(plants_to_water=15):
-    log(f" Vamos regar {plants_to_water} plantas")
+    log(f"Vamos regar {plants_to_water} plantas")
 
     log("Buscando uma fazenda para regar")
     owner = get_owner()

@@ -2,7 +2,7 @@ import os
 import traceback
 from datetime import datetime
 from browser import get_browser
-from pvu.maintenance import wait_maintenance_force
+from pvu.maintenance import wait_maintenance
 from pvu.farm import (
     water_plants,
     remove_crows,
@@ -29,13 +29,13 @@ def play_game():
         log("Impossível acessar a página da fazenda para iniciar as rotinas do bot")
 
     random_sleep(min_time=3)
-    wait_maintenance_force()
 
-    now = datetime.now().strftime("%H:%M:%S")
-    log(f" [{now}] Jogo disponível! Iniciando")
+    wait_maintenance()
+
+    log(f"Jogo disponível! Iniciando")
 
     try:
-        log(f" Hora de pegar informações da sua fazenda!")
+        log(f"Hora de pegar informações da sua fazenda!")
         random_sleep(3)
         get_user_info()
     except Exception as e:
@@ -105,5 +105,5 @@ def play_game():
         log("Erro na rotina de missão diária:", e)
         traceback.print_exc()
 
-    log(f" [{now}] Tudo feito! Até mais tarde :)")
+    log(f"Tudo feito! Até mais tarde :)")
     random_sleep(60 * 15)

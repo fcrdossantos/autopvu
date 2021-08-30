@@ -36,6 +36,6 @@ def get_my_sunflowers():
 
     sunflower_info = json.loads(response.text)
 
-    tools = sunflower_info.get("data")
+    sunflowers = sunflower_info.get("data")
 
-    return tools
+    return sunflowers

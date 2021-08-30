@@ -200,18 +200,6 @@ O valor padrão é _chromiumdriver.exe_
 
 O valor padrão é _chromium/chrome.exe_
 
-## Group Reset Info => Informações de reset do grupo
-
-**GROUP_RESET_MINUTE** = Minuto que troca de grupos
-
-Atualmente o jogo não te permite jogar 24h por dia, você tem alguns horários específicos (grupos/batchs).
-
-Eles sempre possuem 1 hora de duração e ficam revezando entre si.
-
-O minuto em que eles iniciam não é fixo, a cada manutenção troca, então as vezes você entraria 14:10 e agora passa a entrar 14:35.
-
-Aqui você vai colocar apenas a parte do minuto, no exemplo acima, seria o valor 35.
-
 ## Routines => Rotinas do bot
 
 Coloque valores **True** para _Sim_ e **False** para _Não_

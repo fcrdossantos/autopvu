@@ -18,9 +18,6 @@ DATA_DIR_2=C:\Users\usuario\AppData\Local\Microsoft\Chromium\User Data\
 DRIVER_DIR_2=chromiumdriver.exe
 PATH_BROWSER_2=chromium/chrome.exe
 #
-# Group Reset Info:
-GROUP_RESET_MINUTE=35
-#
 # Routines:
 BUY_ITEMS=True
 HARVEST=True

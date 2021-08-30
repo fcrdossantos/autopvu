@@ -48,8 +48,6 @@ def get_next_group_time():
 
         json_response = json.loads(response.text)
 
-        print(response.text)
-
         next_group = json_response.get("data").get("nextGroup")
 
         next_group_utc = datetime.strptime(next_group, "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -122,11 +120,12 @@ def check_maintenance():
 
 
 def wait_next_group(next_group_time):
+    waited = 0
     while not can_login_maintenance(next_group_time):
         log(f"Esperando até", next_group_time)
         random_sleep(6 * 60, min_time=3 * 60, max_time=5 * 60, verbose=True)
 
-        if waited == 5:
+        if waited is not None and waited == 5:
             if not check_maintenance():
                 break
             waited = 0

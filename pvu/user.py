@@ -42,7 +42,7 @@ def get_le():
     user_info = json.loads(response.text)
     le = user_info.get("data").get("leWallet")
 
-    if le is not None and len(le) > 0:
+    if le is not None and len(str(le)) > 0:
         return int(le)
     else:
         log("Erro ao pegar os LES:", user_info)

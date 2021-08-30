@@ -105,5 +105,14 @@ def play_game():
         log("Erro na rotina de missão diária:", e)
         traceback.print_exc()
 
+    try:
+        if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
+            log("Hora de comprar itens usados nas rotinas")
+            random_sleep(3)
+            buy_items()
+    except Exception as e:
+        log("Erro na rotina de comprar itens:", e)
+        traceback.print_exc()
+
     log(f"Tudo feito! Até mais tarde :)")
     random_sleep(60 * 15)

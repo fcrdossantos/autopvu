@@ -63,12 +63,19 @@ def get_plants():
     return plants
 
 
-def water_plant(plant_id):
+def water_plant(plant_id, need_captcha=False):
     log("Aguando a planta:", plant_id)
 
     url = "https://backend-farm.plantvsundead.com/farms/apply-tool"
 
-    captcha_results = get_captcha_result()
+    if need_captcha:
+        captcha_results = get_captcha_result()
+    else:
+        captcha_results = {
+            "challenge": "default",
+            "seccode": "default",
+            "validate": "default",
+        }
 
     payload = {
         "farmId": plant_id,
@@ -95,12 +102,15 @@ def water_plant(plant_id):
     elif '"status":16' in response.text:
         log("Essa planta já foi regada as 200 vezes hoje!")
         return False
+    elif '"status":556' in response.text:
+        log("Precisa de Captcha para regar")
+        return 556
     else:
         log("Erro ao regar a planta", plant_id)
         log("=> Resposta:", response.text)
         log("Tentarei novamente mais tarde!")
         return False
-    return True
+    return 1
 
 
 def water_plants(plants=None):
@@ -112,7 +122,12 @@ def water_plants(plants=None):
     for plant in plants:
         while plant["water"] < 2:
             random_sleep()
-            if water_plant(plant["id"]):
+            result_water = water_plant(plant["id"])
+
+            if result_water == 556:
+                result_water = water_plant(plant["id"], need_captcha=True)
+
+            if result_water == 1:
                 plant["water"] += 1
 
         random_sleep()
@@ -121,12 +136,19 @@ def water_plants(plants=None):
     log("Fim da rotina de regar plantas")
 
 
-def remove_crow(plant_id):
+def remove_crow(plant_id, need_captcha=False):
     log("Removendo corvo da planta:", plant_id)
 
     url = "https://backend-farm.plantvsundead.com/farms/apply-tool"
 
-    captcha_results = get_captcha_result()
+    if need_captcha:
+        captcha_results = get_captcha_result()
+    else:
+        captcha_results = {
+            "challenge": "default",
+            "seccode": "default",
+            "validate": "default",
+        }
 
     payload = {
         "farmId": plant_id,
@@ -150,12 +172,15 @@ def remove_crow(plant_id):
         log("Não precisa mais tirar corvos da planta:", plant_id)
     elif '"status":28' in response.text:
         log("Você já tirou corvos das 5 plantas hoje, não podemos remover mais.")
+    elif '"status":556' in response.text:
+        log("Precisa de Captcha para tirar o corvo")
+        return 556
     else:
         log("Erro ao remover o corvo da planta", plant_id)
         log("=> Resposta:", response.text)
         log("Tentarei novamente mais tarde!")
         return False
-    return True
+    return 1
 
 
 def remove_crows(plants=None):
@@ -167,7 +192,12 @@ def remove_crows(plants=None):
     for plant in plants:
         while plant["crow"]:
             random_sleep()
-            if remove_crow(plant["id"]):
+            result_crow = remove_crow(plant["id"])
+
+            if result_crow == 556:
+                result_crow = remove_crow(plant["id"], need_captcha=True)
+
+            if result_crow == 1:
                 plant["crow"] = False
 
         random_sleep()
@@ -176,12 +206,19 @@ def remove_crows(plants=None):
     log("Fim da rotina de remover corvos")
 
 
-def use_pot(plant_id):
+def use_pot(plant_id, need_captcha=False):
     log("Colocando pote na planta:", plant_id)
 
     url = "https://backend-farm.plantvsundead.com/farms/apply-tool"
 
-    captcha_results = get_captcha_result()
+    if need_captcha:
+        captcha_results = get_captcha_result()
+    else:
+        captcha_results = {
+            "challenge": "default",
+            "seccode": "default",
+            "validate": "default",
+        }
 
     if os.getenv("POT_TYPE", "SMALL").lower() in ("big", "2"):
         tool_id = 2
@@ -210,12 +247,15 @@ def use_pot(plant_id):
         log("Não precisa mais colocar vasos na planta:", plant_id)
     elif '"status":28' in response.text:
         log("Você já atingiu o limite diário de colocar vasos.")
+    elif '"status":556' in response.text:
+        log("Precisa de Captcha para colocar o vaso")
+        return 556
     else:
         log("Erro ao colocar o vaso na planta", plant_id)
         log("=> Resposta:", response.text)
         log("Tentarei novamente mais tarde!")
         return False
-    return True
+    return 1
 
 
 def use_pots(plants=None):
@@ -228,13 +268,23 @@ def use_pots(plants=None):
 
         if plant["stage"] == "new":
             log(f" A planta é nova e precisa de um vaso")
-            use_pot(plant["id"])
+            result_pot = use_pot(plant["id"])
+
+            if result_pot == 556:
+                result_pot = use_pot(plant["id"], need_captcha=True)
+
             continue
 
         while plant["pot"] == 0:
             random_sleep()
-            if use_pot(plant["id"]):
+            result_pot = use_pot(plant["id"])
+
+            if result_pot == 556:
+                result_pot = use_pot(plant["id"], need_captcha=True)
+
+            if result_pot == 1:
                 plant["pot"] = 1
+
         random_sleep()
         log(f" Planta {plant['id']} não precisa de vasos")
 

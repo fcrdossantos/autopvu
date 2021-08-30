@@ -6,9 +6,7 @@ from pvu.utils import random_sleep
 from logs import log
 
 
-def open_mask():
-    log("Abrindo o MetaMask")
-
+def click_mask_icon():
     icon_possibilities = 4
 
     random_sleep(min_time=1)
@@ -22,6 +20,15 @@ def open_mask():
         if mask_found:
             random_sleep(6, min_time=3, max_time=5)
             return True
+
+    return False
+
+
+def open_mask():
+    log("Abrindo o MetaMask")
+
+    if click_mask_icon():
+        return True
 
     log("Não achamos o botão para ativar o MetaMask!")
     log("Abra o MetaMask manualmente")
@@ -53,6 +60,7 @@ def unlock_mask():
             input()
             return False
 
+    log("Desbloqueamos o mask")
     random_sleep(min_time=2)
     return True
 
@@ -60,14 +68,15 @@ def unlock_mask():
 def login():
     if open_mask():
         if unlock_mask():
+            log("Vamos ocultar a extensão do mask")
             random_sleep(15)
             if locate("open.png"):
                 log("Ocultando a extensão do MetaMask!")
-                locate_click("mask_icon.png", regions("icon_mask"))
+                click_mask_icon()
             else:
                 random_sleep(15)
                 if locate("open.png"):
                     log("Ocultando a extensão do MetaMask!")
-                    locate_click("mask_icon.png", regions("icon_mask"))
+                    click_mask_icon()
                 else:
                     log("Não achei a extensão do Metamask aberta para ocultá-la")

@@ -177,7 +177,10 @@ cython_debug/
 # Chromium
 
 chromium/
-debug.ipynb
 
+# Prints (debug)
 print/
+
+
+# Debug file
 debug.ipynb

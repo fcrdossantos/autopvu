@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from browser import get_browser
 from local_storage import LocalStorage
-
+from logs import log
 
 BEARER = None
 
@@ -33,7 +33,7 @@ def get_bearer_token():
     global BEARER
 
     if BEARER is None:
-        print("|| Pegando novo Token")
+        log("Pegando novo Token")
     else:
         random_sleep()
         return BEARER
@@ -59,7 +59,7 @@ def get_bearer_token():
                 )
 
         except:
-            print("|| Impossível ir para a página de inventário")
+            log("Impossível ir para a página de inventário")
 
         waiting_req = True
 
@@ -80,7 +80,7 @@ def get_bearer_token():
                 random_sleep()
                 driver.get("https://marketplace.plantvsundead.com/farm#/farm")
         except:
-            print("|| Impossível voltar para a fazenda após pegar o token")
+            log("Impossível voltar para a fazenda após pegar o token")
     finally:
         return BEARER
 
@@ -105,10 +105,10 @@ def random_sleep(multiplier=2, min_time=0, max_time=None, verbose=False):
         if random_time > 60:
             minutes = random_time // 60
             seconds = random_time % 60
-            print(
-                f"||Esperando {minutes:.0f} minutos e {seconds:.2f} segundos para a próxima ação"
+            log(
+                f"Esperando {minutes:.0f} minutos e {seconds:.2f} segundos para a próxima ação"
             )
         else:
-            print(f"|| Esperando {random_time:.2f} segundos para a próxima ação")
+            log(f" Esperando {random_time:.2f} segundos para a próxima ação")
 
     time.sleep(random_time)

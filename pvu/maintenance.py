@@ -11,13 +11,14 @@ from pvu.utils import random_sleep
 import json
 import requests
 from pvu.utils import get_headers, random_sleep
+from logs import log
 
 
 def maintenance_request():
     url = "https://backend-farm.plantvsundead.com/farming-stats"
     headers = get_headers()
 
-    print("|| Verificando se está em manutenção")
+    log("Verificando se está em manutenção via request")
 
     random_sleep()
     response = requests.request("GET", url, headers=headers)
@@ -66,11 +67,13 @@ def check_maintenance():
     try:
 
         if maintenance_request():
+            log("Confirmamos a manutenção via request")
             return True
 
         driver = get_browser()
 
         game_url = "https://marketplace.plantvsundead.com/farm#/farm/"
+        driver.get(game_url)
 
         random_sleep(min_time=1)
 
@@ -80,9 +83,9 @@ def check_maintenance():
             current_url = driver.current_url
             while current_url != game_url and current_url != game_url[:-1]:
                 current_url = driver.current_url
-                print("|| Não está no link certo", current_url, game_url)
+                log("Não está no link certo", current_url, game_url)
                 driver.get(game_url)
-                random_sleep(min_time=1)
+                random_sleep(5, min_time=3)
 
         maintenance = WebDriverWait(driver, 5).until(
             EC.presence_of_element_located(
@@ -94,13 +97,13 @@ def check_maintenance():
 
         random_sleep()
         if maintenance == "Farm Maintenance":
-            print("|| Em Manutenção! Tente novamente mais tarde")
+            log("Em Manutenção! Tente novamente mais tarde")
             return True
 
         return False
     except Exception as e:
         random_sleep(3)
-        print("|| Jogo liberado! Pode jogar")
+        log("Jogo liberado! Pode jogar")
         return False
 
 
@@ -109,12 +112,12 @@ def wait_maintenance():
         next_group_time = get_next_group_time()
         now = datetime.now().strftime("%H:%M:%S")
 
-        print(f"|| [{now}] Jogo indisponível no momento (Manutenção)")
+        log(f" [{now}] Jogo indisponível no momento (Manutenção)")
 
         waited = 0
         while not can_login_maintenance(next_group_time):
             now = datetime.now().strftime("%H:%M:%S")
-            print(f"|| [{now}] Esperando até", next_group_time)
+            log(f" [{now}] Esperando até", next_group_time)
             random_sleep(6 * 60, min_time=3 * 60, max_time=5 * 60, verbose=True)
 
             if waited == 5:
@@ -122,4 +125,16 @@ def wait_maintenance():
                     break
                 waited = 0
     else:
-        print("|| Não está em manutenção")
+        log("Não está em manutenção")
+
+
+# When we don't know group reset time
+def wait_maintenance_force():
+    while check_maintenance():
+        now = datetime.now().strftime("%H:%M:%S")
+
+        log(f" [{now}] Jogo indisponível no momento (Manutenção)")
+
+        random_sleep(6 * 60, min_time=3 * 60, max_time=5 * 60, verbose=True)
+    else:
+        log("Não está em manutenção")

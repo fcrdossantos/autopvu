@@ -3,12 +3,13 @@ import os
 from seleniumwire import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
+from logs import log
 
 BROWSER = None
 
 
 def open_browser():
-    print("|| Abrindo Navegador")
+    log("Abrindo Navegador")
     options = webdriver.ChromeOptions()
 
     if os.getenv("USER") == "1":
@@ -44,7 +45,7 @@ def close_browser():
     global BROWSER
 
     if BROWSER is not None:
-        print("|| Fechando Navegador")
+        log("Fechando Navegador")
         BROWSER.get("https://google.com.br")
 
         BROWSER.close()

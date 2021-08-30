@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from browser import get_browser
 from pvu.utils import get_headers, random_sleep
 from pvu.items import get_items
+from logs import log
 
 
 def get_pvu():
@@ -16,7 +17,7 @@ def get_pvu():
 
     xpath_pvu = "/html/body/div[1]/div/div/div[2]/div/div/div[3]/div[3]/div[1]/div[1]/div[1]/div[2]/div/div[2]"
 
-    print("|| Pegando seus PVU's")
+    log("Pegando seus PVU's")
 
     try:
         pvus = WebDriverWait(driver, 10).until(
@@ -25,6 +26,7 @@ def get_pvu():
 
         return float(pvus.text)
     except:
+        log("Não conseguimos pegar seus PVU's")
         return 0.0
 
 
@@ -32,7 +34,7 @@ def get_le():
     url = "https://backend-farm.plantvsundead.com/farming-stats"
     headers = get_headers()
 
-    print("|| Pegando seus LE's")
+    log("Pegando seus LE's")
 
     random_sleep()
     response = requests.request("GET", url, headers=headers)
@@ -43,8 +45,7 @@ def get_le():
     if le is not None and len(le) > 0:
         return int(le)
     else:
-        print("|| Errro ao pegar os LES:")
-        print(user_info)
+        log("Erro ao pegar os LES:", user_info)
         return 0
 
 
@@ -59,14 +60,14 @@ def get_user_info():
             if driver.current_url != farm_url:
                 driver.get(farm_url)
     except:
-        print("Impossível ir para a página principal da fazenda")
+        log("Impossível ir para a página principal da fazenda")
 
     pvu = get_pvu()
     le = get_le()
     items = get_items()
 
-    print("|| Você possui:")
-    print(f"|| => {pvu} PVU's")
-    print(f"|| => {le} LE's")
+    log("Você possui:")
+    log(f" => {pvu} PVU's")
+    log(f" => {le} LE's")
     for item in items:
-        print(f"|| => {item.get('current_amount')} {item.get('name')}")
+        log(f" => {item.get('current_amount')} {item.get('name')}")

@@ -10,6 +10,7 @@ from pvu.farm import water_plant
 from pvu.utils import get_headers, random_sleep
 from pvu.owner import get_owner
 from browser import get_browser
+from logs import log
 
 # Land
 def solve_land_captcha():
@@ -28,7 +29,7 @@ def solve_land_captcha():
     response = requests.request("POST", url, json=payload, headers=headers)
 
     if '"status":0' in response.text:
-        print("|| Sucesso ao resolver o captcha")
+        log("Sucesso ao resolver o captcha")
         return True
 
     return False
@@ -39,7 +40,7 @@ def get_land_page_info(owner, page=0):
     land_info = get_land_info(owner, page)
 
     while land_info.get("status") == 556:
-        print("|| Necessário resolver o captcha")
+        log("Necessário resolver o captcha")
         while not solve_land_captcha():
             solve_land_captcha()
 
@@ -49,7 +50,7 @@ def get_land_page_info(owner, page=0):
 
 
 def get_land_info(owner, page=0, retry=0):
-    print(f"|| Buscando informações da fazenda {owner} na página {page+1}")
+    log(f" Buscando informações da fazenda {owner} na página {page+1}")
 
     offset = page * 10
 
@@ -65,7 +66,7 @@ def get_land_info(owner, page=0, retry=0):
                     f"https://marketplace.plantvsundead.com/farm#/farm/other/{owner}?page={page+1}"
                 )
         except:
-            print("|| Erro ao redirecionar para a página da fazenda a ser regada")
+            log("Erro ao redirecionar para a página da fazenda a ser regada")
 
     headers = get_headers()
 
@@ -97,7 +98,7 @@ def get_land_pages(land):
 
         return pages
     else:
-        print(land)
+        log("Fazenda sem valor Total de terras", land)
         return 0
 
 
@@ -108,16 +109,16 @@ def get_page_plants(land, plants_to_water, watered_plants):
             if tool["type"] == "WATER":
                 water_count = tool["count"]
                 if water_count <= 150:
-                    print("|| Regando a planta", plant)
+                    log("Regando a planta", plant)
 
                     if water_plant(plant):
                         plants += 1
 
-                    print(f"|| {watered_plants}/{plants_to_water} plantas regadas")
+                    log(f" {watered_plants}/{plants_to_water} plantas regadas")
 
                     if watered_plants >= plants_to_water:
                         random_sleep()
-                        print("|| Todas as plantas necessárias foram regadas")
+                        log("Todas as plantas necessárias foram regadas")
                         return -1
 
     random_sleep()
@@ -141,14 +142,14 @@ def get_land_plants(owner, plants_to_water, watered_plants):
 
 
 def water_land(plants_to_water=15):
-    print(f"|| Vamos regar {plants_to_water} plantas")
+    log(f" Vamos regar {plants_to_water} plantas")
 
-    print("|| Buscando uma fazenda para regar")
+    log("Buscando uma fazenda para regar")
     owner = get_owner()
 
-    print("|| Vamos regar a fazenda", owner)
+    log("Vamos regar a fazenda", owner)
 
-    print("|| Vamos buscar todas as plantas dessa fazenda")
+    log("Vamos buscar todas as plantas dessa fazenda")
     watered_plants = get_land_plants(owner, plants_to_water, watered_plants=0)
 
     if watered_plants < plants_to_water:

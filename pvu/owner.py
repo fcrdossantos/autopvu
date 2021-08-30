@@ -4,6 +4,7 @@ import requests
 import json
 from pvu.utils import get_headers, random_sleep
 from browser import get_browser
+from logs import log
 
 # Owner
 
@@ -30,19 +31,19 @@ def get_land_owner(x, y):
 
 
 def find_random_land_owner():
-    print("|| Buscando uma fazenda aleatória")
+    log("Buscando uma fazenda aleatória")
 
     coord_x = random.randint(-16, 16)
     coord_y = random.randint(-16, 16)
-    print(f"|| Buscando a fazenda: {coord_x}x{coord_y}")
+    log(f" Buscando a fazenda: {coord_x}x{coord_y}")
 
     owner = get_land_owner(coord_x, coord_y)
 
     if owner:
-        print(f"|| O dono (ID) da fazenda {coord_x}x{coord_y} é {owner}")
+        log(f" O dono (ID) da fazenda {coord_x}x{coord_y} é {owner}")
         return owner
     else:
-        print(f"|| A fazenda {coord_x}x{coord_y} ainda não tem dono")
+        log(f" A fazenda {coord_x}x{coord_y} ainda não tem dono")
         return False
 
 
@@ -63,6 +64,6 @@ def get_owner():
                     f"https://marketplace.plantvsundead.com/farm#/farm/other/{land}"
                 )
         except:
-            print("|| Erro ao acessar a página da fazendo para pegar o dono")
+            log("Erro ao acessar a página da fazendo para pegar o dono")
 
     return land

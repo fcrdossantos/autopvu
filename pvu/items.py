@@ -1,6 +1,7 @@
 import os
 from pvu.sunflowers import get_all_sunflowers, get_my_sunflowers
 from pvu.tools import get_all_tools, get_my_tools
+from logs import log
 
 
 def get_items_info(all_items, my_items, _type):
@@ -13,7 +14,7 @@ def get_items_info(all_items, my_items, _type):
         _id = item.get("id")
 
         if not _id:
-            print(item)
+            log("Item sem ID:", item)
 
         price = item.get("price")
         usages = item.get("usages")
@@ -24,8 +25,8 @@ def get_items_info(all_items, my_items, _type):
         # current_amount = tool.get('usages')
         min_amount = int(os.getenv(env_name, "-1"))
         if min_amount == -1:
-            print(f"|| Não encontramos um valor para {env_name} no arquivo .env")
-            print(f"|| Vamos colocar o valor mínimo para {name} como sendo 0")
+            log(f" Não encontramos um valor para {env_name} no arquivo .env")
+            log(f" Vamos colocar o valor mínimo para {name} como sendo 0")
             min_amount = 0
 
         current_amount = 0

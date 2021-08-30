@@ -4,6 +4,7 @@ import pydirectinput
 import mss
 import cv2
 import numpy as np
+from logs import log
 
 # Regions that will be used to analyse the screen
 def regions(region="full"):
@@ -56,15 +57,14 @@ def locate(image, region=regions(), grayscale=False, confidence=0.8):
             needle = cv2.cvtColor(needle, cv2.COLOR_BGR2GRAY)
 
         needle_h, needle_w = needle.shape[:2]
-        # print(needle_h, needle_w)
+        # log(f"Dimensões do Needle (imagem a ser buscada): \nAltura - {needle_h}\nLargura - {needle_w}")
 
         result = cv2.matchTemplate(ss, needle, cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 
-        # print(min_val, max_val, min_loc, max_loc)
+        # log(f"Valores de debug:\nValor Mínimo - {min_val}\nValor Máximo - {max_val}\nPior Local - {min_loc}\nMelhor Local - {max_loc}")
 
         if max_val > confidence:
-            # print("max > confidence", max_val, confidence, max_val > con)
             position_x = max_loc[0] + needle_w // 2
             position_y = max_loc[1] + needle_h // 2
             return position_x, position_y
@@ -82,7 +82,7 @@ def locate_click(image, region=regions(), grayscale=False, confidence=0.75):
 
         pydirectinput.moveTo(pos_x, pos_y)
         pydirectinput.click(pos_x, pos_y)
-        print(f"|| Clicando na posição: ({pos_x},{pos_y})")
+        log(f" Clicando na posição: ({pos_x},{pos_y})")
 
         return True
 

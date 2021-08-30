@@ -3,48 +3,53 @@ import pyperclip
 import pyautogui
 from gui_locate import locate, locate_click, regions
 from pvu.utils import random_sleep
+from logs import log
 
 
 def open_mask():
-    print("|| Abrindo o MetaMask")
+    log("Abrindo o MetaMask")
+
+    icon_possibilities = 4
 
     random_sleep(min_time=1)
-    mask_1 = locate_click("mask_icon.png", regions("icon_mask"))
-    random_sleep(min_time=1)
+    mask_found = False
 
-    if not mask_1:
-        mask2 = locate_click("mask_icon_2.png", regions("icon_mask"))
+    for i in range(icon_possibilities):
+
+        mask_found = locate_click(f"mask_icon_{i+1}.png", regions("icon_mask"))
         random_sleep(min_time=1)
 
-        if not mask2:
-            print("|| Não achamos o botão para ativar o MetaMask!")
-            print("|| Abra o MetaMask manualmente")
-            print("|| Após isso, pressione [ENTER] (aqui) continuar")
-            input()
-            return False
+        if mask_found:
+            random_sleep(6, min_time=3, max_time=5)
+            return True
+
+    log("Não achamos o botão para ativar o MetaMask!")
+    log("Abra o MetaMask manualmente")
+    log("Após isso, pressione [ENTER] (aqui) continuar")
+    input()
 
     random_sleep(6, min_time=3, max_time=5)
-    return True
+    return False
 
 
 def unlock_mask():
-    print("|| Digitando a senha")
+    log("Digitando a senha")
 
     pyperclip.copy(os.getenv("PASSWORD"))
 
     pyautogui.hotkey("ctrl", "v")
     random_sleep(min_time=1)
 
-    print("|| Desbloqueando MetaMask")
+    log("Desbloqueando MetaMask")
 
     unlock = locate_click("button_unlock.png")
 
     if not unlock:
         unlock = locate_click("button_unlock2.png")
         if not unlock:
-            print("|| Não achamos o botão para desbloquear o MetaMask!")
-            print("|| Desbloqueie o MetaMask manualmente")
-            print("|| Após isso, pressione [ENTER] (aqui) continuar")
+            log("Não achamos o botão para desbloquear o MetaMask!")
+            log("Desbloqueie o MetaMask manualmente")
+            log("Após isso, pressione [ENTER] (aqui) continuar")
             input()
             return False
 
@@ -57,12 +62,12 @@ def login():
         if unlock_mask():
             random_sleep(15)
             if locate("open.png"):
-                print("|| Ocultando a extensão do MetaMask!")
+                log("Ocultando a extensão do MetaMask!")
                 locate_click("mask_icon.png", regions("icon_mask"))
             else:
                 random_sleep(15)
                 if locate("open.png"):
-                    print("|| Ocultando a extensão do MetaMask!")
+                    log("Ocultando a extensão do MetaMask!")
                     locate_click("mask_icon.png", regions("icon_mask"))
                 else:
-                    print("|| Não achei a extensão do Metamask aberta para ocultá-la")
+                    log("Não achei a extensão do Metamask aberta para ocultá-la")

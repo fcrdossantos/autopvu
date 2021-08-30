@@ -3,6 +3,7 @@ import json
 
 from pvu.land import water_land
 from pvu.utils import get_headers, random_sleep
+from logs import log
 
 
 def get_daily_status():
@@ -36,9 +37,9 @@ def claim_daily():
     response = requests.request("POST", url, headers=headers)
 
     if '"status":40' in response.text or '"status":40' in response.text:
-        print("|| Você já pegou o bônus da missão diária hoje!")
+        log("Você já pegou o bônus da missão diária hoje!")
     elif '"status":0' in response.text:
-        print("|| Você acabou de receber o prêmio da missão diária!")
+        log("Você acabou de receber o prêmio da missão diária!")
 
 
 def do_daily():

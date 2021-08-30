@@ -2,13 +2,14 @@ import json
 import requests
 from pvu.utils import get_headers, random_sleep
 import os
+from logs import log
 
 
 def get_all_tools():
     url = "https://backend-farm.plantvsundead.com/available-tools"
     headers = get_headers()
 
-    print("|| Pegando todas as ferramentas disponíveis")
+    log("Pegando todas as ferramentas disponíveis")
 
     random_sleep()
     response = requests.request("GET", url, headers=headers)
@@ -24,7 +25,7 @@ def get_my_tools():
     url = "https://backend-farm.plantvsundead.com/my-tools"
     headers = get_headers()
 
-    print("|| Pegando todas as minhas ferramentas")
+    log("Pegando todas as minhas ferramentas")
 
     random_sleep()
     response = requests.request("GET", url, headers=headers)

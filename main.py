@@ -10,14 +10,14 @@ from hwid import set_hwid, clear_hwid, check_hwid_clean, CHECK
 from pvu.game import play_game
 from pvu.login import login
 from pvu.utils import random_sleep
-
+from logs import log
 
 try:
     if not admin.isUserAdmin():
         admin.runAsAdmin()
         sys.exit(0)
 
-    print("|| Carregando o ambiente (.env)")
+    log("Carregando o ambiente (.env)")
     dotenv.load_dotenv()
 
     if os.getenv("SET_HWID", "False").lower() in ("true", "1"):
@@ -25,7 +25,7 @@ try:
 
     random_sleep()
     driver = browser.get_browser()
-    print("|| Não minimize outro mude a aba do navegador ainda!!!")
+    log("Não minimize outro mude a aba do navegador ainda!!!")
 
     random_sleep()
     metamask.login()
@@ -34,27 +34,27 @@ try:
         if driver is not None:
             driver.get("https://marketplace.plantvsundead.com/farm#/")
     except:
-        print("|| Impossível acessar a página principal do jogo")
+        log("Impossível acessar a página principal do jogo")
 
     random_sleep(min_time=1)
     random_sleep()
 
-    print("|| Inicializando o bot")
+    log("Inicializando o bot")
 
     random_sleep()
     login()
 
-    print("|| Pronto! Você já pode minimizar ou mudar a aba do navegador")
+    log("Pronto! Você já pode minimizar ou mudar a aba do navegador")
 
     if os.getenv("CLEAN_HWID", "False").lower() in ("true", "1"):
-        print("|| Limpando o HWID")
+        log("Limpando o HWID")
         random_sleep()
         if clear_hwid():
             random_sleep()
-            print("|| HWID Limpo!")
+            log("HWID Limpo!")
         else:
             random_sleep()
-            print("|| Erro ao limpar o HWID! Tentaremos de novo mais tarde")
+            log("Erro ao limpar o HWID! Tentaremos de novo mais tarde")
         random_sleep()
         thread = Thread(target=check_hwid_clean).start()
 
@@ -64,23 +64,19 @@ try:
                 random_sleep()
                 play_game()
             except Exception as e:
-                print("|| Ocorreu algum problema durante a execução da rotina")
-                print(
-                    "|| Provavelmente o jogo entrou em manutenção no meio do processo"
-                )
-                print(e)
+                log("Ocorreu algum problema durante a execução da rotina")
+                log("Provavelmente o jogo entrou em manutenção no meio do processo:", e)
                 random_sleep()
 
 except KeyboardInterrupt:
-    print("|| Processo interrompido pelo usuário")
+    log("Processo interrompido pelo usuário")
     browser.close_browser()
     CHECK = False
     sys.exit()
 except ConnectionResetError:
-    print("|| Navegador forçadamente encerrado")
+    log("Navegador forçadamente encerrado")
 except Exception as e:
-    print("|| Ocorreu um problema")
-    print(e)
+    log("Ocorreu um problema:", e)
 
 
 # Testar:

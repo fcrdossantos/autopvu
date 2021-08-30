@@ -3,6 +3,7 @@ import winreg
 import os
 import time
 from pvu.utils import random_sleep
+from logs import log
 
 REG_PATH = r"SOFTWARE\Microsoft\Cryptography"
 CHECK = True
@@ -16,10 +17,10 @@ def set_reg(name, value):
         )
         winreg.SetValueEx(registry_key, name, 0, winreg.REG_SZ, value)
         winreg.CloseKey(registry_key)
-        print("|| HWID Alterado com sucesso!")
+        log("HWID Alterado com sucesso!")
         return True
     except WindowsError as e:
-        print("|| Problema ao alterar o HWID:", e)
+        log("Problema ao alterar o HWID:", e)
         return False
 
 
@@ -32,8 +33,8 @@ def get_reg(name):
         winreg.CloseKey(registry_key)
         return value
     except WindowsError as e:
-        print("|| Problema ao recuperar o valor da chave")
-        print(e)
+        log("Problema ao recuperar o valor da chave:", e)
+
         return None
 
 
@@ -50,7 +51,7 @@ def delete_reg(name):
 
 
 def set_hwid():
-    print("|| Lendo o HWID correto")
+    log("Lendo o HWID correto")
     if os.getenv("USER") == "1":
         HWID = os.getenv("HWID_1")
     else:

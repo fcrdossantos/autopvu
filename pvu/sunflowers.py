@@ -2,13 +2,14 @@ import json
 import requests
 from pvu.utils import get_headers, random_sleep
 import os
+from logs import log
 
 
 def get_all_sunflowers():
     url = "https://backend-farm.plantvsundead.com/sunflowers"
     headers = get_headers()
 
-    print("|| Pegando todas as Sunflowers disponíveis")
+    log("Pegando todas as Sunflowers disponíveis")
 
     random_sleep()
     response = requests.request("GET", url, headers=headers)
@@ -28,7 +29,7 @@ def get_my_sunflowers():
     url = "https://backend-farm.plantvsundead.com/my-sunflowers"
     headers = get_headers()
 
-    print("|| Pegando as minhas Sunflowers")
+    log("Pegando as minhas Sunflowers")
 
     random_sleep()
     response = requests.request("GET", url, headers=headers)

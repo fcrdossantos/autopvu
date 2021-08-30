@@ -5,19 +5,20 @@ from selenium.webdriver.support import expected_conditions as EC
 from browser import get_browser
 from gui_locate import locate_click, regions
 from pvu.utils import random_sleep
+from logs import log
 
 
 def login_pvu():
-    print("|| Logando na conta")
+    log("Logando na conta")
 
     random_sleep(min_time=1)
     login_btn = locate_click("login.png", regions("full"))
     random_sleep(min_time=1)
 
     if not login_btn:
-        print("|| Não achamos o botão para logar no jogo!")
-        print("|| Logue no jogo manualmente")
-        print("|| Após isso, pressione [ENTER] (aqui) continuar")
+        log("Não achamos o botão para logar no jogo!")
+        log("Logue no jogo manualmente")
+        log("Após isso, pressione [ENTER] (aqui) continuar")
         input()
         return False
 
@@ -26,7 +27,7 @@ def login_pvu():
 
 
 def confirm_access():
-    print("|| Vamos confirmar (assinar) o acesso (login)")
+    log("Vamos confirmar (assinar) o acesso (login)")
 
     random_sleep(min_time=1)
     login_btn = locate_click("sign.png", regions("full"))
@@ -38,9 +39,9 @@ def confirm_access():
         random_sleep(min_time=1)
 
         if not login_btn2:
-            print("|| Não achamos o botão para confirmar o acesso!")
-            print("|| Logue no jogo manualmente")
-            print("|| Após isso, pressione [ENTER] (aqui) continuar")
+            log("Não achamos o botão para confirmar o acesso!")
+            log("Logue no jogo manualmente")
+            log("Após isso, pressione [ENTER] (aqui) continuar")
             input()
             return False
 
@@ -49,8 +50,8 @@ def confirm_access():
 
 
 def check_logged():
-    print("|| Aguarde até 10 segundos")
-    print("|| Verificando Jogo e Login")
+    log("Aguarde até 10 segundos")
+    log("Verificando Jogo e Login")
     try:
         driver = get_browser()
 
@@ -61,11 +62,11 @@ def check_logged():
             )
         )
 
-        print("|| Precisamos logar na conta!")
+        log("Precisamos logar na conta!")
         return False
     except:
-        print("|| Já está logado na conta!")
-        print("|| Vamos iniciar as rotinas do jogo")
+        log("Já está logado na conta!")
+        log("Vamos iniciar as rotinas do jogo")
         return True
 
 

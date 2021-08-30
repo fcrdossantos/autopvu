@@ -2,6 +2,7 @@ import os
 import sys
 import time
 from threading import Thread
+import traceback
 import dotenv
 import browser
 import metamask
@@ -13,15 +14,19 @@ from pvu.utils import random_sleep
 from logs import log
 
 try:
-    if not admin.isUserAdmin():
-        admin.runAsAdmin()
-        sys.exit(0)
+    SET_HWID = os.getenv("SET_HWID", "False").lower() in ("true", "1")
+    GET_HWID = os.getenv("CLEAN_HWID", "False").lower() in ("true", "1")
+
+    if SET_HWID or GET_HWID:
+        if not admin.isUserAdmin():
+            admin.runAsAdmin()
+            sys.exit(0)
+
+    if SET_HWID:
+        set_hwid()
 
     log("Carregando o ambiente (.env)")
     dotenv.load_dotenv()
-
-    if os.getenv("SET_HWID", "False").lower() in ("true", "1"):
-        set_hwid()
 
     random_sleep()
     driver = browser.get_browser()
@@ -46,7 +51,7 @@ try:
 
     log("Pronto! Você já pode minimizar ou mudar a aba do navegador")
 
-    if os.getenv("CLEAN_HWID", "False").lower() in ("true", "1"):
+    if GET_HWID:
         log("Limpando o HWID")
         random_sleep()
         if clear_hwid():
@@ -66,6 +71,7 @@ try:
             except Exception as e:
                 log("Ocorreu algum problema durante a execução da rotina")
                 log("Provavelmente o jogo entrou em manutenção no meio do processo:", e)
+                traceback.print_exc()
                 random_sleep()
 
 except KeyboardInterrupt:

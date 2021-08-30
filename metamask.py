@@ -62,6 +62,8 @@ def unlock_mask():
 
     log("Desbloqueamos o mask")
     random_sleep(min_time=2)
+
+    pyperclip.copy("*****")
     return True
 
 

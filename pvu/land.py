@@ -108,10 +108,15 @@ def get_page_plants(land, plants_to_water, watered_plants):
         for tool in plant["activeTools"]:
             if tool["type"] == "WATER":
                 water_count = tool["count"]
-                if water_count <= 150:
+                if water_count <= 370:
                     log("Regando a planta", plant)
 
-                    if water_plant(plant):
+                    result_water = water_plant(plant)
+
+                    if result_water == 556:
+                        result_water = water_plant(plant["id"], need_captcha=True)
+
+                    if result_water == 1:
                         plants += 1
 
                     log(f"{watered_plants}/{plants_to_water} plantas regadas")

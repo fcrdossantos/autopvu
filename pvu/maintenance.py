@@ -1,15 +1,18 @@
 import time
 import os
-from datetime import datetime, timedelta
+
+import json
+import requests
+from datetime import datetime
+from dateutil import tz
+
+
+from datetime import datetime
 from browser import get_browser
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pvu.utils import random_sleep
-
-
-import json
-import requests
 from pvu.utils import get_headers, random_sleep
 from logs import log
 
@@ -32,32 +35,43 @@ def maintenance_request():
 
 
 def get_next_group_time():
-    random_sleep()
-    now = datetime.now()
-    current_minute = now.minute
+    try:
+        random_sleep()
 
-    next_minute = int(os.getenv("GROUP_RESET_MINUTE"))
+        url = "https://backend-farm.plantvsundead.com/farm-status"
+        headers = get_headers()
 
-    next_group = now.replace(
-        microsecond=0,
-        second=0,
-        minute=next_minute,
-        hour=now.hour,
-        day=now.day,
-        month=now.month,
-        year=now.year,
-    )
+        log("Pegando horário do próximo grupo")
 
-    if current_minute >= next_minute:
-        next_group = next_group + timedelta(hours=1)
+        random_sleep()
+        response = requests.request("GET", url, headers=headers)
 
-    random_sleep()
-    return next_group
+        json_response = json.loads(response.text)
+
+        print(response.text)
+
+        next_group = json_response.get("data").get("nextGroup")
+
+        next_group_utc = datetime.strptime(next_group, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+        next_group_utc = next_group_utc.replace(tzinfo=tz.tzutc())
+
+        local_next_group = next_group_utc.astimezone(tz=tz.tzlocal())
+
+        log("Horário do próximo grupo encontrado!")
+        random_sleep()
+
+        return local_next_group
+    except:
+        log("Horário do próximo grupo não informado")
+        return False
 
 
 def can_login_maintenance(next_group_date):
     random_sleep()
-    if datetime.now() > next_group_date:
+    now = datetime.now().replace(tzinfo=tz.tzlocal())
+
+    if now > next_group_date:
         return True
     else:
         return False
@@ -107,34 +121,29 @@ def check_maintenance():
         return False
 
 
+def wait_next_group(next_group_time):
+    while not can_login_maintenance(next_group_time):
+        log(f"Esperando até", next_group_time)
+        random_sleep(6 * 60, min_time=3 * 60, max_time=5 * 60, verbose=True)
+
+        if waited == 5:
+            if not check_maintenance():
+                break
+            waited = 0
+
+
 def wait_maintenance():
-    if check_maintenance():
+    while check_maintenance():
         next_group_time = get_next_group_time()
-        now = datetime.now().strftime("%H:%M:%S")
 
-        log(f" [{now}] Jogo indisponível no momento (Manutenção)")
+        log("Verificando se o jogo está em manutenção")
 
-        waited = 0
-        while not can_login_maintenance(next_group_time):
-            now = datetime.now().strftime("%H:%M:%S")
-            log(f" [{now}] Esperando até", next_group_time)
+        if next_group_time:
+            wait_next_group(next_group_time)
+        else:
+            log(f"Jogo indisponível no momento (Manutenção)")
+
             random_sleep(6 * 60, min_time=3 * 60, max_time=5 * 60, verbose=True)
 
-            if waited == 5:
-                if not check_maintenance():
-                    break
-                waited = 0
-    else:
-        log("Não está em manutenção")
-
-
-# When we don't know group reset time
-def wait_maintenance_force():
-    while check_maintenance():
-        now = datetime.now().strftime("%H:%M:%S")
-
-        log(f" [{now}] Jogo indisponível no momento (Manutenção)")
-
-        random_sleep(6 * 60, min_time=3 * 60, max_time=5 * 60, verbose=True)
     else:
         log("Não está em manutenção")

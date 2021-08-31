@@ -32,10 +32,10 @@ def open_browser():
     return browser
 
 
-def get_browser():
+def get_browser(new=False):
     global BROWSER
 
-    if BROWSER is None:
+    if BROWSER is None or new == True:
         BROWSER = open_browser()
 
     return BROWSER

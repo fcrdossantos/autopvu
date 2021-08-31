@@ -14,7 +14,7 @@ from logs import log
 
 # Land
 def solve_land_captcha():
-    url = "https://backend-farm.plantvsundead.com/captcha/validate"
+    url = "https://backend-farm-stg.plantvsundead.com/captcha/validate"
 
     captcha_results = get_captcha_result()
 
@@ -54,7 +54,7 @@ def get_land_info(owner, page=0, retry=0):
 
     offset = page * 10
 
-    url = f"https://backend-farm.plantvsundead.com/farms/other/{owner}?limit=10&offset={offset}"
+    url = f"https://backend-farm-stg.plantvsundead.com/farms/other/{owner}?limit=10&offset={offset}"
 
     if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
         try:

@@ -13,7 +13,7 @@ def get_headers():
     random_sleep()
 
     headers = {
-        "authority": "backend-farm.plantvsundead.com",
+        "authority": "backend-farm-stg.plantvsundead.com",
         "accept": "application/json, text/plain, */*",
         "authorization": f"{get_bearer_token()}",
         "sec-ch-ua-mobile": "?0",
@@ -68,7 +68,7 @@ def get_bearer_token():
 
             for req in driver.requests:
                 if (
-                    "https://backend-farm.plantvsundead.com/get-seeds-inventory"
+                    "https://backend-farm-stg.plantvsundead.com/get-seeds-inventory"
                     in req.url
                 ):
                     if "authorization" in req.headers:

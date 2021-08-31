@@ -9,7 +9,7 @@ from logs import log
 def get_challenge_gt():
     log("Identificando Challenge e GT")
 
-    url = "https://backend-farm.plantvsundead.com/captcha/register"
+    url = "https://backend-farm-stg.plantvsundead.com/captcha/register"
 
     payload = ""
     headers = get_headers()
@@ -29,6 +29,7 @@ def upload_captcha():
     log("Enviando Captcha para ser resolvido")
 
     solver = TwoCaptcha(os.getenv("2CAPTCHA_API"))
+
     url = "https://marketplace.plantvsundead.com/farm#/farm/"
 
     challenge, gt = get_challenge_gt()

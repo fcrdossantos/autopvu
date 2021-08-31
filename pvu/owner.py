@@ -10,7 +10,7 @@ from logs import log
 
 
 def get_land_owner(x, y):
-    url = f"https://backend-farm.plantvsundead.com/land/{x}/{y}"
+    url = f"https://backend-farm-stg.plantvsundead.com/land/{x}/{y}"
     headers = get_headers()
 
     random_sleep()

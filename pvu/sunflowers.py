@@ -6,7 +6,7 @@ from logs import log
 
 
 def get_all_sunflowers():
-    url = "https://backend-farm.plantvsundead.com/sunflowers"
+    url = "https://backend-farm-stg.plantvsundead.com/sunflowers"
     headers = get_headers()
 
     log("Pegando todas as Sunflowers disponíveis")
@@ -26,7 +26,7 @@ def get_all_sunflowers():
 
 
 def get_my_sunflowers():
-    url = "https://backend-farm.plantvsundead.com/my-sunflowers"
+    url = "https://backend-farm-stg.plantvsundead.com/my-sunflowers"
     headers = get_headers()
 
     log("Pegando as minhas Sunflowers")

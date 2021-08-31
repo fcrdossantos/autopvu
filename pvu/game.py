@@ -51,6 +51,10 @@ def play_game():
         log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
 
+    random_sleep()
+    driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
+    random_sleep(3)
+
     try:
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):
             log("Hora de colocar os vasos")

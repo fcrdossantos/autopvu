@@ -18,7 +18,7 @@ from logs import log
 
 
 def maintenance_request():
-    url = "https://backend-farm.plantvsundead.com/farming-stats"
+    url = "https://backend-farm-stg.plantvsundead.com/farming-stats"
     headers = get_headers()
 
     log("Verificando se está em manutenção via request")
@@ -38,7 +38,7 @@ def get_next_group_time():
     try:
         random_sleep()
 
-        url = "https://backend-farm.plantvsundead.com/farm-status"
+        url = "https://backend-farm-stg.plantvsundead.com/farm-status"
         headers = get_headers()
 
         log("Pegando horário do próximo grupo")

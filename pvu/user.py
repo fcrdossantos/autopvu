@@ -31,7 +31,7 @@ def get_pvu():
 
 
 def get_le():
-    url = "https://backend-farm.plantvsundead.com/farming-stats"
+    url = "https://backend-farm-stg.plantvsundead.com/farming-stats"
     headers = get_headers()
 
     log("Pegando seus LE's")

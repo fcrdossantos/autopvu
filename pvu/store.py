@@ -26,10 +26,10 @@ def buy_item(item, buy_times):
     log(f"Vou comprar {item['name']} {buy_times} {times_text}")
 
     if item["type"] == "tool":
-        url = "https://backend-farm.plantvsundead.com/buy-tools"
+        url = "https://backend-farm-stg.plantvsundead.com/buy-tools"
         payload = {"amount": buy_times, "toolId": item_id}
     else:
-        url = "https://backend-farm.plantvsundead.com/buy-sunflowers"
+        url = "https://backend-farm-stg.plantvsundead.com/buy-sunflowers"
         payload = {"amount": buy_times, "sunflowerId": item_id}
 
     log(f"Sucesso ao comprar {item['name']}")

@@ -6,7 +6,7 @@ from logs import log
 
 
 def get_all_tools():
-    url = "https://backend-farm.plantvsundead.com/available-tools"
+    url = "https://backend-farm-stg.plantvsundead.com/available-tools"
     headers = get_headers()
 
     log("Pegando todas as ferramentas disponíveis")
@@ -22,7 +22,7 @@ def get_all_tools():
 
 
 def get_my_tools():
-    url = "https://backend-farm.plantvsundead.com/my-tools"
+    url = "https://backend-farm-stg.plantvsundead.com/my-tools"
     headers = get_headers()
 
     log("Pegando todas as minhas ferramentas")

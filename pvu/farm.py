@@ -10,7 +10,7 @@ from logs import log
 # List all farm infos and status
 def get_farm_infos():
     log("Coletando as informações da fazenda")
-    url = "https://backend-farm.plantvsundead.com/farms"
+    url = "https://backend-farm-stg.plantvsundead.com/farms"
 
     querystring = {"limit": "10", "offset": "0"}
 
@@ -66,7 +66,7 @@ def get_plants():
 def water_plant(plant_id, need_captcha=False):
     log("Aguando a planta:", plant_id)
 
-    url = "https://backend-farm.plantvsundead.com/farms/apply-tool"
+    url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
 
     if need_captcha:
         captcha_results = get_captcha_result()
@@ -90,6 +90,7 @@ def water_plant(plant_id, need_captcha=False):
     except Exception as e:
         log("Ocorreu um erro ao descriptografar o resultado do captcha:", e)
         log("Resultado:", captcha_results, " => ", type(captcha_results))
+        return False
 
     headers = get_headers()
 
@@ -144,7 +145,7 @@ def water_plants(plants=None):
 def remove_crow(plant_id, need_captcha=False):
     log("Removendo corvo da planta:", plant_id)
 
-    url = "https://backend-farm.plantvsundead.com/farms/apply-tool"
+    url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
 
     if need_captcha:
         captcha_results = get_captcha_result()
@@ -214,7 +215,7 @@ def remove_crows(plants=None):
 def use_pot(plant_id, need_captcha=False):
     log("Colocando pote na planta:", plant_id)
 
-    url = "https://backend-farm.plantvsundead.com/farms/apply-tool"
+    url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
 
     if need_captcha:
         captcha_results = get_captcha_result()
@@ -300,7 +301,7 @@ def remove_plant(plant_id):
 
     log("Removendo a planta:", plant_id)
 
-    url = f"https://backend-farm.plantvsundead.com/farms/{plant_id}/deactivate"
+    url = f"https://backend-farm-stg.plantvsundead.com/farms/{plant_id}/deactivate"
     headers = get_headers()
 
     payload = {}
@@ -322,7 +323,7 @@ def remove_plant(plant_id):
 def harvest_plant(plant_id):
     log("Colhendo a planta:", plant_id)
 
-    url = f"https://backend-farm.plantvsundead.com/farms/{plant_id}/harvest"
+    url = f"https://backend-farm-stg.plantvsundead.com/farms/{plant_id}/harvest"
     headers = get_headers()
 
     payload = {}
@@ -379,7 +380,7 @@ def add_plant(plant_id):
     else:
         log("Adicionando uma planta Sunflower Mama")
 
-    url = f"https://backend-farm.plantvsundead.com/farms"
+    url = f"https://backend-farm-stg.plantvsundead.com/farms"
     headers = get_headers()
 
     payload = {"landId": 0, "sunflowerId": plant_id}
@@ -401,7 +402,7 @@ def add_plant(plant_id):
 
 
 def get_farm_lands():
-    url = "https://backend-farm.plantvsundead.com/my-lands?limit=9&offset=0"
+    url = "https://backend-farm-stg.plantvsundead.com/my-lands?limit=9&offset=0"
 
     headers = get_headers()
 
@@ -414,13 +415,11 @@ def get_farm_lands():
 
     lands = farm_info.get("data")
 
-    print("AAA", lands)
     return lands
 
 
 def get_available_spaces():
     lands = get_farm_lands()
-    print("BBBB", lands)
 
     for land in lands:
         capacity = land["land"]["capacity"]

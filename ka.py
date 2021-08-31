@@ -61,6 +61,7 @@ class api:
 
         if response == "KeyAuth_Invalid":
             log("The application doesn't exist")
+            input()
             sys.exit()
 
         response = encryption.decrypt(response, self.secret, init_iv)
@@ -75,9 +76,11 @@ class api:
 
             if message == "invalidver":
                 log(c)
+                input()
                 sys.exit()
             else:
                 log(message)
+                input()
                 sys.exit()
 
         self.sessionid = json["sessionid"]
@@ -110,6 +113,7 @@ class api:
             print("successfully registered")
         else:
             print(json["message"])
+            input()
             sys.exit()
 
     def upgrade(self, user, license):
@@ -136,6 +140,7 @@ class api:
             print("successfully upgraded user")
         else:
             print(json["message"])
+            input()
             sys.exit()
 
     def login(self, user, password, hwid=None):
@@ -165,6 +170,7 @@ class api:
             print("successfully logged in")
         else:
             print(json["message"])
+            input()
             sys.exit()
 
     def license(self, key, hwid=None):
@@ -197,7 +203,7 @@ class api:
             log(c)
             return True
         else:
-            a = "AbOAFiQKiWsT50DuXFYmVQABhqCAAAAAAGEtqGBHhHFx_xLtWJZwYTCJziwPfSSiCI6JC40zaslxKSjbLgCghe1eGvA0DY_tmIzo8QtZKSzGhBaBTJD2x4uzzKNlqRQQwbn7M1oyBbspnDGQi4BSmqh6EKZi1YprL2xdKWR3i-9XOxGTL7_Vmu7Kc7hXg_gE0NEMGlmDBjovP-rPtw=="
+            a = "UNHV-jTEzCwI17CFw4Z9uwABhqCAAAAAAGEttv53pBS9PJc1gQuvQ2oJfJk3DpKEeMchtEZnuu386QC7PkPamEzlmEB_k2qgnknho7RHL0b42u9bO_7JYo7CGQ0hA6hcLMXAu87Eh3MsGzNnqdfzRDiRH1WB637VaEr5TLIBp-Qw2KljKW_7Qjcfklnvcl4zKpMA0EdiN711V16Jog=="
             b = a.encode()
             c = strdec(a, "https://").decode()
 
@@ -210,9 +216,11 @@ class api:
 
             if message == "invalidver":
                 log(c)
+                input()
                 sys.exit()
             else:
                 log(message)
+                input()
                 sys.exit()
 
     def var(self, name):
@@ -239,6 +247,7 @@ class api:
         else:
             print(json["message"])
             time.sleep(5)
+            input()
             sys.exit()
 
     def file(self, fileid):
@@ -263,6 +272,7 @@ class api:
         if not json["success"]:
             print(json["message"])
             time.sleep(5)
+            input()
             sys.exit()
         return binascii.unhexlify(json["contents"])
 
@@ -290,6 +300,7 @@ class api:
         else:
             print(json["message"])
             time.sleep(5)
+            input()
             sys.exit()
 
     def log(self, message):
@@ -386,6 +397,7 @@ class encryption:
             print(
                 "Invalid Application Information. Long text is secret short text is ownerid. Name is supposed to be app name not username"
             )
+            input()
             sys.exit()
 
     @staticmethod
@@ -402,4 +414,5 @@ class encryption:
             print(
                 "Invalid Application Information. Long text is secret short text is ownerid. Name is supposed to be app name not username"
             )
+            input()
             sys.exit()

@@ -37,8 +37,10 @@ try:
         y = os.getenv(c, "_")
         result = ka.license(y)
         if not result:
+            input()
             sys.exit(0)
     except Exception as e:
+        input()
         sys.exit(0)
 
     SET_HWID = os.getenv("SET_HWID", "False").lower() in ("true", "1")
@@ -105,11 +107,16 @@ except KeyboardInterrupt:
     log("Processo interrompido pelo usuário")
     browser.close_browser()
     CHECK = False
+    input()
     sys.exit()
 except ConnectionResetError:
     log("Navegador forçadamente encerrado")
+    input()
+    sys.exit()
 except Exception as e:
     log("Ocorreu um problema:", e)
+    input()
+    sys.exit()
 
 
 # Testar:

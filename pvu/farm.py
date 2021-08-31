@@ -77,15 +77,20 @@ def water_plant(plant_id, need_captcha=False):
             "validate": "default",
         }
 
-    payload = {
-        "farmId": plant_id,
-        "toolId": 3,
-        "token": {
-            "challenge": captcha_results.get("challenge"),
-            "seccode": captcha_results.get("seccode"),
-            "validate": captcha_results.get("validate"),
-        },
-    }
+    try:
+        payload = {
+            "farmId": plant_id,
+            "toolId": 3,
+            "token": {
+                "challenge": captcha_results.get("challenge"),
+                "seccode": captcha_results.get("seccode"),
+                "validate": captcha_results.get("validate"),
+            },
+        }
+    except Exception as e:
+        log("Ocorreu um erro ao descriptografar o resultado do captcha:", e)
+        log("Resultado:", captcha_results, " => ", type(captcha_results))
+
     headers = get_headers()
 
     random_sleep()
@@ -338,7 +343,10 @@ def harvest_plant(plant_id):
         log("Você já atingiu o limite diário de colher plantas.")
     else:
         log("Erro ao colher a planta", plant_id)
-        log("=> Resposta:", response.text)
+        if response.text.startswith("<!DOCTYPE html>"):
+            log("Erro HTML => Página/Gateway não alcançável")
+        else:
+            log("=> Resposta:", response.text[:])
         log("Tentarei novamente mais tarde!")
         return False
 
@@ -397,7 +405,7 @@ def get_farm_lands():
 
     headers = get_headers()
 
-    log("Pegando as minhas Sunflowers")
+    log("Pegando as minhas Terras da Fazenda")
 
     random_sleep()
     response = requests.request("GET", url, headers=headers)
@@ -406,17 +414,21 @@ def get_farm_lands():
 
     lands = farm_info.get("data")
 
+    print("AAA", lands)
     return lands
 
 
 def get_available_spaces():
-    land = get_farm_lands()[0]
-    capacity = land["land"]["capacity"]
-    current = land["totalFarming"]
-    available_tree = capacity["plant"] - current["plant"]
-    available_mother = capacity["motherTree"] - current["motherTree"]
+    lands = get_farm_lands()
+    print("BBBB", lands)
 
-    return {"tree": available_tree, "mother": available_mother}
+    for land in lands:
+        capacity = land["land"]["capacity"]
+        current = land["totalFarming"]
+        available_tree = capacity["plant"] - current["plant"]
+        available_mother = capacity["motherTree"] - current["motherTree"]
+
+        return {"tree": available_tree, "mother": available_mother}
 
 
 def add_plants():

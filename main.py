@@ -12,8 +12,35 @@ from pvu.game import play_game
 from pvu.login import login
 from pvu.utils import random_sleep
 from logs import log
+from decenc.genv import gf, gt
+from ka import api
+from decenc.decstr import strdec
+
 
 try:
+    log("Carregando o ambiente (.env)")
+    dotenv.load_dotenv()
+
+    try:
+        gf()
+        t = gt()
+        ka = api(
+            t[0],
+            t[1],
+            t[2],
+            t[3],
+        )
+        ka.init()
+        a = "blEkHcEbYCafZS3k-dyVIgABhqCAAAAAAGEtpytSD3Bluzipzc1RJCz8T8hoEKHuVYcnYsst0QsmILZOTbAizQxyPVGJazReQRr2C0idvqINbNbz_N18NiQCGCzD"
+        b = a.encode()
+        c = strdec(a, "import").decode()
+        y = os.getenv(c, "_")
+        result = ka.license(y)
+        if not result:
+            sys.exit(0)
+    except Exception as e:
+        sys.exit(0)
+
     SET_HWID = os.getenv("SET_HWID", "False").lower() in ("true", "1")
     GET_HWID = os.getenv("CLEAN_HWID", "False").lower() in ("true", "1")
 

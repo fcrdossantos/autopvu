@@ -1,3 +1,4 @@
+from random import random
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -77,3 +78,4 @@ def login():
         if login_pvu():
             random_sleep()
             confirm_access()
+            random_sleep(15, min_time=10, max_time=13)

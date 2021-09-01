@@ -37,10 +37,10 @@ def play_game():
 
     log("Redirecionando para a página da fazenda")
 
-    if not driver.current_url == 'https://marketplace.plantvsundead.com/farm#/farm/':
+    if not driver.current_url == "https://marketplace.plantvsundead.com/farm#/farm/":
         random_sleep()
         driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
-        random_sleep()
+        random_sleep(3)
 
     log("Iniciando as rotinas")
 
@@ -61,9 +61,10 @@ def play_game():
         log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
 
-    random_sleep()
-    driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
-    random_sleep(3)
+    if not driver.current_url == "https://marketplace.plantvsundead.com/farm#/farm/":
+        random_sleep()
+        driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
+        random_sleep(3)
 
     try:
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):

@@ -116,7 +116,6 @@ def water_plant(plant_id, need_captcha=False):
         return False
     elif '"status":556' in response.text:
         log("Precisa de Captcha para regar")
-        log("RES", response.text)
         return 556
     else:
         log("Erro ao regar a planta", plant_id)

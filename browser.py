@@ -1,14 +1,21 @@
 import os
+import psutil
+import subprocess
 
 from seleniumwire import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from logs import log
 
+
 BROWSER = None
 
 
 def open_browser():
+
+    close_browser()
+    close_all_chrome()
+
     log("Abrindo Navegador")
     options = webdriver.ChromeOptions()
 
@@ -50,3 +57,9 @@ def close_browser():
 
         BROWSER.close()
         BROWSER = None
+
+
+def close_all_chrome():
+    for process in psutil.process_iter():
+        if process.name() == "chrome.exe" or process.name() == "chromedriver.exe":
+            process.kill()

@@ -35,10 +35,12 @@ def play_game():
 
     log(f"Jogo disponível! Iniciando")
 
-    log("Redirecionado para a página da fazenda")
-    random_sleep()
-    driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
-    random_sleep()
+    log("Redirecionando para a página da fazenda")
+
+    if not driver.current_url == 'https://marketplace.plantvsundead.com/farm#/farm/':
+        random_sleep()
+        driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
+        random_sleep()
 
     log("Iniciando as rotinas")
 

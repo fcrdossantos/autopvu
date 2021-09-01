@@ -2,7 +2,7 @@ import os
 import traceback
 from datetime import datetime
 from browser import get_browser
-from pvu.maintenance import wait_maintenance
+from pvu.maintenance_v2 import wait_maintenance
 from pvu.farm import (
     water_plants,
     remove_crows,
@@ -31,8 +31,16 @@ def play_game():
     random_sleep(min_time=3)
 
     wait_maintenance()
+    driver.refresh()
 
     log(f"Jogo disponível! Iniciando")
+
+    log("Redirecionado para a página da fazenda")
+    random_sleep()
+    driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
+    random_sleep()
+
+    log("Iniciando as rotinas")
 
     try:
         log(f"Hora de pegar informações da sua fazenda!")

@@ -30,14 +30,14 @@ def login_pvu():
 def confirm_access():
     log("Vamos confirmar (assinar) o acesso (login)")
 
-    random_sleep(min_time=1)
+    random_sleep(10, min_time=5)
     login_btn = locate_click("sign.png", regions("full"))
-    random_sleep(min_time=1)
+    random_sleep(min_time=2)
 
     if not login_btn:
-        random_sleep(min_time=1)
+        random_sleep(10, min_time=5)
         login_btn2 = locate_click("sign2.png", regions("full"))
-        random_sleep(min_time=1)
+        random_sleep(min_time=2)
 
         if not login_btn2:
             log("Não achamos o botão para confirmar o acesso!")
@@ -74,8 +74,8 @@ def check_logged():
 def login():
     random_sleep()
     if not check_logged():
-        random_sleep()
+        random_sleep(5)
         if login_pvu():
-            random_sleep()
+            random_sleep(5)
             confirm_access()
             random_sleep(15, min_time=10, max_time=13)

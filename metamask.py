@@ -69,14 +69,15 @@ def unlock_mask():
 
 def login():
     if open_mask():
+        random_sleep(15, min_time=8)
         if unlock_mask():
             log("Vamos ocultar a extensão do mask")
-            random_sleep(15)
+            random_sleep(15, min_time=8)
             if locate("open.png"):
                 log("Ocultando a extensão do MetaMask!")
                 click_mask_icon()
             else:
-                random_sleep(15)
+                random_sleep(15, min_time=8)
                 if locate("open.png"):
                     log("Ocultando a extensão do MetaMask!")
                     click_mask_icon()

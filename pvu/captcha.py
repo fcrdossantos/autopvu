@@ -5,6 +5,27 @@ from twocaptcha import TwoCaptcha
 from pvu.utils import get_headers, random_sleep
 from logs import log
 
+# Land
+def solve_validation_captcha(captcha_results):
+    url = "https://backend-farm-stg.plantvsundead.com/captcha/validate"
+
+    payload = {
+        "challenge": captcha_results.get("challenge"),
+        "seccode": captcha_results.get("seccode"),
+        "validate": captcha_results.get("validate"),
+    }
+    headers = get_headers()
+
+    log("Solucionando o validador de captchas")
+    random_sleep()
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    if '"status":0' in response.text:
+        log("Sucesso ao resolver o captcha")
+        return True
+
+    return False
+
 
 def get_challenge_gt():
     log("Identificando Challenge e GT")
@@ -64,6 +85,7 @@ def get_captcha_result():
         result_seccode = return_code.get("geetest_seccode")
 
         log("Enviando resultado do captcha")
+
         return {
             "challenge": result_challenge,
             "validate": result_validate,

@@ -2,37 +2,16 @@ import os
 import math
 
 import json
+from cv2 import solve
 
 import requests
 
-from pvu.captcha import get_captcha_result
+from pvu.captcha import get_captcha_result, solve_validation_captcha
 from pvu.farm import water_plant
 from pvu.utils import get_headers, random_sleep
 from pvu.owner import get_owner
 from browser import get_browser
 from logs import log
-
-# Land
-def solve_land_captcha():
-    url = "https://backend-farm-stg.plantvsundead.com/captcha/validate"
-
-    captcha_results = get_captcha_result()
-
-    payload = {
-        "challenge": captcha_results.get("challenge"),
-        "seccode": captcha_results.get("seccode"),
-        "validate": captcha_results.get("validate"),
-    }
-    headers = get_headers()
-
-    random_sleep()
-    response = requests.request("POST", url, json=payload, headers=headers)
-
-    if '"status":0' in response.text:
-        log("Sucesso ao resolver o captcha")
-        return True
-
-    return False
 
 
 def get_land_page_info(owner, page=0):
@@ -41,8 +20,11 @@ def get_land_page_info(owner, page=0):
 
     while land_info.get("status") == 556:
         log("Necessário resolver o captcha")
-        while not solve_land_captcha():
-            solve_land_captcha()
+        captcha_results = get_captcha_result()
+        solved = solve_validation_captcha(captcha_results)
+        while not solved:
+            captcha_results = get_captcha_result()
+            solved = solve_validation_captcha(captcha_results)
 
         land_info = get_land_info(owner)
 

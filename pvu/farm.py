@@ -4,7 +4,7 @@ import os
 import requests
 import random
 from pvu.utils import get_headers, random_sleep
-from pvu.captcha import get_captcha_result
+from pvu.captcha import get_captcha_result, solve_validation_captcha
 from logs import log
 
 # List all farm infos and status
@@ -77,6 +77,12 @@ def water_plant(plant_id, need_captcha=False):
             "validate": "default",
         }
 
+    if need_captcha:
+        solved = solve_validation_captcha(captcha_results)
+        while not solved:
+            captcha_results = get_captcha_result()
+            solved = solve_validation_captcha(captcha_results)
+
     try:
         payload = {
             "farmId": plant_id,
@@ -110,6 +116,7 @@ def water_plant(plant_id, need_captcha=False):
         return False
     elif '"status":556' in response.text:
         log("Precisa de Captcha para regar")
+        log("RES", response.text)
         return 556
     else:
         log("Erro ao regar a planta", plant_id)
@@ -155,6 +162,12 @@ def remove_crow(plant_id, need_captcha=False):
             "seccode": "default",
             "validate": "default",
         }
+
+    if need_captcha:
+        solved = solve_validation_captcha(captcha_results)
+        while not solved:
+            captcha_results = get_captcha_result()
+            solved = solve_validation_captcha(captcha_results)
 
     payload = {
         "farmId": plant_id,
@@ -225,6 +238,12 @@ def use_pot(plant_id, need_captcha=False):
             "seccode": "default",
             "validate": "default",
         }
+
+    if need_captcha:
+        solved = solve_validation_captcha(captcha_results)
+        while not solved:
+            captcha_results = get_captcha_result()
+            solved = solve_validation_captcha(captcha_results)
 
     if os.getenv("POT_TYPE", "SMALL").lower() in ("big", "2"):
         tool_id = 2

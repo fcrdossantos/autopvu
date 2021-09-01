@@ -115,6 +115,7 @@ except ConnectionResetError:
     sys.exit()
 except Exception as e:
     log("Ocorreu um problema:", e)
+    traceback.print_exc()
     input()
     sys.exit()
 

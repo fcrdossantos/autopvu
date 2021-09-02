@@ -15,6 +15,7 @@ from pvu.user import get_user_info
 from pvu.utils import random_sleep
 from pvu.store import buy_items
 from logs import log
+from pvu.captcha import start_captcha_solver
 
 
 def play_game():
@@ -27,9 +28,9 @@ def play_game():
             driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
     except:
         log("Impossível acessar a página da fazenda para iniciar as rotinas do bot")
+        return
 
     random_sleep(min_time=3)
-
     wait_maintenance()
     driver.refresh()
 
@@ -45,12 +46,21 @@ def play_game():
     log("Iniciando as rotinas")
 
     try:
+        start_captcha_solver()
+    except Exception as e:
+
+        log("Erro na rotina de solucionar captchas iniciais:", e)
+        traceback.print_exc()
+        return
+
+    try:
         log(f"Hora de pegar informações da sua fazenda!")
         random_sleep(3)
         get_user_info()
     except Exception as e:
         log("Erro na rotina de pegar informações do usuário:", e)
         traceback.print_exc()
+        return
 
     try:
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
@@ -60,6 +70,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
+        return
 
     if not driver.current_url == "https://marketplace.plantvsundead.com/farm#/farm/":
         random_sleep()
@@ -74,6 +85,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de colocar vasos:", e)
         traceback.print_exc()
+        return
 
     try:
         if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
@@ -83,6 +95,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de aguar plantas:", e)
         traceback.print_exc()
+        return
 
     try:
         if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
@@ -92,6 +105,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de remover corvos:", e)
         traceback.print_exc()
+        return
 
     try:
         if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
@@ -101,6 +115,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de colher plantas:", e)
         traceback.print_exc()
+        return
 
     try:
         if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
@@ -110,6 +125,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de plantas arvores:", e)
         traceback.print_exc()
+        return
 
     try:
         if os.getenv("DAILY").lower() in ("true", "1"):
@@ -119,6 +135,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de missão diária:", e)
         traceback.print_exc()
+        return
 
     try:
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
@@ -128,6 +145,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
+        return
 
     log(f"Tudo feito! Até mais tarde :)")
-    random_sleep(60 * 15)
+    random_sleep(60 * 30, min_time=60 * 7)

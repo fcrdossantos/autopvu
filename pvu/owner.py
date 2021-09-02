@@ -22,6 +22,9 @@ def get_land_owner(x, y):
 
     land_info = json.loads(response.text)
 
+    if land_info.get("status") == 444:
+        raise Exception("Entrou em manutenção")
+
     owner = land_info.get("data").get("ownerId")
 
     if owner is None or len(owner) == 0:

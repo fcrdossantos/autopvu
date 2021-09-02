@@ -16,6 +16,9 @@ def get_all_sunflowers():
 
     sunflower_info = json.loads(response.text)
 
+    if sunflower_info.get("status") == 444:
+        raise Exception("Entrou em Manutenção")
+
     all_sunflowers = sunflower_info.get("data")
 
     all_sunflowers = [
@@ -35,6 +38,9 @@ def get_my_sunflowers():
     response = requests.request("GET", url, headers=headers)
 
     sunflower_info = json.loads(response.text)
+
+    if sunflower_info.get("status") == 444:
+        raise Exception("Entrou em Manutenção")
 
     sunflowers = sunflower_info.get("data")
 

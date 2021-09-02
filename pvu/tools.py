@@ -16,6 +16,9 @@ def get_all_tools():
 
     tool_info = json.loads(response.text)
 
+    if tool_info.get("status") == 444:
+        raise Exception("Entrou em Manutenção")
+
     tools = tool_info.get("data")
 
     return tools
@@ -31,6 +34,9 @@ def get_my_tools():
     response = requests.request("GET", url, headers=headers)
 
     tool_info = json.loads(response.text)
+
+    if tool_info.get("status") == 444:
+        raise Exception("Entrou em Manutenção")
 
     tools = tool_info.get("data")
 

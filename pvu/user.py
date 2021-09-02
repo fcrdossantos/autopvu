@@ -42,6 +42,9 @@ def get_le():
     user_info = json.loads(response.text)
     le = user_info.get("data").get("leWallet")
 
+    if user_info.get("status") == 444:
+        raise Exception("Entrou em manutenção")
+
     if le is not None and len(str(le)) > 0:
         return int(le)
     else:

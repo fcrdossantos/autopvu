@@ -18,6 +18,9 @@ def get_daily_status():
 
         daily = json.loads(response.text)
 
+        if daily.get("status") == 444:
+            raise Exception("Entrou em manutenção")
+
         if daily.get("status") == 0:
             daily_water = daily.get("data").get("water")
             daily_crow = daily.get("data").get("scarecrow")

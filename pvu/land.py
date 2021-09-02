@@ -6,7 +6,7 @@ from cv2 import solve
 
 import requests
 
-from pvu.captcha import get_captcha_result, solve_validation_captcha
+from pvu.captcha import get_captcha, solve_validation_captcha
 from pvu.farm import water_plant
 from pvu.utils import get_headers, random_sleep
 from pvu.owner import get_owner
@@ -20,10 +20,17 @@ def get_land_page_info(owner, page=0):
 
     while land_info.get("status") == 556:
         log("Necessário resolver o captcha")
-        captcha_results = get_captcha_result()
+
+        captcha_results = get_captcha()
+        if not captcha_results:
+            raise Exception("Entrou em manutenção")
+
         solved = solve_validation_captcha(captcha_results)
         while not solved:
-            captcha_results = get_captcha_result()
+            captcha_results = get_captcha()
+            if not captcha_results:
+                raise Exception("Entrou em manutenção")
+
             solved = solve_validation_captcha(captcha_results)
 
         land_info = get_land_info(owner)
@@ -61,6 +68,9 @@ def get_land_info(owner, page=0, retry=0):
 
     try:
         land_info = json.loads(response.text)
+
+        if land_info.get("status") == 444:
+            raise Exception("Entrou em manutenção")
 
         return land_info
     except:

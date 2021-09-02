@@ -4,7 +4,7 @@ import os
 import requests
 import random
 from pvu.utils import get_headers, random_sleep
-from pvu.captcha import get_captcha_result, solve_validation_captcha
+from pvu.captcha import solve_validation_captcha, get_captcha
 from logs import log
 
 # List all farm infos and status
@@ -22,7 +22,14 @@ def get_farm_infos():
         "GET", url, data=payload, headers=headers, params=querystring
     )
 
-    return json.loads(response.text)
+    farm_info = json.loads(response.text)
+
+    status = farm_info["status"]
+
+    if status == 444:
+        raise Exception("Entrou em manutenção")
+
+    return farm_info
 
 
 # Get all plants infos (ID and WATER)
@@ -69,7 +76,9 @@ def water_plant(plant_id, need_captcha=False):
     url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
 
     if need_captcha:
-        captcha_results = get_captcha_result()
+        captcha_results = get_captcha()
+        if not captcha_results:
+            raise Exception("Entrou em manutenção")
     else:
         captcha_results = {
             "challenge": "default",
@@ -80,7 +89,9 @@ def water_plant(plant_id, need_captcha=False):
     if need_captcha:
         solved = solve_validation_captcha(captcha_results)
         while not solved:
-            captcha_results = get_captcha_result()
+            captcha_results = get_captcha()
+            if not captcha_results:
+                raise Exception("Entrou em manutenção")
             solved = solve_validation_captcha(captcha_results)
 
     try:
@@ -154,7 +165,9 @@ def remove_crow(plant_id, need_captcha=False):
     url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
 
     if need_captcha:
-        captcha_results = get_captcha_result()
+        captcha_results = get_captcha()
+        if not captcha_results:
+            raise Exception("Entrou em manutenção")
     else:
         captcha_results = {
             "challenge": "default",
@@ -165,7 +178,9 @@ def remove_crow(plant_id, need_captcha=False):
     if need_captcha:
         solved = solve_validation_captcha(captcha_results)
         while not solved:
-            captcha_results = get_captcha_result()
+            captcha_results = get_captcha()
+            if not captcha_results:
+                raise Exception("Entrou em manutenção")
             solved = solve_validation_captcha(captcha_results)
 
     payload = {
@@ -230,7 +245,9 @@ def use_pot(plant_id, need_captcha=False):
     url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
 
     if need_captcha:
-        captcha_results = get_captcha_result()
+        captcha_results = get_captcha()
+        if not captcha_results:
+            raise Exception("Entrou em manutenção")
     else:
         captcha_results = {
             "challenge": "default",
@@ -241,7 +258,9 @@ def use_pot(plant_id, need_captcha=False):
     if need_captcha:
         solved = solve_validation_captcha(captcha_results)
         while not solved:
-            captcha_results = get_captcha_result()
+            captcha_results = get_captcha()
+            if not captcha_results:
+                raise Exception("Entrou em manutenção")
             solved = solve_validation_captcha(captcha_results)
 
     if os.getenv("POT_TYPE", "SMALL").lower() in ("big", "2"):
@@ -430,6 +449,9 @@ def get_farm_lands():
     response = requests.request("GET", url, headers=headers)
 
     farm_info = json.loads(response.text)
+
+    if farm_info.get("status") == 444:
+        raise Exception("Entrou em manutenção")
 
     lands = farm_info.get("data")
 

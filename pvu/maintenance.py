@@ -17,7 +17,7 @@ from pvu.utils import get_headers, random_sleep
 from logs import log
 
 
-def maintenance_request():
+def verify_maintenance():
     url = "https://backend-farm-stg.plantvsundead.com/farming-stats"
     headers = get_headers()
 
@@ -27,6 +27,9 @@ def maintenance_request():
     response = requests.request("GET", url, headers=headers)
 
     user_info = json.loads(response.text)
+
+    if user_info.get("status") == 444:
+        raise Exception("Entrou em manutenção")
 
     status = user_info.get("status")
 
@@ -47,6 +50,9 @@ def get_next_group_time():
         response = requests.request("GET", url, headers=headers)
 
         json_response = json.loads(response.text)
+
+        if json_response.get("status") == 444:
+            raise Exception("Entrou em manutenção")
 
         next_group = json_response.get("data").get("nextGroup")
 
@@ -81,7 +87,7 @@ def check_maintenance():
     try:
         log("Realizando nova verificação de manutenção")
 
-        if maintenance_request():
+        if verify_maintenance():
             log("Confirmamos a manutenção via request")
             return True
 

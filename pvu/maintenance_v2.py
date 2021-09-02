@@ -18,37 +18,40 @@ from logs import log
 
 
 def check_maintenance():
-    url = "https://backend-farm-stg.plantvsundead.com/farming-stats"
+    url = "https://backend-farm-stg.plantvsundead.com/farm-status"
     headers = get_headers()
 
-    log("Verificando se está em manutenção")
+    log("Verificando se está em manutenção via request")
 
     random_sleep()
     response = requests.request("GET", url, headers=headers)
 
-    user_info = json.loads(response.text)
+    maintenance_info = json.loads(response.text)
 
-    status = user_info.get("status")
+    status = maintenance_info.get("status")
+    data = maintenance_info.get("data")
 
-    # 444 = maintenance
-    return status == 444
+    if status == 0 and data is not None:
+        my_group = data.get("inGroup")
+        current_group = data.get("currentGroup")
+
+        status_data = data.get("status")
+        if status_data is not None and status_data == 1:
+            return False
+
+        if my_group == current_group:
+            return False
+
+        next_group = data.get("nextGroup")
+
+        return next_group
+
+    return False
 
 
-def get_next_group_time():
+def get_next_group_time(next_group):
     try:
         random_sleep()
-
-        url = "https://backend-farm-stg.plantvsundead.com/farm-status"
-        headers = get_headers()
-
-        log("Pegando horário do próximo grupo")
-
-        random_sleep()
-        response = requests.request("GET", url, headers=headers)
-
-        json_response = json.loads(response.text)
-
-        next_group = json_response.get("data").get("nextGroup")
 
         next_group_utc = datetime.strptime(next_group, "%Y-%m-%dT%H:%M:%S.%fZ")
 
@@ -98,7 +101,7 @@ def wait_maintenance():
     maintenance = check_maintenance()
 
     if maintenance:
-        next_group_time = get_next_group_time()
+        next_group_time = get_next_group_time(maintenance)
 
         if next_group_time:
             log(f"Jogo indisponível no momento (Manutenção)")

@@ -6,6 +6,7 @@ from seleniumwire import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from logs import log
+from seleniumwire.undetected_chromedriver.v2 import Chrome, ChromeOptions
 
 
 BROWSER = None
@@ -17,7 +18,7 @@ def open_browser():
     close_all_chrome()
 
     log("Abrindo Navegador")
-    options = webdriver.ChromeOptions()
+    options = ChromeOptions()
 
     if os.getenv("USER") == "1":
         DATA_DIR = os.getenv("DATA_DIR_1")
@@ -27,12 +28,12 @@ def open_browser():
         DRIVER = os.getenv("DRIVER_DIR_2")
         options.binary_location = os.getenv("PATH_BROWSER_2", "chromium/chrome.exe")
 
-    options.add_argument(f"user-data-dir={DATA_DIR}")
+    options.user_data_dir = DATA_DIR
     options.add_argument(f"--profile-directory=Default")
 
     service = Service(DRIVER)
 
-    browser = webdriver.Chrome(service=service, options=options)
+    browser = Chrome(options=options)
 
     browser.maximize_window()
     browser.get("https://google.com.br")

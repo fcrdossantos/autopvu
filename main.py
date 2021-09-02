@@ -80,17 +80,17 @@ try:
 
     log("Pronto! Você já pode minimizar ou mudar a aba do navegador")
 
-    if GET_HWID:
-        log("Limpando o HWID")
-        random_sleep()
-        if clear_hwid():
-            random_sleep()
-            log("HWID Limpo!")
-        else:
-            random_sleep()
-            log("Erro ao limpar o HWID! Tentaremos de novo mais tarde")
-        random_sleep()
-        thread = Thread(target=check_hwid_clean).start()
+    # if GET_HWID:
+    #     log("Limpando o HWID")
+    #     random_sleep()
+    #     if clear_hwid():
+    #         random_sleep()
+    #         log("HWID Limpo!")
+    #     else:
+    #         random_sleep()
+    #         log("Erro ao limpar o HWID! Tentaremos de novo mais tarde")
+    #     random_sleep()
+    #     thread = Thread(target=check_hwid_clean).start()
 
     if os.getenv("DEBUG", "FALSE").lower() in ("false", "1"):
         while True:

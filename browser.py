@@ -28,8 +28,13 @@ def open_browser():
         DRIVER = os.getenv("DRIVER_DIR_2")
         options.binary_location = os.getenv("PATH_BROWSER_2", "chromium/chrome.exe")
 
+    PROFILE = os.getenv("PROFILE_NAME", "Default")
+
     options.user_data_dir = DATA_DIR
-    options.add_argument(f"--profile-directory=Default")
+    options.add_argument(f"--profile-directory={PROFILE}")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--ignore-certificate-errors-spki-list")
+    options.add_argument("--ignore-ssl-errors")
 
     service = Service(DRIVER)
 

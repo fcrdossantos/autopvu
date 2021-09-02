@@ -128,6 +128,9 @@ def water_plant(plant_id, need_captcha=False):
     elif '"status":556' in response.text:
         log("Precisa de Captcha para regar")
         return 556
+    elif '"status":10' in response.text:
+        log("Deu erro de Status 10. Vou pular essa planta")
+        return 10
     else:
         log("Erro ao regar a planta", plant_id)
         log("=> Resposta:", response.text)
@@ -149,6 +152,10 @@ def water_plants(plants=None):
 
             if result_water == 556:
                 result_water = water_plant(plant["id"], need_captcha=True)
+
+            if result_water == 10:
+                plant["water"] = 3
+                continue
 
             if result_water == 1:
                 plant["water"] += 1
@@ -208,6 +215,9 @@ def remove_crow(plant_id, need_captcha=False):
     elif '"status":556' in response.text:
         log("Precisa de Captcha para tirar o corvo")
         return 556
+    elif '"status":10' in response.text:
+        log("Deu erro de Status 10. Vou pular essa planta")
+        return 10
     else:
         log("Erro ao remover o corvo da planta", plant_id)
         log("=> Resposta:", response.text)
@@ -229,6 +239,10 @@ def remove_crows(plants=None):
 
             if result_crow == 556:
                 result_crow = remove_crow(plant["id"], need_captcha=True)
+
+            if result_crow == 10:
+                plant["crow"] = False
+                continue
 
             if result_crow == 1:
                 plant["crow"] = False
@@ -293,6 +307,9 @@ def use_pot(plant_id, need_captcha=False):
     elif '"status":556' in response.text:
         log("Precisa de Captcha para colocar o vaso")
         return 556
+    elif '"status":10' in response.text:
+        log("Erro de Status 10. Vou pular essa planta")
+        return 10
     else:
         log("Erro ao colocar o vaso na planta", plant_id)
         log("=> Resposta:", response.text)
@@ -327,6 +344,10 @@ def use_pots(plants=None):
 
             if result_pot == 1:
                 plant["pot"] = 1
+
+            if result_pot == 10:
+                plant["pot"] = 1
+                continue
 
         random_sleep()
         log(f"Planta {plant['id']} não precisa de vasos")

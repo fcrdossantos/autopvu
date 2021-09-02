@@ -78,6 +78,16 @@ def play_game():
         random_sleep(3)
 
     try:
+        if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
+            log("Hora de colher as plantas")
+            random_sleep(3)
+            harvest_plants()
+    except Exception as e:
+        log("Erro na rotina de colher plantas:", e)
+        traceback.print_exc()
+        return
+
+    try:
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):
             log("Hora de colocar os vasos")
             random_sleep(3)
@@ -108,16 +118,6 @@ def play_game():
         return
 
     try:
-        if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
-            log("Hora de colher as plantas")
-            random_sleep(3)
-            harvest_plants()
-    except Exception as e:
-        log("Erro na rotina de colher plantas:", e)
-        traceback.print_exc()
-        return
-
-    try:
         if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
             log("Hora de adicionar novas plantas")
             random_sleep(3)
@@ -134,16 +134,6 @@ def play_game():
             do_daily()
     except Exception as e:
         log("Erro na rotina de missão diária:", e)
-        traceback.print_exc()
-        return
-
-    try:
-        if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
-            log("Hora de comprar itens usados nas rotinas")
-            random_sleep(3)
-            buy_items()
-    except Exception as e:
-        log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
         return
 

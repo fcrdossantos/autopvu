@@ -31,6 +31,17 @@ def open_browser():
 
     PROFILE = os.getenv("PROFILE_NAME", "Default")
 
+    if DATA_DIR is None:
+        log("Não foi encontrado um caminho para o Chrome")
+        current_user = os.getlogin()
+        log(f"Usando o padrão para o usuário {current_user}")
+        DATA_DIR = (
+            "C:\\Users\\"
+            + {current_user}
+            + "\\AppData\\Local\\Google\\Chrome\\User Data\\"
+        )
+        log("Caminho:", DATA_DIR)
+
     options.user_data_dir = DATA_DIR
     options.add_argument(f"--profile-directory={PROFILE}")
     options.add_argument("--ignore-ssl-errors")

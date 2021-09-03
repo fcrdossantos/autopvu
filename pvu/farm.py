@@ -576,7 +576,7 @@ def check_need_actions(plants=None):
                 log("Ações serão necessárias (algumas plantas possuem corvo)")
                 return True
 
-            if plant["pot"]:
+            if plant["pot"] == 0:
                 log(
                     "Ações serão necessárias (algumas plantas precisam ser colocadas no vaso)"
                 )

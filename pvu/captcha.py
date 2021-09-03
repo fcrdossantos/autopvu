@@ -167,7 +167,7 @@ def get_challenge_gt():
 
     response = req.content.decode("utf-8")
 
-    if response.get("status") == 444:
+    if json.loads(response).get("status") == 444:
         NEED_CAPTCHA = False
         log("Entrou em manutenção, cancelando captcha")
         return 444, 444

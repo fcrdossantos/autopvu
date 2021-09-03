@@ -1,0 +1,30 @@
+executar como admin
+conda activate cryptozoo
+pyarmor pack -e " --onefile --icon=pvu.ico --add-data=seleniumwire/*;seleniumwire/" --name=AutoPVU main.py
+
+
+
+from decenc.decstr import strdec
+from decenc.encsrt import strenc
+from decenc.cttk import k
+
+s = "http://pastebin.com/raw/rrr8wMKn"
+p = "be"
+
+x = strenc(s.encode(), p)
+
+print(x)
+
+#
+
+# y = k
+
+# z = y.encode()
+
+# z0 = strdec(z, p).decode()
+
+# a='jbHx_8nEkYIOQWt6siS7CQABhqCAAAAAAGEyEvQCvMuu_6VnRzSi9JGA7NT6fs0P9VZKAZEzkDx9wSZsnGap8DmlOJvPPoCbxCbIIk69wk2UuES4t899y-Y5MHfbhDy7GkP9yB9ljWJyPnqbVVkTbVXJYJyo0oUGupnDB5o='
+
+# b = a.encode()
+
+# c = strdec(a, "be").decode()

@@ -1,16 +1,17 @@
 import json
+from pvu.user import get_user
 import time
 import os
 import requests
 import random
-from pvu.utils import get_headers, random_sleep
+from pvu.utils import get_headers, random_sleep, get_backend_url
 from pvu.captcha import solve_validation_captcha, get_captcha
 from logs import log
 
 # List all farm infos and status
 def get_farm_infos():
     log("Coletando as informações da fazenda")
-    url = "https://backend-farm-stg.plantvsundead.com/farms"
+    url = f"{get_backend_url()}/farms"
 
     querystring = {"limit": "10", "offset": "0"}
 
@@ -73,7 +74,15 @@ def get_plants():
 def water_plant(plant_id, need_captcha=False):
     log("Aguando a planta:", plant_id)
 
-    url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
+    url = f"{get_backend_url()}/farms/apply-tool"
+
+    items = get_user()["items"]
+
+    for item in items:
+        if item["id"] == 3 and item["type"] == "tool":
+            if item["current_amount"] == 0:
+                log("Você não tem água suficiente para isso")
+                return 404
 
     if need_captcha:
         captcha_results = get_captcha()
@@ -146,22 +155,26 @@ def water_plants(plants=None):
         plants = get_plants()
 
     for plant in plants:
-        while plant["water"] < 2:
+        if plant.get("stage") == "farming":
+            while plant["water"] < 2:
+                random_sleep()
+                result_water = water_plant(plant["id"])
+
+                if result_water == 556:
+                    result_water = water_plant(plant["id"], need_captcha=True)
+
+                if result_water == 10:
+                    plant["water"] = 3
+                    continue
+
+                if result_water == 1:
+                    plant["water"] += 1
+
+                if result_water == 404:
+                    return
+
             random_sleep()
-            result_water = water_plant(plant["id"])
-
-            if result_water == 556:
-                result_water = water_plant(plant["id"], need_captcha=True)
-
-            if result_water == 10:
-                plant["water"] = 3
-                continue
-
-            if result_water == 1:
-                plant["water"] += 1
-
-        random_sleep()
-        log(f"Planta {plant['id']} terminou de ser regada")
+            log(f"Planta {plant['id']} terminou de ser regada")
 
     log("Fim da rotina de regar plantas")
 
@@ -169,7 +182,14 @@ def water_plants(plants=None):
 def remove_crow(plant_id, need_captcha=False):
     log("Removendo corvo da planta:", plant_id)
 
-    url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
+    url = f"{get_backend_url()}/farms/apply-tool"
+
+    items = get_user()["items"]
+    for item in items:
+        if item["id"] == 4 and item["type"] == "tool":
+            if item["current_amount"] == 0:
+                log("Você não tem corvo suficiente para isso")
+                return 404
 
     if need_captcha:
         captcha_results = get_captcha()
@@ -233,22 +253,27 @@ def remove_crows(plants=None):
         plants = get_plants()
 
     for plant in plants:
-        while plant["crow"]:
+
+        if plant.get("stage") == "farming":
+            while plant["crow"]:
+                random_sleep()
+                result_crow = remove_crow(plant["id"])
+
+                if result_crow == 556:
+                    result_crow = remove_crow(plant["id"], need_captcha=True)
+
+                if result_crow == 10:
+                    plant["crow"] = False
+                    continue
+
+                if result_crow == 1:
+                    plant["crow"] = False
+
+                if remove_crow == 404:
+                    return
+
             random_sleep()
-            result_crow = remove_crow(plant["id"])
-
-            if result_crow == 556:
-                result_crow = remove_crow(plant["id"], need_captcha=True)
-
-            if result_crow == 10:
-                plant["crow"] = False
-                continue
-
-            if result_crow == 1:
-                plant["crow"] = False
-
-        random_sleep()
-        log(f"Planta {plant['id']} não tem mais corvos")
+            log(f"Planta {plant['id']} não tem mais corvos")
 
     log("Fim da rotina de remover corvos")
 
@@ -256,7 +281,20 @@ def remove_crows(plants=None):
 def use_pot(plant_id, need_captcha=False):
     log("Colocando pote na planta:", plant_id)
 
-    url = "https://backend-farm-stg.plantvsundead.com/farms/apply-tool"
+    url = f"{get_backend_url()}/farms/apply-tool"
+
+    if os.getenv("POT_TYPE", "SMALL").lower() in ("big", "2"):
+        tool_id = 2
+    else:
+        tool_id = 1
+
+    items = get_user()["items"]
+
+    for item in items:
+        if item["id"] == tool_id and item["type"] == "tool":
+            if item["current_amount"] == 0:
+                log("Você não tem vasos suficientes para isso")
+                return 404
 
     if need_captcha:
         captcha_results = get_captcha()
@@ -276,11 +314,6 @@ def use_pot(plant_id, need_captcha=False):
             if not captcha_results:
                 raise Exception("Entrou em manutenção")
             solved = solve_validation_captcha(captcha_results)
-
-    if os.getenv("POT_TYPE", "SMALL").lower() in ("big", "2"):
-        tool_id = 2
-    else:
-        tool_id = 1
 
     payload = {
         "farmId": plant_id,
@@ -333,6 +366,9 @@ def use_pots(plants=None):
             if result_pot == 556:
                 result_pot = use_pot(plant["id"], need_captcha=True)
 
+            if result_pot == 404:
+                return
+
             continue
 
         while plant["pot"] == 0:
@@ -348,6 +384,9 @@ def use_pots(plants=None):
             if result_pot == 10:
                 plant["pot"] = 1
                 continue
+
+            if result_pot == 404:
+                return
 
         random_sleep()
         log(f"Planta {plant['id']} não precisa de vasos")
@@ -443,6 +482,14 @@ def add_plant(plant_id):
 
     payload = {"landId": 0, "sunflowerId": plant_id}
 
+    items = get_user()["items"]
+
+    for item in items:
+        if item["id"] == plant_id and item["type"] == "sunflower":
+            if item["current_amount"] == 0:
+                log("Você não tem planta suficiente para isso")
+                return 404
+
     random_sleep()
     response = requests.request("POST", url, json=payload, headers=headers)
 
@@ -460,7 +507,7 @@ def add_plant(plant_id):
 
 
 def get_farm_lands():
-    url = "https://backend-farm-stg.plantvsundead.com/my-lands?limit=9&offset=0"
+    url = f"{get_backend_url()}/my-lands?limit=9&offset=0"
 
     headers = get_headers()
 
@@ -504,7 +551,44 @@ def add_plants():
         add_plant(2)
 
     if available_trees > 0 or available_mothers > 0:
-        use_pots()
-        water_plants()
+        plants = get_plants()
+        use_pots(plants)
+        water_plants(plants)
 
     log("Fim da rotina de adicionar novas plantas")
+
+
+def check_need_actions(plants=None):
+
+    log("Verificando se alguma ação será necessária")
+
+    if plants is None:
+        plants = get_plants()
+
+    for plant in plants:
+        if plant.get("stage") == "farming":
+            if plant["water"] < 2:
+                log("Ações serão necessárias (algumas plantas precisam ser regadas)")
+                return True
+
+            if plant["crow"]:
+                log("Ações serão necessárias (algumas plantas possuem corvo)")
+                return True
+
+            if plant["pot"]:
+                log(
+                    "Ações serão necessárias (algumas plantas precisam ser colocadas no vaso)"
+                )
+                return True
+
+        if plant.get("stage") == "new":
+            log("Ações serão necessárias (algumas plantas são novas)")
+            return True
+
+        if plant["stage"] == "cancelled":
+            log("Ações serão necessárias (algumas plantas precisam ser colhidas")
+            return True
+
+    log("Nenhuma ação será necessária")
+
+    return False

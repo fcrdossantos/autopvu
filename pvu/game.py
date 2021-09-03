@@ -9,13 +9,15 @@ from pvu.farm import (
     use_pots,
     harvest_plants,
     add_plants,
+    get_plants,
+    check_need_actions,
 )
 from pvu.daily import do_daily
-from pvu.user import get_user_info
+from pvu.user import get_user, get_user_info
 from pvu.utils import random_sleep
 from pvu.store import buy_items
 from logs import log
-from pvu.captcha import start_captcha_solver
+from pvu.captcha import start_captcha_solver, stop_captcha_solver
 
 
 def play_game():
@@ -46,6 +48,28 @@ def play_game():
     log("Iniciando as rotinas")
 
     try:
+        log("Pegando as informações das fazendas e plantas")
+        plants = get_plants()
+    except:
+        log("Erro ao pegar informações das fazendas e plantas")
+        traceback.print_exc()
+        return
+
+    try:
+        log("Hora de verificar se o bot precisará fazer algo")
+        need_actions = check_need_actions()
+        if need_actions:
+            log("Ações necessárias, iniciando rotinas")
+        else:
+            log("Ações não necessárias no momento, tentaremos mais tarde")
+            random_sleep(60 * 30, min_time=60 * 7)
+            return
+    except:
+        log("Impossível detectar se alguma ação é necessária")
+        traceback.print_exc()
+        return
+
+    try:
         start_captcha_solver()
     except Exception as e:
 
@@ -56,7 +80,8 @@ def play_game():
     try:
         log(f"Hora de pegar informações da sua fazenda!")
         random_sleep(3)
-        get_user_info()
+        user_info = get_user()
+        user_le = user_info["le"]
     except Exception as e:
         log("Erro na rotina de pegar informações do usuário:", e)
         traceback.print_exc()
@@ -64,9 +89,12 @@ def play_game():
 
     try:
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
-            log("Hora de comprar os itens")
-            random_sleep(3)
-            buy_items()
+            if int(os.getenv("MIN_LE", 0)) < user_le:
+                log("Você não tem o dinheiro minimo para a rotina de compra")
+            else:
+                log("Hora de comprar os itens")
+                random_sleep(3)
+                buy_items()
     except Exception as e:
         log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
@@ -81,7 +109,7 @@ def play_game():
         if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
             log("Hora de colher as plantas")
             random_sleep(3)
-            harvest_plants()
+            harvest_plants(plants=plants)
     except Exception as e:
         log("Erro na rotina de colher plantas:", e)
         traceback.print_exc()
@@ -91,7 +119,7 @@ def play_game():
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):
             log("Hora de colocar os vasos")
             random_sleep(3)
-            use_pots()
+            use_pots(plants=plants)
     except Exception as e:
         log("Erro na rotina de colocar vasos:", e)
         traceback.print_exc()
@@ -101,7 +129,7 @@ def play_game():
         if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
             log("Hora de regar plantas!")
             random_sleep(3)
-            water_plants()
+            water_plants(plants=plants)
     except Exception as e:
         log("Erro na rotina de aguar plantas:", e)
         traceback.print_exc()
@@ -111,7 +139,7 @@ def play_game():
         if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
             log("Hora de remover corvos")
             random_sleep(3)
-            remove_crows()
+            remove_crows(plants=plants)
     except Exception as e:
         log("Erro na rotina de remover corvos:", e)
         traceback.print_exc()
@@ -137,5 +165,6 @@ def play_game():
         traceback.print_exc()
         return
 
+    stop_captcha_solver()
     log(f"Tudo feito! Até mais tarde :)")
     random_sleep(60 * 30, min_time=60 * 7)

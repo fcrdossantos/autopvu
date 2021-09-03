@@ -1,18 +1,34 @@
 import math
 import requests
 import os
-from pvu.utils import get_headers, random_sleep
+from pvu.utils import get_headers, random_sleep, get_backend_url
 from pvu.items import get_items
 from browser import get_browser
-from pvu.user import get_le
+from pvu.user import get_le, get_user, update_user
 from logs import log
+from pvu.user import get_user
 
 
 def buy_item(item, buy_times):
+
+    if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
+        try:
+            driver = get_browser()
+            store_url = "https://marketplace.plantvsundead.com/farm#/farm/shop/"
+
+            if driver is not None:
+                if driver.current_url != store_url:
+                    driver.get(store_url)
+                    random_sleep()
+        except:
+            log("Erro ao redirecionar para a página da loja")
+
     item_id = item["id"]
 
     total_price = item["price"] * buy_times
-    total_le = get_le()
+    user = get_user()
+
+    total_le = user["le"]
 
     if total_le < total_price:
         buy_times = total_le // item["price"]
@@ -26,22 +42,28 @@ def buy_item(item, buy_times):
     log(f"Vou comprar {item['name']} {buy_times} {times_text}")
 
     if item["type"] == "tool":
-        url = "https://backend-farm-stg.plantvsundead.com/buy-tools"
+        url = f"{get_backend_url()}/buy-tools"
         payload = {"amount": buy_times, "toolId": item_id}
     else:
-        url = "https://backend-farm-stg.plantvsundead.com/buy-sunflowers"
+        url = f"{get_backend_url()}/buy-sunflowers"
         payload = {"amount": buy_times, "sunflowerId": item_id}
-
-    log(f"Sucesso ao comprar {item['name']}")
 
     headers = get_headers()
 
     random_sleep()
     response = requests.request("POST", url, json=payload, headers=headers)
 
-    # log("Resultado da loja:", response.text)
+    log("Resultado da loja:", response.text)
 
     if '"status":0' in response.text:
+        total_price = item["price"] * buy_times
+        user["le"] -= total_price
+
+        for _item in user["items"]:
+            if _item["id"] == item_id:
+                _item["current_amount"] += buy_times * _item["buy_amount"]
+
+        update_user(user)
         log("Sucesso ao comprar o item:", item["name"])
     elif '"status":9' in response.text:
         log("Você não tem dinheiro para comprar o item:", item["name"])
@@ -58,18 +80,7 @@ def buy_items():
     log("Iniciando a rotina de comprar itens")
 
     log("Pegando seus itens atuais e necessidades de compra")
-    items = get_items()
-
-    if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
-        try:
-            driver = get_browser()
-            store_url = "https://marketplace.plantvsundead.com/farm#/farm/shop/"
-
-            if driver is not None:
-                driver.get(store_url)
-                random_sleep()
-        except:
-            log("Erro ao redirecionar para a página da loja")
+    items = get_user()["items"]
 
     log("Verificando se é necessário comprar algum item")
     for item in items:

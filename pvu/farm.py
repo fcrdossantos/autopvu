@@ -552,9 +552,8 @@ def add_plants():
         add_plant(2)
 
     if available_trees > 0 or available_mothers > 0:
-        plants = get_plants()
-        use_pots(plants)
-        water_plants(plants)
+        use_pots()
+        water_plants()
 
     log("Fim da rotina de adicionar novas plantas")
 

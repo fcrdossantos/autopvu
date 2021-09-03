@@ -9,6 +9,38 @@ from logs import log
 from pvu.user import get_user
 
 
+def fake_buy_item(item, buy_times):
+
+    item_id = item["id"]
+
+    total_price = item["price"] * buy_times
+    user = get_user()
+
+    total_le = user["le"]
+
+    if total_le < total_price:
+        buy_times = total_le // item["price"]
+
+    if buy_times == 0:
+        log("Você não tem dinheiro pra comprar tudo o que precisa")
+        return 999
+
+    times_text = "vez" if buy_times == 1 else "vezes"
+
+    log(f"Vou comprar {item['name']} {buy_times} {times_text}")
+
+    total_price = item["price"] * buy_times
+    user["le"] -= total_price
+
+    for _item in user["items"]:
+        if _item["id"] == item_id:
+            _item["current_amount"] += buy_times * _item["buy_amount"]
+
+    update_user(user)
+
+    return True
+
+
 def buy_item(item, buy_times):
 
     if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
@@ -34,8 +66,8 @@ def buy_item(item, buy_times):
         buy_times = total_le // item["price"]
 
     if buy_times == 0:
-        log("Você não tem dinheiro pra comprar tudo o que precisa")
-        return False
+        log("Você não tem dinheiro pra comprar esse item")
+        return 999
 
     times_text = "vez" if buy_times == 1 else "vezes"
 
@@ -53,8 +85,6 @@ def buy_item(item, buy_times):
     random_sleep()
     response = requests.request("POST", url, json=payload, headers=headers)
 
-    log("Resultado da loja:", response.text)
-
     if '"status":0' in response.text:
         total_price = item["price"] * buy_times
         user["le"] -= total_price
@@ -67,6 +97,7 @@ def buy_item(item, buy_times):
         log("Sucesso ao comprar o item:", item["name"])
     elif '"status":9' in response.text:
         log("Você não tem dinheiro para comprar o item:", item["name"])
+        return 999
     else:
         log("Erro ao comprar o item:", item["name"])
         log("=> Resposta:", response.text)
@@ -83,19 +114,47 @@ def buy_items():
     items = get_user()["items"]
 
     log("Verificando se é necessário comprar algum item")
-    for item in items:
-        current_amount = item["current_amount"]
-        min_amount = item["min_amount"]
 
-        if current_amount < min_amount:
-            buy_amount = min_amount - current_amount
-            buy_times = math.ceil(buy_amount / item["buy_amount"])
+    need_buy = True
 
-            log(
-                f"Precisa comprar {item['name']} temos {current_amount} de {min_amount}"
-            )
+    tries = 0
 
-            buy_item(item, buy_times)
+    while need_buy:
+        need_buy = False
+        cant_buy = 0
+        needed = 0
+
+        for item in items:
+            current_amount = item["current_amount"]
+            min_amount = item["min_amount"]
+
+            if current_amount < min_amount:
+                buy_amount = min_amount - current_amount
+                if os.getenv("SINGLE_BUY", "False").lower() in ("true", 1):
+                    buy_times = 1
+                else:
+                    buy_times = math.ceil(buy_amount / item["buy_amount"])
+
+                need_buy = True
+                needed += 1
+
+                log(
+                    f"Precisa comprar {item['name']} temos {current_amount} de {min_amount}"
+                )
+
+                status = fake_buy_item(item, buy_times)
+                tries += 1
+
+                if status == 999:
+                    cant_buy += 1
+
+                if tries == 15:
+                    log("Você não conseguiu comprar todos os itens")
+                    return
+
+        if cant_buy >= needed and needed != 0 and cant_buy != 0:
+            log("Você não conseguiu comprar todos os itens por falta de dinheiro")
+            return
 
     log("Não precisa comprar mais nenhum item")
 

@@ -23,7 +23,7 @@ def store_captcha():
     global ACTIVE_CAPTCHAS
     global NEED_CAPTCHA
 
-    while len(ACTIVE_CAPTCHAS) < 5 and NEED_CAPTCHA:
+    while len(ACTIVE_CAPTCHAS) < 3 and NEED_CAPTCHA:
 
         log("Armazenando Captchas")
         result = get_captcha_result()
@@ -49,9 +49,9 @@ def wait_min_stored_captchas():
     Thread(target=store_captcha).start()
     wait = 0
 
-    while len(ACTIVE_CAPTCHAS) < 3 and NEED_CAPTCHA:
+    while len(ACTIVE_CAPTCHAS) < 1 and NEED_CAPTCHA:
 
-        log("Aguarde enquanto ao menos 3 captchas são resolvidos")
+        log("Aguarde enquanto ao menos 1 captcha é resolvido")
         random_sleep(60 * 2, min_time=60, max_time=90)
 
         wait += 1
@@ -59,11 +59,11 @@ def wait_min_stored_captchas():
             log("Erro ao pegar os captchas")
             return False
 
-    if len(ACTIVE_CAPTCHAS) >= 3:
-        log("Já temos 3 captchas, podemos começar")
+    if len(ACTIVE_CAPTCHAS) >= 1:
+        log("Já temos 1 captcha, podemos começar")
         return True
     else:
-        log("Não conseguimos pegar os 3 captchas")
+        log("Não conseguimos pegar nenhum captcha")
         return False
 
 
@@ -78,7 +78,7 @@ def remove_expired_captchas():
             ACTIVE_CAPTCHAS.remove(captcha)
             removed = True
 
-    if removed or len(ACTIVE_CAPTCHAS) < 3:
+    if removed or len(ACTIVE_CAPTCHAS) < 2:
         log("Pegando novos Captchas")
         wait_min_stored_captchas()
 

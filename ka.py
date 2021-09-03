@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from decenc.decstr import strdec
 import json as jsond  # json
 

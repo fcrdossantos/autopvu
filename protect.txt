@@ -1,6 +1,6 @@
 executar como admin
 conda activate cryptozoo
-pyarmor pack -e " --onefile --icon=pvu.ico --add-data=seleniumwire/*;seleniumwire/" --name=AutoPVU main.py
+pyarmor pack -e " --onefile --icon=pvu.ico --add-data=seleniumwire/*;seleniumwire/" --name=AutoPvU main.py
 
 
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import requests
 from pvu.utils import get_backend_url, get_headers, random_sleep

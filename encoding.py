@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import secrets
 from base64 import urlsafe_b64encode as b64e, urlsafe_b64decode as b64d
 

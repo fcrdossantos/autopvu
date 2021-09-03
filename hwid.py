@@ -1,4 +1,4 @@
-# Python3 version of hugo24's snippet
+# -*- coding: utf-8 -*-
 import winreg
 import os
 import time

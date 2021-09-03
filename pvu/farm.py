@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 from pvu.user import get_user
 import time

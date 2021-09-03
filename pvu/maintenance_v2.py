@@ -12,13 +12,13 @@ from browser import get_browser
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from pvu.utils import random_sleep
+from pvu.utils import get_backend_url, random_sleep
 from pvu.utils import get_headers, random_sleep
 from logs import log
 
 
 def check_maintenance():
-    url = "https://backend-farm-stg.plantvsundead.com/farm-status"
+    url = f"{get_backend_url()}/farm-status"
     headers = get_headers()
 
     log("Verificando se está em manutenção via request")

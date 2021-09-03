@@ -2,12 +2,12 @@ import requests
 import json
 
 from pvu.land import water_land
-from pvu.utils import get_headers, random_sleep
+from pvu.utils import get_backend_url, get_headers, random_sleep
 from logs import log
 
 
 def get_daily_status():
-    url = "https://backend-farm-stg.plantvsundead.com/daily-quest"
+    url = f"{get_backend_url()}/daily-quest"
 
     payload = ""
     headers = get_headers()
@@ -32,7 +32,7 @@ def get_daily_status():
 
 
 def claim_daily():
-    url = "https://backend-farm-stg.plantvsundead.com/daily-quest"
+    url = f"{get_backend_url()}/daily-quest"
 
     headers = get_headers()
 

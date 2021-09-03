@@ -6,9 +6,26 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from browser import get_browser
-from pvu.utils import get_headers, random_sleep
+from pvu.utils import get_headers, random_sleep, get_backend_url
 from pvu.items import get_items
 from logs import log
+
+USER_INFO = None
+
+
+def get_user():
+    global USER_INFO
+
+    if USER_INFO is None:
+        USER_INFO = get_user_info()
+
+    return USER_INFO
+
+
+def update_user(user):
+    global USER_INFO
+
+    USER_INFO = user
 
 
 def get_pvu():
@@ -31,7 +48,7 @@ def get_pvu():
 
 
 def get_le():
-    url = "https://backend-farm-stg.plantvsundead.com/farming-stats"
+    url = f"{get_backend_url()}/farming-stats"
     headers = get_headers()
 
     log("Pegando seus LE's")
@@ -53,6 +70,8 @@ def get_le():
 
 
 def get_user_info():
+    global USER_INFO
+
     farm_url = "https://marketplace.plantvsundead.com/farm#/farm/"
 
     try:
@@ -69,8 +88,12 @@ def get_user_info():
     le = get_le()
     items = get_items()
 
+    USER_INFO = {"pvu": pvu, "le": le, "items": items}
+
     log("Você possui:")
     log(f"=> {pvu} PVU's")
     log(f"=> {le} LE's")
     for item in items:
         log(f"=> {item.get('current_amount')} {item.get('name')}")
+
+    return USER_INFO

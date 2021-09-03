@@ -20,7 +20,7 @@ def open_browser():
     log("Abrindo Navegador")
     options = ChromeOptions()
 
-    if os.getenv("USER") == "1":
+    if os.getenv("USER", "1") == "1":
         DATA_DIR = os.getenv("DATA_DIR_1")
         DRIVER = os.getenv("DRIVER_DIR_1")
     else:
@@ -32,8 +32,6 @@ def open_browser():
 
     options.user_data_dir = DATA_DIR
     options.add_argument(f"--profile-directory={PROFILE}")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--ignore-certificate-errors-spki-list")
     options.add_argument("--ignore-ssl-errors")
 
     service = Service(DRIVER)

@@ -4,12 +4,13 @@ import sys
 from threading import Thread
 import requests
 from twocaptcha import TwoCaptcha
-from pvu.utils import get_headers, random_sleep
+from pvu.utils import get_headers, random_sleep, get_backend_url
 from logs import log
 from pvu.maintenance_v2 import check_maintenance
 from datetime import datetime, timedelta
 
 ACTIVE_CAPTCHAS = []
+NEED_CAPTCHA = False
 
 
 def clear_captchas():
@@ -19,9 +20,15 @@ def clear_captchas():
 
 def store_captcha():
     global ACTIVE_CAPTCHAS
-    while len(ACTIVE_CAPTCHAS) < 5 and not check_maintenance():
+    global NEED_CAPTCHA
+
+    while len(ACTIVE_CAPTCHAS) < 5 and NEED_CAPTCHA:
+
         log("Armazenando Captchas")
         result = get_captcha_result()
+
+        if result == 444:
+            return 444
 
         if result:
             now = datetime.now()
@@ -36,19 +43,27 @@ def store_captcha():
 
 def wait_min_stored_captchas():
     global ACTIVE_CAPTCHAS
+    global NEED_CAPTCHA
+
     Thread(target=store_captcha).start()
     wait = 0
-    while len(ACTIVE_CAPTCHAS) < 3:
+
+    while len(ACTIVE_CAPTCHAS) < 3 and NEED_CAPTCHA:
+
         log("Aguarde enquanto ao menos 3 captchas são resolvidos")
         random_sleep(60 * 2, min_time=60, max_time=90)
 
         wait += 1
-        if wait >= 5:
+        if wait >= 7:
             log("Erro ao pegar os captchas")
             return False
 
-    log("Já temos 3 captchas, podemos começar")
-    return True
+    if len(ACTIVE_CAPTCHAS) >= 3:
+        log("Já temos 3 captchas, podemos começar")
+        return True
+    else:
+        log("Não conseguimos pegar os 3 captchas")
+        return False
 
 
 def remove_expired_captchas():
@@ -69,6 +84,11 @@ def remove_expired_captchas():
 
 def get_captcha():
     global ACTIVE_CAPTCHAS
+    global NEED_CAPTCHA
+
+    if not NEED_CAPTCHA:
+        return
+
     log("Buscando captchas disponiveis")
     remove_expired_captchas()
 
@@ -89,11 +109,21 @@ def get_captcha():
     return captcha["captcha"]
 
 
+def stop_captcha_solver():
+    global NEED_CAPTCHA
+    NEED_CAPTCHA = False
+
+
 def start_captcha_solver():
+    global NEED_CAPTCHA
     global ACTIVE_CAPTCHAS
+
+    NEED_CAPTCHA = True
     log("Iniciando solucionador de captchas")
+
     clear_captchas()
     waited = wait_min_stored_captchas()
+
     if not waited:
         raise Exception("Entrou em manutenção")
 
@@ -101,7 +131,7 @@ def start_captcha_solver():
 # Land
 def solve_validation_captcha(captcha_results):
     global ACTIVE_CAPTCHAS
-    url = "https://backend-farm-stg.plantvsundead.com/captcha/validate"
+    url = f"{get_backend_url()}/captcha/validate"
 
     payload = {
         "challenge": captcha_results.get("challenge"),
@@ -123,9 +153,10 @@ def solve_validation_captcha(captcha_results):
 
 def get_challenge_gt():
     global ACTIVE_CAPTCHAS
+    global NEED_CAPTCHA
     log("Identificando Challenge e GT")
 
-    url = "https://backend-farm-stg.plantvsundead.com/captcha/register"
+    url = f"{get_backend_url()}/captcha/register"
 
     payload = ""
     headers = get_headers()
@@ -134,6 +165,11 @@ def get_challenge_gt():
     req = requests.request("GET", url, data=payload, headers=headers)
 
     response = req.content.decode("utf-8")
+
+    if response.get("status") == 444:
+        NEED_CAPTCHA = False
+        log("Entrou em manutenção, cancelando captcha")
+        return 444, 444
 
     challenge = json.loads(response)["data"]["challenge"]
     gt = json.loads(response)["data"]["gt"]
@@ -150,6 +186,9 @@ def upload_captcha():
     url = "https://marketplace.plantvsundead.com/farm#/farm/"
 
     challenge, gt = get_challenge_gt()
+
+    if challenge == 444 and gt == 444:
+        return 444
 
     try:
         log("Tentando solucionar o captcha")
@@ -172,6 +211,9 @@ def get_captcha_result():
         result = upload_captcha()
         if result is not None:
             break
+
+        if result == 444:
+            return 444
 
     if not result:
         return False

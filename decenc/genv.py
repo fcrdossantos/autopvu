@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from decenc.cttk import k
 from decenc.decstr import strdec

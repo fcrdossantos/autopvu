@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import sys
 import time
@@ -16,10 +18,10 @@ from decenc.genv import gf, gt
 from ka import api
 from decenc.decstr import strdec
 
-
 try:
+    sys.stdout.reconfigure(encoding="utf-8")
     log("Carregando o ambiente (.env)")
-    dotenv.load_dotenv()
+    dotenv.load_dotenv(encoding="utf-8")
 
     try:
         gf()
@@ -54,13 +56,12 @@ try:
     if SET_HWID:
         set_hwid()
 
-    log("Carregando o ambiente (.env)")
-    dotenv.load_dotenv()
+    log("AVISO: O processo de login demora até 3 minutos")
+    log("Não faça nenhuma ação no computador até o login finalizar!")
 
     random_sleep()
     driver = browser.get_browser()
     log("Não minimize outro mude a aba do navegador ainda!!!")
-
     random_sleep()
     metamask.login()
 
@@ -80,17 +81,17 @@ try:
 
     log("Pronto! Você já pode minimizar ou mudar a aba do navegador")
 
-    # if GET_HWID:
-    #     log("Limpando o HWID")
-    #     random_sleep()
-    #     if clear_hwid():
-    #         random_sleep()
-    #         log("HWID Limpo!")
-    #     else:
-    #         random_sleep()
-    #         log("Erro ao limpar o HWID! Tentaremos de novo mais tarde")
-    #     random_sleep()
-    #     thread = Thread(target=check_hwid_clean).start()
+    if GET_HWID:
+        log("Limpando o HWID")
+        random_sleep()
+        if clear_hwid():
+            random_sleep()
+            log("HWID Limpo!")
+        else:
+            random_sleep()
+            log("Erro ao limpar o HWID! Tentaremos de novo mais tarde")
+        random_sleep()
+        thread = Thread(target=check_hwid_clean).start()
 
     if os.getenv("DEBUG", "FALSE").lower() in ("false", "1"):
         while True:

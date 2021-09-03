@@ -9,6 +9,22 @@ def get_items_info(all_items, my_items, _type):
 
     for item in all_items:
         name = item.get("name")
+
+        priority = 8
+
+        priority_list = {
+            "Scarecrow": 1,
+            "Water": 2,
+            "Small Pot": 3,
+            "Big Pot": 4,
+            "Sunflower Sapling": 5,
+            "Sunflower mama": 6,
+            "Greenhouse": 7,
+        }
+
+        if priority_list.get(name) is not None:
+            priority = priority_list.get(name)
+
         env_name = f"MIN_{name.replace(' ','_').upper()}"
 
         _id = item.get("id")
@@ -42,6 +58,7 @@ def get_items_info(all_items, my_items, _type):
             "buy_amount": int(usages),
             "min_amount": int(min_amount),
             "current_amount": int(current_amount),
+            "priority": int(priority),
         }
         items_info.append(_item)
 
@@ -61,4 +78,8 @@ def get_items():
         "sunflower",
     )
 
-    return tools + sunflowers
+    items = tools + sunflowers
+
+    items = sorted(items, key=lambda k: k["priority"])
+
+    return items

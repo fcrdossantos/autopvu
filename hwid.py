@@ -52,7 +52,7 @@ def delete_reg(name):
 
 def set_hwid():
     log("Lendo o HWID correto")
-    if os.getenv("USER") == "1":
+    if os.getenv("USER", "1") == "1":
         HWID = os.getenv("HWID_1")
     else:
         HWID = os.getenv("HWID_2")
@@ -68,6 +68,9 @@ def check_hwid_clean():
     while CHECK:
         HWID_1 = os.getenv("HWID_1")
         HWID_2 = os.getenv("HWID_2")
+
+        if HWID_1 is None or HWID_2 is None:
+            return
 
         reg = get_reg("MachineGuid")
 

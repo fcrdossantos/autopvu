@@ -32,7 +32,7 @@ def play_game():
     except:
         log("Impossível acessar a página da fazenda para iniciar as rotinas do bot")
         random_sleep(60 * 8, min_time=60 * 5)
-        return False
+        return -100
 
     random_sleep(min_time=3)
     wait_maintenance()
@@ -66,7 +66,7 @@ def play_game():
         else:
             log("Ações não necessárias no momento, tentaremos mais tarde")
             random_sleep(60 * 20, min_time=60 * 7, max_time=60 * 13)
-            return False
+            return True
     except:
         log("Impossível detectar se alguma ação é necessária")
         traceback.print_exc()

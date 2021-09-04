@@ -111,7 +111,14 @@ def start_routines():
             try:
                 log("Iniciando nova série de rotinas")
                 random_sleep()
-                play_game()
+                played_status = play_game()
+                relog = os.getenv("RELOG", "FALSE").lower() in ("true", "1")
+                if relog and (
+                    played_status == -100 or not browser.check_browser_working()
+                ):
+                    log("O driver travou, iremos reiniciar o navegador")
+                    browser.close_browser()
+                    start_game()
             except Exception as e:
                 log("Ocorreu algum problema durante a execução da rotina")
                 log("Provavelmente o jogo entrou em manutenção no meio do processo:", e)
@@ -120,7 +127,7 @@ def start_routines():
 
 
 try:
-    sys.stdout.reconfigure(encoding="utf-8")
+    # sys.stdout.reconfigure(encoding="utf-8")
     log("Carregando o ambiente (.env)")
     dotenv.load_dotenv(encoding="utf-8")
 
@@ -129,9 +136,6 @@ try:
     hwid_set_routine()
 
     start_game()
-    # É possível fazer relogar se eu ver novamente aquele erro de não abrir a página da fazenda ou travar!
-    # Verificação em thread se o selenium está funcionando (verifica url atual e titulo)
-    # https://stackoverflow.com/questions/66150172/check-if-the-browser-opened-with-selenium-is-still-running-python
 
     hwid_reset_routine()
 

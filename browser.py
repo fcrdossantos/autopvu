@@ -13,6 +13,17 @@ from seleniumwire.undetected_chromedriver.v2 import Chrome, ChromeOptions
 BROWSER = None
 
 
+def check_browser_working():
+    global BROWSER
+    try:
+        BROWSER.current_url
+        BROWSER.title
+        BROWSER.name
+        return True
+    except:
+        return False
+
+
 def open_browser():
 
     close_browser()
@@ -68,11 +79,15 @@ def close_browser():
     global BROWSER
 
     if BROWSER is not None:
-        log("Fechando Navegador")
-        BROWSER.get("https://google.com.br")
+        if check_browser_working():
+            log("Fechando Navegador")
+            BROWSER.get("https://google.com.br")
+            try:
+                BROWSER.close()
+            except:
+                ...
 
-        BROWSER.close()
-        BROWSER = None
+    BROWSER = None
 
 
 def close_all_chrome():

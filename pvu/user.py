@@ -14,6 +14,12 @@ from logs import log
 USER_INFO = None
 
 
+def reset_user():
+    global USER_INFO
+
+    USER_INFO = None
+
+
 def get_user():
     global USER_INFO
 

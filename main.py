@@ -18,11 +18,11 @@ from decenc.genv import gf, gt
 from ka import api
 from decenc.decstr import strdec
 
-try:
-    sys.stdout.reconfigure(encoding="utf-8")
-    log("Carregando o ambiente (.env)")
-    dotenv.load_dotenv(encoding="utf-8")
+SET_HWID = False
+GET_HWID = False
 
+
+def a():
     try:
         gf()
         t = gt()
@@ -45,6 +45,11 @@ try:
         input()
         sys.exit(0)
 
+
+def hwid_set_routine():
+    global SET_HWID
+    global GET_HWID
+
     SET_HWID = os.getenv("SET_HWID", "False").lower() in ("true", "1")
     GET_HWID = os.getenv("CLEAN_HWID", "False").lower() in ("true", "1")
 
@@ -56,6 +61,24 @@ try:
     if SET_HWID:
         set_hwid()
 
+
+def hwid_reset_routine():
+    global GET_HWID
+
+    if GET_HWID:
+        log("Limpando o HWID")
+        random_sleep()
+        if clear_hwid():
+            random_sleep()
+            log("HWID Limpo!")
+        else:
+            random_sleep()
+            log("Erro ao limpar o HWID! Tentaremos de novo mais tarde")
+        random_sleep()
+        thread = Thread(target=check_hwid_clean).start()
+
+
+def start_game():
     log("AVISO: O processo de login demora até 3 minutos")
     log("Não faça nenhuma ação no computador até o login finalizar!")
 
@@ -81,21 +104,12 @@ try:
 
     log("Pronto! Você já pode minimizar ou mudar a aba do navegador")
 
-    if GET_HWID:
-        log("Limpando o HWID")
-        random_sleep()
-        if clear_hwid():
-            random_sleep()
-            log("HWID Limpo!")
-        else:
-            random_sleep()
-            log("Erro ao limpar o HWID! Tentaremos de novo mais tarde")
-        random_sleep()
-        thread = Thread(target=check_hwid_clean).start()
 
+def start_routines():
     if os.getenv("DEBUG", "FALSE").lower() in ("false", "1"):
         while True:
             try:
+                log("Iniciando nova série de rotinas")
                 random_sleep()
                 play_game()
             except Exception as e:
@@ -103,6 +117,25 @@ try:
                 log("Provavelmente o jogo entrou em manutenção no meio do processo:", e)
                 traceback.print_exc()
                 random_sleep()
+
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    log("Carregando o ambiente (.env)")
+    dotenv.load_dotenv(encoding="utf-8")
+
+    a()
+
+    hwid_set_routine()
+
+    start_game()
+    # É possível fazer relogar se eu ver novamente aquele erro de não abrir a página da fazenda ou travar!
+    # Verificação em thread se o selenium está funcionando (verifica url atual e titulo)
+    # https://stackoverflow.com/questions/66150172/check-if-the-browser-opened-with-selenium-is-still-running-python
+
+    hwid_reset_routine()
+
+    start_routines()
 
 except KeyboardInterrupt:
     log("Processo interrompido pelo usuário")
@@ -130,14 +163,3 @@ except Exception as e:
 # --- Temos que ver se está retornando certo e regando certo também
 # --- Funções: water_land(); get_land_plants(); get_page_plants()
 #
-
-
-# Longo Prazo
-# 1) Deixar Mais Seguro (humanizado)
-# 2) Analisar melhores tempos de sleep
-# 3) Modo Turbo: Armazenar 10 captchas (thread) e ir pegando de lá sempre que precisar
-# 4) Api do Discord: O bot vai virar uma webapi e printar quais lugares regar
-# PS: Precisamos pegar um token vitalício (ou quase isso) -> Login Selenium :) P
-
-
-# farm status 444 => manutenção (not in the list)

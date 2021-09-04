@@ -14,7 +14,7 @@ from pvu.farm import (
     check_need_actions,
 )
 from pvu.daily import do_daily
-from pvu.user import get_user, get_user_info
+from pvu.user import get_user, get_user_info, reset_user
 from pvu.utils import random_sleep
 from pvu.store import buy_items
 from logs import log
@@ -31,7 +31,8 @@ def play_game():
             driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
     except:
         log("Impossível acessar a página da fazenda para iniciar as rotinas do bot")
-        return
+        random_sleep(60 * 8, min_time=60 * 5)
+        return False
 
     random_sleep(min_time=3)
     wait_maintenance()
@@ -55,7 +56,7 @@ def play_game():
         log("Erro ao pegar informações das fazendas e plantas")
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         log("Hora de verificar se o bot precisará fazer algo")
@@ -65,12 +66,12 @@ def play_game():
         else:
             log("Ações não necessárias no momento, tentaremos mais tarde")
             random_sleep(60 * 20, min_time=60 * 7, max_time=60 * 13)
-            return
+            return False
     except:
         log("Impossível detectar se alguma ação é necessária")
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         start_captcha_solver()
@@ -78,18 +79,19 @@ def play_game():
         log("Erro na rotina de solucionar captchas iniciais:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         log(f"Hora de pegar informações da sua fazenda!")
         random_sleep(3)
+        reset_user()
         user_info = get_user()
         user_le = user_info["le"]
     except Exception as e:
         log("Erro na rotina de pegar informações do usuário:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
@@ -103,7 +105,7 @@ def play_game():
         log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     if not driver.current_url == "https://marketplace.plantvsundead.com/farm#/farm/":
         random_sleep()
@@ -119,7 +121,7 @@ def play_game():
         log("Erro na rotina de colher plantas:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):
@@ -130,7 +132,7 @@ def play_game():
         log("Erro na rotina de colocar vasos:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
@@ -141,7 +143,7 @@ def play_game():
         log("Erro na rotina de aguar plantas:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
@@ -152,7 +154,7 @@ def play_game():
         log("Erro na rotina de remover corvos:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
@@ -163,7 +165,7 @@ def play_game():
         log("Erro na rotina de plantas arvores:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     try:
         if os.getenv("DAILY").lower() in ("true", "1"):
@@ -174,8 +176,9 @@ def play_game():
         log("Erro na rotina de missão diária:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
-        return
+        return False
 
     stop_captcha_solver()
     log(f"Tudo feito! Até mais tarde :)")
     random_sleep(60 * 30, min_time=60 * 7)
+    return True

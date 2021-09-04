@@ -54,6 +54,7 @@ def play_game():
     except:
         log("Erro ao pegar informações das fazendas e plantas")
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
@@ -63,19 +64,20 @@ def play_game():
             log("Ações necessárias, iniciando rotinas")
         else:
             log("Ações não necessárias no momento, tentaremos mais tarde")
-            random_sleep(60 * 30, min_time=60 * 7)
+            random_sleep(60 * 20, min_time=60 * 7, max_time=60 * 13)
             return
     except:
         log("Impossível detectar se alguma ação é necessária")
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
         start_captcha_solver()
     except Exception as e:
-
         log("Erro na rotina de solucionar captchas iniciais:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
@@ -86,6 +88,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de pegar informações do usuário:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
@@ -99,6 +102,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     if not driver.current_url == "https://marketplace.plantvsundead.com/farm#/farm/":
@@ -114,6 +118,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de colher plantas:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
@@ -124,6 +129,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de colocar vasos:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
@@ -134,6 +140,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de aguar plantas:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
@@ -144,6 +151,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de remover corvos:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
@@ -154,6 +162,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de plantas arvores:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     try:
@@ -164,6 +173,7 @@ def play_game():
     except Exception as e:
         log("Erro na rotina de missão diária:", e)
         traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return
 
     stop_captcha_solver()

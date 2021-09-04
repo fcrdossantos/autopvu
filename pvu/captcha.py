@@ -23,7 +23,7 @@ def store_captcha():
     global ACTIVE_CAPTCHAS
     global NEED_CAPTCHA
 
-    while len(ACTIVE_CAPTCHAS) < 3 and NEED_CAPTCHA:
+    while len(ACTIVE_CAPTCHAS) <= 3 and NEED_CAPTCHA:
 
         log("Armazenando Captchas")
         result = get_captcha_result()

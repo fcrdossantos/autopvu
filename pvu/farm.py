@@ -156,7 +156,7 @@ def water_plants(plants=None):
         plants = get_plants()
 
     for plant in plants:
-        if plant.get("stage") == "farming":
+        if plant.get("stage") == "farming" or plant.get("stage") == "paused":
             while plant["water"] < 2:
                 log(f"É necessário aguar a planta {plant['id']}")
 
@@ -257,7 +257,7 @@ def remove_crows(plants=None):
 
     for plant in plants:
 
-        if plant.get("stage") == "farming":
+        if plant.get("stage") == "farming" or plant.get("stage") == "paused":
             while plant["crow"]:
                 log(f"É necessário remover o corvo da planta {plant['id']}")
                 random_sleep()
@@ -573,7 +573,7 @@ def check_need_actions(plants=None):
         plants = get_plants()
 
     for plant in plants:
-        if plant.get("stage") == "farming":
+        if plant.get("stage") == "farming" or plant.get("stage") == "paused":
             if plant["water"] < 2:
                 log("Ações serão necessárias (algumas plantas precisam ser regadas)")
                 return True

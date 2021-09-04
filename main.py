@@ -83,7 +83,22 @@ def start_game():
     log("Não faça nenhuma ação no computador até o login finalizar!")
 
     random_sleep()
-    driver = browser.get_browser()
+
+    tries = 0
+    browser_ready = False
+    while not browser_ready:
+        try:
+            driver = browser.get_browser()
+            random_sleep()
+            url = driver.current_url
+            if url is not None:
+                browser_ready = True
+        except:
+            browser.close_browser()
+            tries += 1
+            if tries >= 5:
+                return False
+
     log("Não minimize outro mude a aba do navegador ainda!!!")
     random_sleep()
     metamask.login()

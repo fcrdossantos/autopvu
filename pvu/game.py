@@ -95,7 +95,7 @@ def play_game():
 
     try:
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
-            if int(os.getenv("MIN_LE", 0)) < user_le:
+            if user_le < int(os.getenv("MIN_LE", 0)):
                 log("Você não tem o dinheiro minimo para a rotina de compra")
             else:
                 log("Hora de comprar os itens")
@@ -133,6 +133,8 @@ def play_game():
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
         return False
+
+    plants = get_plants()
 
     try:
         if os.getenv("WATER", "TRUE").lower() in ("true", "1"):

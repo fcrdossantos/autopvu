@@ -158,6 +158,8 @@ def water_plants(plants=None):
     for plant in plants:
         if plant.get("stage") == "farming":
             while plant["water"] < 2:
+                log(f"É necessário aguar a planta {plant['id']}")
+
                 random_sleep()
                 result_water = water_plant(plant["id"])
 
@@ -257,6 +259,7 @@ def remove_crows(plants=None):
 
         if plant.get("stage") == "farming":
             while plant["crow"]:
+                log(f"É necessário remover o corvo da planta {plant['id']}")
                 random_sleep()
                 result_crow = remove_crow(plant["id"])
 
@@ -265,12 +268,14 @@ def remove_crows(plants=None):
 
                 if result_crow == 10:
                     plant["crow"] = False
+                    log("Erro 10 ao remover o corvo")
                     continue
 
                 if result_crow == 1:
                     plant["crow"] = False
 
                 if remove_crow == 404:
+                    log("Entrou em manutenção ao remover o corvo")
                     return
 
             random_sleep()
@@ -465,8 +470,10 @@ def harvest_plants(plants=None):
                 if plant["temp"]:
                     remove_plant(plant["id"])
 
+            log(f"Planta {plant['id']} foi colhida")
+        else:
+            log(f"Planta {plant['id']} ainda não está pronta para colher")
         random_sleep()
-        log(f"Planta {plant['id']} foi colhida")
 
     log("Fim da rotina de colher plantas")
 

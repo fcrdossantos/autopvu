@@ -10,38 +10,6 @@ from logs import log
 from pvu.user import get_user
 
 
-def fake_buy_item(item, buy_times):
-
-    item_id = item["id"]
-
-    total_price = item["price"] * buy_times
-    user = get_user()
-
-    total_le = user["le"]
-
-    if total_le < total_price:
-        buy_times = total_le // item["price"]
-
-    if buy_times == 0:
-        log("Você não tem dinheiro pra comprar tudo o que precisa")
-        return 999
-
-    times_text = "vez" if buy_times == 1 else "vezes"
-
-    log(f"Vou comprar {item['name']} {buy_times} {times_text}")
-
-    total_price = item["price"] * buy_times
-    user["le"] -= total_price
-
-    for _item in user["items"]:
-        if _item["id"] == item_id:
-            _item["current_amount"] += buy_times * _item["buy_amount"]
-
-    update_user(user)
-
-    return True
-
-
 def buy_item(item, buy_times):
 
     if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
@@ -65,6 +33,9 @@ def buy_item(item, buy_times):
 
     if total_le < total_price:
         buy_times = total_le // item["price"]
+        if buy_times == 0:
+            total_le = get_le()
+            buy_times = total_le // item["price"]
 
     if buy_times == 0:
         log("Você não tem dinheiro pra comprar esse item")
@@ -143,7 +114,7 @@ def buy_items():
                     f"Precisa comprar {item['name']} temos {current_amount} de {min_amount}"
                 )
 
-                status = fake_buy_item(item, buy_times)
+                status = buy_items(item, buy_times)
                 tries += 1
 
                 if status == 999:

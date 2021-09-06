@@ -78,7 +78,7 @@ def play_game():
 
     try:
         log("Hora de verificar se o bot precisará fazer algo")
-        need_actions = check_need_actions(plants)
+        need_actions, need_captchas = check_need_actions(plants)
         if need_actions:
             log("Ações necessárias, iniciando rotinas")
         else:
@@ -92,7 +92,8 @@ def play_game():
         return False
 
     try:
-        start_captcha_solver()
+        if need_captchas:
+            start_captcha_solver()
     except Exception as e:
         log("Erro na rotina de solucionar captchas iniciais:", e)
         traceback.print_exc()
@@ -100,7 +101,7 @@ def play_game():
         return False
 
     try:
-        log(f"Hora de pegar informações da sua fazenda!")
+        log(f"Hora de pegar informações do usuário!")
         random_sleep(3)
         reset_user()
         user_info = get_user()
@@ -113,6 +114,7 @@ def play_game():
 
     try:
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
+            log("Hora de comprar itens")
             if user_le < int(os.getenv("MIN_LE", 0)):
                 log("Você não tem o dinheiro minimo para a rotina de compra")
             else:

@@ -583,42 +583,88 @@ def check_need_actions(plants=None):
 
     log("Verificando se alguma ação será necessária")
 
+    water = 0
+    crow = 0
+    pot = 0
+    news = 0
+    harvest = 0
+    buy = 0
+    need_action = False
+
     if plants is None:
         plants = get_plants()
 
     for plant in plants:
         if plant.get("stage") == "farming" or plant.get("stage") == "paused":
             if plant["water"] < 2:
-                log("Ações serão necessárias (algumas plantas precisam ser regadas)")
-                return True
+                water += 1
+                need_action = True
 
             if plant["crow"]:
-                log("Ações serão necessárias (algumas plantas possuem corvo)")
-                return True
+                crow += 1
+                need_action = True
 
             if plant["pot"] == 0:
-                log(
-                    "Ações serão necessárias (algumas plantas precisam ser colocadas no vaso)"
-                )
-                return True
+                pot += 1
+                need_action = True
 
         if plant.get("stage") == "new":
-            log("Ações serão necessárias (algumas plantas são novas)")
-            return True
+            news += 1
+            need_action = True
 
         if plant["stage"] == "cancelled":
-            log("Ações serão necessárias (algumas plantas precisam ser colhidas")
-            return True
+            harvest += 1
+            need_action = True
 
     items = get_user()["items"]
+
     for item in items:
         current_amount = item["current_amount"]
         min_amount = item["min_amount"]
 
         if current_amount < min_amount:
-            log("Ações serão necessárias (ao menos um item precisa ser comprado)")
-            return True
+            buy += 1
+            need_action = True
 
-    log("Nenhuma ação será necessária")
+    if water > 0:
+        plural_singular = "plantas" if water > 1 else "planta"
+        log(f"- Você precisa aguar {water} {plural_singular}")
+    else:
+        log("- Você não precisa regar nenhuma planta")
 
-    return False
+    if crow > 0:
+        plural_singular = "plantas" if crow > 1 else "planta"
+        log(f"- Você precisa remover corvo de {crow} {plural_singular}")
+    else:
+        log("- Você não precisa remover corvo de nenhuma planta")
+
+    if pot > 0:
+        plural_singular = "plantas" if pot > 1 else "planta"
+        log(f"- Você precisa adicionar vasos em {pot} {plural_singular}")
+    else:
+        log("- Você não precisa adicionar vasos em nenhuma planta")
+
+    if news > 0:
+        plural_singular = "plantas" if news > 1 else "planta"
+        log(f"- Você possui {news} {plural_singular} novas")
+    else:
+        log("- Você não possui nenhuma planta nova")
+
+    if harvest > 0:
+        plural_singular = "plantas" if harvest > 1 else "planta"
+        log(f"- Você precisa colher {harvest} {plural_singular}")
+    else:
+        log("- Você não precisa colher nenhuma planta")
+
+    if buy > 0:
+        plural_singular = "itens" if buy > 1 else "item"
+        log(f"- Você precisa comprar {buy} {plural_singular}")
+    else:
+        log("- Você não precisa comprar nenhum item")
+
+    if need_action:
+        log("Ao menos uma ação é necessária!")
+        return True
+    else:
+        log("Nenhuma ação será necessária!")
+        return False

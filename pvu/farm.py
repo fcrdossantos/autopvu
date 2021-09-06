@@ -461,6 +461,8 @@ def harvest_plant(plant_id):
 def harvest_plants(plants=None):
     log("Iniciando a rotina de colher plantas")
 
+    hasvested = False
+
     if plants is None:
         plants = get_plants()
 
@@ -468,6 +470,7 @@ def harvest_plants(plants=None):
         if plant["stage"] == "cancelled":
             status = harvest_plant(plant["id"])
             if status == 11 or status == True:
+                hasvested = True
                 if plant["temp"]:
                     remove_plant(plant["id"])
 
@@ -477,6 +480,8 @@ def harvest_plants(plants=None):
         random_sleep()
 
     log("Fim da rotina de colher plantas")
+
+    return hasvested
 
 
 def add_plant(plant_id):

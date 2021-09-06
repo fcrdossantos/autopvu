@@ -39,12 +39,12 @@ def a():
         y = os.getenv(c, "_")
         result = ka.license(y)
         if not result:
-            log("Usuário não registrado ou HWID inválido!")
+            # log("Usuário não registrado ou HWID inválido!")
             # log(result)
             input()
             sys.exit(0)
     except Exception as e:
-        log("Erro ao logar!")
+        # log("Erro ao logar!")
         input()
         sys.exit(0)
 

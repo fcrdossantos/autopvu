@@ -118,7 +118,7 @@ def play_game():
 
     try:
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
-            log("Hora de comprar itens")
+            log("Hora de comprar itens (pós colheita)")
             if user_le < int(os.getenv("MIN_LE", 0)):
                 log("Você não tem o dinheiro minimo para a rotina de compra")
             else:
@@ -140,15 +140,30 @@ def play_game():
         if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
             log("Hora de colher as plantas")
             random_sleep(3)
-            harvest_plants(plants=plants)
+            harvested = harvest_plants(plants=plants)
     except Exception as e:
         log("Erro na rotina de colher plantas:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
         return False
 
-    # actual_le = get_le()
-    # user_info["le"] = actual_le
+    try:
+        if harvested:
+            actual_le = get_le()
+            user_info["le"] = actual_le
+            if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
+                log("Hora de comprar itens")
+                if user_le < int(os.getenv("MIN_LE", 0)):
+                    log("Você não tem o dinheiro minimo para a rotina de compra")
+                else:
+                    log("Hora de comprar os itens")
+                    random_sleep(3)
+                    buy_items()
+    except Exception as e:
+        log("Erro na rotina de comprar itens:", e)
+        traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
+        return False
 
     try:
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):

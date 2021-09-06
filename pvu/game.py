@@ -14,7 +14,7 @@ from pvu.farm import (
     check_need_actions,
 )
 from pvu.daily import do_daily
-from pvu.user import get_user, get_user_info, reset_user
+from pvu.user import get_le, get_user, get_user_info, reset_user
 from pvu.utils import random_sleep
 from pvu.store import buy_items
 from logs import log
@@ -52,6 +52,24 @@ def play_game():
     try:
         log("Pegando as informações das fazendas e plantas")
         plants = get_plants()
+        for plant in plants:
+            log(f"Status da planta ID {plant['id']}")
+            if plant["pot"] == 0:
+                log("- Precisa de um vaso")
+            else:
+                log("- Não precisa de vaso")
+            if plant["water"] < 2:
+                log(f"- Precisa ser aguada {2 - plant['water']}")
+            else:
+                log("- Não precisa ser aguada")
+            if plant["crow"]:
+                log("- Precisa ter um corvo removido")
+            else:
+                log("- Não possui corvos")
+            if plant["stage"] == "cancelled":
+                log("- Precisa ser colhida")
+            else:
+                log("- Não precisa ser colhida")
     except:
         log("Erro ao pegar informações das fazendas e plantas")
         traceback.print_exc()
@@ -60,7 +78,7 @@ def play_game():
 
     try:
         log("Hora de verificar se o bot precisará fazer algo")
-        need_actions = check_need_actions()
+        need_actions = check_need_actions(plants)
         if need_actions:
             log("Ações necessárias, iniciando rotinas")
         else:
@@ -123,6 +141,9 @@ def play_game():
         random_sleep(60 * 8, min_time=60 * 5)
         return False
 
+    # actual_le = get_le()
+    # user_info["le"] = actual_le
+
     try:
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):
             log("Hora de colocar os vasos")
@@ -134,7 +155,7 @@ def play_game():
         random_sleep(60 * 8, min_time=60 * 5)
         return False
 
-    plants = get_plants()
+    # plants = get_plants()
 
     try:
         if os.getenv("WATER", "TRUE").lower() in ("true", "1"):

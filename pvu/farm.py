@@ -50,6 +50,7 @@ def get_plants():
                 "crow": False,
                 "stage": "farming",
                 "temp": False,
+                "pot": 0,
             }
 
             for tool in plant["activeTools"]:
@@ -511,7 +512,7 @@ def add_plant(plant_id):
         log("Tentarei novamente mais tarde!")
         return False
 
-    return True
+    return 10
 
 
 def get_farm_lands():
@@ -550,17 +551,30 @@ def add_plants():
     log("Iniciando rotina de adicionar novas plantas")
     available_lands = get_available_spaces()
 
+    added = False
+
     available_trees = available_lands["tree"]
     for _ in range(available_trees):
-        add_plant(1)
+        result = add_plant(1)
+        if result == 10:
+            added = True
 
     available_mothers = available_lands["mother"]
     for _ in range(available_mothers):
-        add_plant(2)
+        result = add_plant(2)
+        if result == 10:
+            added = True
 
     if available_trees > 0 or available_mothers > 0:
-        use_pots()
-        water_plants()
+        if added:
+            log("Conseguimos plantar ao menos uma nova planta")
+            log("Vou refazer as ações de colocar vasos e aguar as plantas")
+            plants = get_plants()
+            use_pots(plants)
+            water_plants(plants)
+        else:
+            log("Não foi possível adicionar nenhuma planta nova")
+            log("Tentaremos novamente mais tarde")
 
     log("Fim da rotina de adicionar novas plantas")
 
@@ -594,6 +608,15 @@ def check_need_actions(plants=None):
 
         if plant["stage"] == "cancelled":
             log("Ações serão necessárias (algumas plantas precisam ser colhidas")
+            return True
+
+    items = get_user()["items"]
+    for item in items:
+        current_amount = item["current_amount"]
+        min_amount = item["min_amount"]
+
+        if current_amount < min_amount:
+            log("Ações serão necessárias (ao menos um item precisa ser comprado)")
             return True
 
     log("Nenhuma ação será necessária")

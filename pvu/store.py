@@ -33,9 +33,9 @@ def buy_item(item, buy_times):
 
     if total_le < total_price:
         buy_times = total_le // item["price"]
-        if buy_times == 0:
-            total_le = get_le()
-            buy_times = total_le // item["price"]
+        # if buy_times == 0:
+        #     total_le = get_le()
+        #     buy_times = total_le // item["price"]
 
     if buy_times == 0:
         log("Você não tem dinheiro pra comprar esse item")
@@ -114,7 +114,7 @@ def buy_items():
                     f"Precisa comprar {item['name']} temos {current_amount} de {min_amount}"
                 )
 
-                status = buy_items(item, buy_times)
+                status = buy_item(item, buy_times)
                 tries += 1
 
                 if status == 999:

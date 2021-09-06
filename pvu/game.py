@@ -50,6 +50,11 @@ def play_game():
     log("Iniciando as rotinas")
 
     try:
+        reset_user()
+    except:
+        log("Impossível reiniciar as informações do usuário")
+
+    try:
         log("Pegando as informações das fazendas e plantas")
         plants = get_plants()
         for plant in plants:
@@ -103,7 +108,6 @@ def play_game():
     try:
         log(f"Hora de pegar informações do usuário!")
         random_sleep(3)
-        reset_user()
         user_info = get_user()
         user_le = user_info["le"]
     except Exception as e:

@@ -109,7 +109,6 @@ def play_game():
         log(f"Hora de pegar informações do usuário!")
         random_sleep(3)
         user_info = get_user()
-        user_le = user_info["le"]
     except Exception as e:
         log("Erro na rotina de pegar informações do usuário:", e)
         traceback.print_exc()
@@ -117,8 +116,24 @@ def play_game():
         return False
 
     try:
+        if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
+            log("Hora de colher as plantas")
+            random_sleep(3)
+            harvested = False
+            harvested = harvest_plants(plants=plants)
+    except Exception as e:
+        log("Erro na rotina de colher plantas:", e)
+        traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
+        return False
+
+    try:
+        if harvested:
+            user_info["le"] = get_le()
+
+        user_le = user_info["le"]
         if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
-            log("Hora de comprar itens (pós colheita)")
+            log("Hora de comprar itens")
             if user_le < int(os.getenv("MIN_LE", 0)):
                 log("Você não tem o dinheiro minimo para a rotina de compra")
             else:
@@ -135,35 +150,6 @@ def play_game():
         random_sleep()
         driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
         random_sleep(3)
-
-    try:
-        if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
-            log("Hora de colher as plantas")
-            random_sleep(3)
-            harvested = harvest_plants(plants=plants)
-    except Exception as e:
-        log("Erro na rotina de colher plantas:", e)
-        traceback.print_exc()
-        random_sleep(60 * 8, min_time=60 * 5)
-        return False
-
-    try:
-        if harvested:
-            actual_le = get_le()
-            user_info["le"] = actual_le
-            if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
-                log("Hora de comprar itens")
-                if user_le < int(os.getenv("MIN_LE", 0)):
-                    log("Você não tem o dinheiro minimo para a rotina de compra")
-                else:
-                    log("Hora de comprar os itens")
-                    random_sleep(3)
-                    buy_items()
-    except Exception as e:
-        log("Erro na rotina de comprar itens:", e)
-        traceback.print_exc()
-        random_sleep(60 * 8, min_time=60 * 5)
-        return False
 
     try:
         if os.getenv("POT", "TRUE").lower() in ("true", "1"):

@@ -89,12 +89,20 @@ def play_game():
             log("Ações necessárias, iniciando rotinas")
         else:
             log("Ações não necessárias no momento, tentaremos mais tarde")
-            random_sleep(
-                60 * 60 * 10,
-                min_time=60 * 60 * 0.7,
-                max_time=60 * 60 * 2.3,
-                verbose=True,
-            )
+            if os.getenv("LONG_DELAY", "True").lower() in ("true", 1):
+                random_sleep(
+                    60 * 60 * 10,
+                    min_time=60 * 60 * 0.7,
+                    max_time=60 * 60 * 2.3,
+                    verbose=True,
+                )
+            else:
+                random_sleep(
+                    60 * 60 * 2,
+                    min_time=60 * 15,
+                    max_time=60 * 30,
+                    verbose=True,
+                )
             return True
     except:
         log("Impossível detectar se alguma ação é necessária")
@@ -220,10 +228,18 @@ def play_game():
 
     stop_captcha_solver()
     log(f"Tudo feito! Até mais tarde :)")
-    random_sleep(
-        60 * 60 * 10,
-        min_time=60 * 60 * 0.7,
-        max_time=60 * 60 * 2.3,
-        verbose=True,
-    )
+    if os.getenv("LONG_DELAY", "True").lower() in ("true", 1):
+        random_sleep(
+            60 * 60 * 10,
+            min_time=60 * 60 * 0.7,
+            max_time=60 * 60 * 2.3,
+            verbose=True,
+        )
+    else:
+        random_sleep(
+            60 * 60 * 2,
+            min_time=60 * 15,
+            max_time=60 * 30,
+            verbose=True,
+        )
     return True

@@ -17,9 +17,27 @@ from logs import log
 from decenc.genv import gf, gt
 from ka import api
 from decenc.decstr import strdec
+from datetime import datetime
 
 SET_HWID = False
 GET_HWID = False
+
+
+def sleep_pause():
+    begin_sleep = int(os.getenv("BEGIN_SLEEP_HOUR", "00"))
+    if begin_sleep == 24:
+        begin_sleep = 0
+
+    finish_sleep = int(os.getenv("FINISH_SLEEP_HOUR", "07"))
+
+    hour = datetime.now().hour
+
+    if finish_sleep < begin_sleep and (hour >= begin_sleep or hour < finish_sleep):
+        return True
+    elif finish_sleep > begin_sleep and (hour >= begin_sleep and hour < finish_sleep):
+        return True
+    else:
+        return False
 
 
 def a():
@@ -39,12 +57,9 @@ def a():
         y = os.getenv(c, "_")
         result = ka.license(y)
         if not result:
-            # log("Usuário não registrado ou HWID inválido!")
-            # log(result)
             input()
             sys.exit(0)
     except Exception as e:
-        # log("Erro ao logar!")
         input()
         sys.exit(0)
 
@@ -142,6 +157,28 @@ def start_routines():
                 log("Provavelmente o jogo entrou em manutenção no meio do processo:", e)
                 traceback.print_exc()
                 random_sleep()
+            finally:
+                if os.getenv("SLEEP", "True").lower() in ("true", 1):
+                    log("Verificando se está na hora de dormir")
+                    sleeping = sleep_pause()
+                    while sleeping:
+                        log("Está na hora de dormir, estamos aguardando")
+                        if os.getenv("LONG_DELAY", "True").lower() in ("true", 1):
+                            random_sleep(
+                                60 * 60 * 10,
+                                min_time=60 * 60 * 0.7,
+                                max_time=60 * 60 * 1.7,
+                                verbose=True,
+                            )
+                        else:
+                            random_sleep(
+                                60 * 60 * 2,
+                                min_time=60 * 15,
+                                max_time=60 * 30,
+                                verbose=True,
+                            )
+                        sleeping = sleep_pause()
+                    log("Não está na hora de dormir, podemos continuar")
 
 
 try:

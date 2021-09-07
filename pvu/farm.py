@@ -631,7 +631,7 @@ def check_need_actions(plants=None):
 
     user_le = get_user()["le"]
 
-    if user_le < int(os.getenv("MIN_LE", 0)):
+    if user_le > int(os.getenv("MIN_LE", 0)):
         items = get_user()["items"]
 
         for item in items:
@@ -642,9 +642,6 @@ def check_need_actions(plants=None):
                 buy += 1
                 need_action = True
                 buy_action = True
-    else:
-        log("=> Você não pode comprar nada (não tem o LE mínimo)")
-        
 
     if water > 0:
         plural_singular = "plantas" if water > 1 else "planta"
@@ -680,7 +677,10 @@ def check_need_actions(plants=None):
         plural_singular = "itens" if buy > 1 else "item"
         log(f"=> Você precisa comprar {buy} {plural_singular}")
     else:
-        log("=> Você não precisa comprar nenhum item")
+        if user_le < int(os.getenv("MIN_LE", 0)):
+            log("=> Você não pode comprar nada (não tem o LE mínimo)")
+        else:
+            log("=> Você não precisa comprar nenhum item")
 
     if need_action:
         log("Ao menos uma ação é necessária!")
@@ -701,5 +701,3 @@ def check_need_actions(plants=None):
         "need_harvest": harvest,
         "need_buy": buy,
     }
-
-    # Retorno: Need_Action , Plant_Action

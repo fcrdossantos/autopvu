@@ -90,9 +90,9 @@ def play_game():
         else:
             log("Ações não necessárias no momento, tentaremos mais tarde")
             random_sleep(
-                60 * 60 * 3,
-                min_time=60 * 60,
-                max_time=60 * 60 * 2,
+                60 * 60 * 10,
+                min_time=60 * 60 * 0.7,
+                max_time=60 * 60 * 2.3,
                 verbose=True,
             )
             return True
@@ -122,11 +122,11 @@ def play_game():
         return False
 
     try:
+        harvested = False
         if need_actions["need_harvest"] != 0:
             if os.getenv("HARVEST", "TRUE").lower() in ("true", "1"):
                 log("Hora de colher as plantas")
                 random_sleep(3)
-                harvested = False
                 harvested = harvest_plants(plants=plants)
     except Exception as e:
         log("Erro na rotina de colher plantas:", e)
@@ -221,9 +221,9 @@ def play_game():
     stop_captcha_solver()
     log(f"Tudo feito! Até mais tarde :)")
     random_sleep(
-        60 * 60 * 3,
-        min_time=60 * 60,
-        max_time=60 * 60 * 2,
+        60 * 60 * 10,
+        min_time=60 * 60 * 0.7,
+        max_time=60 * 60 * 2.3,
         verbose=True,
     )
     return True

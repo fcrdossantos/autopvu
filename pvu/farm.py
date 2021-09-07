@@ -596,6 +596,8 @@ def check_need_actions(plants=None):
     buy = 0
     plant_action = False
     need_action = False
+    buy_action = False
+    need_captcha = False
 
     if plants is None:
         plants = get_plants()
@@ -627,15 +629,22 @@ def check_need_actions(plants=None):
             plant_action = True
             need_action = True
 
-    items = get_user()["items"]
+    user_le = get_user()["le"]
 
-    for item in items:
-        current_amount = item["current_amount"]
-        min_amount = item["min_amount"]
+    if user_le < int(os.getenv("MIN_LE", 0)):
+        items = get_user()["items"]
 
-        if current_amount < min_amount:
-            buy += 1
-            need_action = True
+        for item in items:
+            current_amount = item["current_amount"]
+            min_amount = item["min_amount"]
+
+            if current_amount < min_amount:
+                buy += 1
+                need_action = True
+                buy_action = True
+    else:
+        log("=> Você não pode comprar nada (não tem o LE mínimo)")
+        
 
     if water > 0:
         plural_singular = "plantas" if water > 1 else "planta"
@@ -675,13 +684,22 @@ def check_need_actions(plants=None):
 
     if need_action:
         log("Ao menos uma ação é necessária!")
-        if not plant_action:
-            # Só precisa comprar (Verificar se para compra nunca precisa de captcha)
-            # Se nunca precisar, então não pegar!
-            return True, False
-        return True, True
+        if plant_action:
+            need_captcha = True
     else:
         log("Nenhuma ação será necessária!")
-        return False, False
+
+    return {
+        "need_action": need_action,
+        "buy_action": buy_action,
+        "plant_action": plant_action,
+        "need_captcha": need_captcha,
+        "need_water": water,
+        "need_crow": crow,
+        "need_pot": pot,
+        "need_news": news,
+        "need_harvest": harvest,
+        "need_buy": buy,
+    }
 
     # Retorno: Need_Action , Plant_Action

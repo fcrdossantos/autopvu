@@ -208,6 +208,8 @@ def upload_captcha():
 def get_captcha_result():
     global ACTIVE_CAPTCHAS
     for i in range(5):
+        if not NEED_CAPTCHA:
+            return 444
         log(f"Tentativa {i+1}/5 de solucionar o captcha")
         result = upload_captcha()
         if result is not None:

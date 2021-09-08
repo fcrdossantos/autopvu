@@ -101,6 +101,9 @@ def wait_maintenance():
     log("Verificando se o jogo está em manutenção")
     maintenance = check_maintenance()
 
+    if not maintenance:
+        return False
+
     if maintenance:
         next_group_time = get_next_group_time(maintenance)
 
@@ -117,5 +120,8 @@ def wait_maintenance():
                 log("Verificando se o jogo ainda está em manutenção")
                 maintenance = check_maintenance()
 
+        return True
+
     else:
         log("Não está em manutenção")
+        return True

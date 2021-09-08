@@ -556,30 +556,23 @@ def add_plants():
     log("Iniciando rotina de adicionar novas plantas")
     available_lands = get_available_spaces()
 
-    added = False
-
     available_trees = available_lands["tree"]
     for _ in range(available_trees):
         result = add_plant(1)
-        if result == 10:
-            added = True
 
     available_mothers = available_lands["mother"]
     for _ in range(available_mothers):
         result = add_plant(2)
-        if result == 10:
-            added = True
 
     if available_trees > 0 or available_mothers > 0:
-        if added:
-            log("Conseguimos plantar ao menos uma nova planta")
-            log("Vou refazer as ações de colocar vasos e aguar as plantas")
-            plants = get_plants()
-            use_pots(plants)
-            water_plants(plants)
-        else:
-            log("Não foi possível adicionar nenhuma planta nova")
-            log("Tentaremos novamente mais tarde")
+        # if added:
+        log("Conseguimos plantar ao menos uma nova planta")
+        log("Vou refazer as ações de colocar vasos e aguar as plantas")
+        use_pots()
+        water_plants()
+        # else:
+        #     log("Não foi possível adicionar nenhuma planta nova")
+        #     log("Tentaremos novamente mais tarde")
 
     log("Fim da rotina de adicionar novas plantas")
 

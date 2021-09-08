@@ -36,8 +36,10 @@ def play_game():
         return -100
 
     random_sleep(min_time=3)
-    wait_maintenance()
-    driver.refresh()
+    maintenance = wait_maintenance()
+
+    if maintenance:
+        driver.refresh()
 
     log(f"Jogo disponível! Iniciando")
 
@@ -143,19 +145,19 @@ def play_game():
         return False
 
     try:
-        if need_actions["need_buy"] != 0:
-            if harvested:
-                user_info["le"] = get_le()
 
-            user_le = user_info["le"]
-            if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
-                log("Hora de comprar itens")
-                if user_le < int(os.getenv("MIN_LE", 0)):
-                    log("Você não tem o dinheiro minimo para a rotina de compra")
-                else:
-                    log("Hora de comprar os itens")
-                    random_sleep(3)
-                    buy_items()
+        if harvested:
+            user_info["le"] = get_le()
+
+        user_le = user_info["le"]
+        if os.getenv("BUY_ITEMS", "TRUE").lower() in ("true", "1"):
+            log("Hora de comprar itens")
+            if user_le < int(os.getenv("MIN_LE", 0)):
+                log("Você não tem o dinheiro minimo para a rotina de compra")
+            else:
+                log("Hora de comprar os itens")
+                random_sleep(3)
+                buy_items()
     except Exception as e:
         log("Erro na rotina de comprar itens:", e)
         traceback.print_exc()
@@ -168,23 +170,23 @@ def play_game():
         random_sleep(3)
 
     try:
-        if need_actions["need_pot"] != 0:
-            if os.getenv("POT", "TRUE").lower() in ("true", "1"):
-                log("Hora de colocar os vasos")
-                random_sleep(3)
-                use_pots(plants=plants)
+        if os.getenv("POT", "TRUE").lower() in ("true", "1"):
+            log("Hora de colocar os vasos")
+            random_sleep(3)
+            use_pots(plants=plants)
     except Exception as e:
         log("Erro na rotina de colocar vasos:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
         return False
 
+    plants = get_plants()
+
     try:
-        if need_actions["need_water"] != 0:
-            if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
-                log("Hora de regar plantas!")
-                random_sleep(3)
-                water_plants(plants=plants)
+        if os.getenv("WATER", "TRUE").lower() in ("true", "1"):
+            log("Hora de regar plantas!")
+            random_sleep(3)
+            water_plants(plants=plants)
     except Exception as e:
         log("Erro na rotina de aguar plantas:", e)
         traceback.print_exc()
@@ -192,11 +194,10 @@ def play_game():
         return False
 
     try:
-        if need_actions["need_crow"] != 0:
-            if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
-                log("Hora de remover corvos")
-                random_sleep(3)
-                remove_crows(plants=plants)
+        if os.getenv("CROW", "TRUE").lower() in ("true", "1"):
+            log("Hora de remover corvos")
+            random_sleep(3)
+            remove_crows(plants=plants)
     except Exception as e:
         log("Erro na rotina de remover corvos:", e)
         traceback.print_exc()
@@ -204,11 +205,10 @@ def play_game():
         return False
 
     try:
-        if need_actions["need_news"] != 0:
-            if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
-                log("Hora de adicionar novas plantas")
-                random_sleep(3)
-                add_plants()
+        if os.getenv("PLANT", "TRUE").lower() in ("true", "1"):
+            log("Hora de adicionar novas plantas")
+            random_sleep(3)
+            add_plants()
     except Exception as e:
         log("Erro na rotina de plantas arvores:", e)
         traceback.print_exc()

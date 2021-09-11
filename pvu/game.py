@@ -226,6 +226,13 @@ def play_game():
         random_sleep(60 * 8, min_time=60 * 5)
         return False
 
+    try:
+        if need_actions["plant_action"]:
+            log("Recarregando a página da fazenda")
+            driver.refresh()
+    except:
+        log("Impossível recarregar a página da fazenda")
+
     stop_captcha_solver()
     log(f"Tudo feito! Até mais tarde :)")
     if os.getenv("LONG_DELAY", "True").lower() in ("true", 1):

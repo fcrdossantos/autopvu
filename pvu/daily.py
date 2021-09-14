@@ -62,6 +62,19 @@ def claim_reward(reward_type):
 
     if response["status"] == 0:
         log(f"Conseguimos pegar a recompensa {reward_type}")
+        try:
+            rewards = json.loads(response).get("data")
+            if rewards:
+                log(f"=> LE: {rewards.get('le')}")
+                log(f"=> Sapling: {rewards.get('sapling')}")
+                log(f"=> Sun Box: {rewards.get('sunBox')}")
+                if rewards.get("sunBox") > 0:
+                    sunbox_reward = rewards.get("sunBoxReward")
+                    if sunbox_reward:
+                        infos = [x for x in sunbox_reward.keys()]
+                        log(f"==> Prêmio da Sun Box: {infos[-1]}")
+        except Exception as e:
+            log("Erro ao decifrar a recompensa:", e)
         return True
 
     log("Erro ao pegar a recompensa:", response)

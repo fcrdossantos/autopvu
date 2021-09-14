@@ -285,15 +285,21 @@ def remove_crows(plants=None):
     log("Fim da rotina de remover corvos")
 
 
-def use_pot(plant_id, need_captcha=False):
+def use_pot(plant_id, need_captcha=False, temp=True):
     log("Colocando pote na planta:", plant_id)
 
     url = f"{get_backend_url()}/farms/apply-tool"
 
-    if os.getenv("POT_TYPE", "SMALL").lower() in ("big", "2"):
-        tool_id = 2
+    if temp:
+        if os.getenv("POT_TYPE_TEMP", "SMALL").lower() in ("big", "2"):
+            tool_id = 2
+        else:
+            tool_id = 1
     else:
-        tool_id = 1
+        if os.getenv("POT_TYPE_PERMA", "BIG").lower() in ("big", "2"):
+            tool_id = 2
+        else:
+            tool_id = 1
 
     items = get_user()["items"]
 
@@ -368,28 +374,35 @@ def use_pots(plants=None):
 
         if plant["stage"] == "new":
             log(f"A planta é nova e precisa de um vaso")
-            result_pot = use_pot(plant["id"])
+            result_pot = use_pot(plant["id"], temp=plant["temp"])
 
             if result_pot == 556:
-                result_pot = use_pot(plant["id"], need_captcha=True)
+                result_pot = use_pot(plant["id"], need_captcha=True, temp=plant["temp"])
 
             if result_pot == 404:
                 return
 
             continue
 
-        while plant["pot"] == 0:
+        if plant["temp"]:
+            pots_count = 1
+        else:
+            pots_count = int(os.getenv("POT_PERMA_COUNT", "2"))
+            if not pots_count:
+                pots_count = 2
+
+        while plant["pot"] < pots_count:
             random_sleep()
-            result_pot = use_pot(plant["id"])
+            result_pot = use_pot(plant["id"], temp=plant["temp"])
 
             if result_pot == 556:
-                result_pot = use_pot(plant["id"], need_captcha=True)
+                result_pot = use_pot(plant["id"], need_captcha=True, temp=plant["temp"])
 
             if result_pot == 1:
-                plant["pot"] = 1
+                plant["pot"] += 1
 
             if result_pot == 10:
-                plant["pot"] = 1
+                plant["pot"] += 1
                 continue
 
             if result_pot == 404:

@@ -58,14 +58,15 @@ def check_logged():
         driver = get_browser()
 
         random_sleep()
-        maintenance = WebDriverWait(driver, 10).until(
+        login_btn = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div/div/div/div[2]/div[2]/div[2]/div[1]")
+                (By.XPATH, "/html/body/div/div/div/div[1]/div[1]/div/nav/div[3]/button")
             )
         )
 
-        log("Precisamos logar na conta!")
-        return False
+        if "Login" in login_btn.text:
+            log("Precisamos logar na conta!")
+            return False
     except:
         log("Já está logado na conta!")
         log("Vamos iniciar as rotinas do jogo")

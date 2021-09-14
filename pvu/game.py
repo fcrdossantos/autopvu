@@ -16,7 +16,7 @@ from pvu.farm import (
 )
 from pvu.daily import do_daily
 from pvu.user import get_le, get_user, get_user_info, reset_user
-from pvu.utils import random_sleep
+from pvu.utils import random_sleep, reset_backend_url
 from pvu.store import buy_items
 from logs import log
 from pvu.captcha import start_captcha_solver, stop_captcha_solver
@@ -54,6 +54,7 @@ def play_game():
 
     try:
         reset_user()
+        reset_backend_url()
     except:
         log("Impossível reiniciar as informações do usuário")
 

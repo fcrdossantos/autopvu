@@ -34,6 +34,11 @@ def get_headers():
     return headers
 
 
+def reset_backend_url():
+    global BACKEND_URL
+    BACKEND_URL = None
+
+
 def get_backend_url():
     global BACKEND_URL
 
@@ -91,10 +96,7 @@ def get_bearer_token():
             random_sleep()
 
             for req in driver.requests:
-                if (
-                    "https://backend-farm-stg.plantvsundead.com/get-seeds-inventory"
-                    in req.url
-                ):
+                if f"get-seeds-inventory" in req.url:
                     if "authorization" in req.headers:
                         BEARER = req.headers["authorization"]
                         waiting_req = False

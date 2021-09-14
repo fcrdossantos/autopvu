@@ -57,9 +57,15 @@ def a():
         y = os.getenv(c, "_")
         result = ka.license(y)
         if not result:
+            a = "uuwa3KblFhYWcfFHZbJSDAABhqCAAAAAAGE8PhB4X7v4hO0tF6sk7bP5Se_swcZeRZwX9Nhh6s445bcmQ3kdTqOEReuCMGySYyiH4WRpSbeTL2JNhiLMGC9M9SspP1rukWNHitvBuBqk8B57tQ=="
+            c = strdec(a, "import").decode()
+            log(c, result)
             input()
             sys.exit(0)
     except Exception as e:
+        a = "4utonguFhRfsT26SkrzlDAABhqCAAAAAAGE8PxUwAWEELgzLU_g0a1bIkxu_w4b-1oECWxB8aBzzePHZhs3tlb9WQ1BxZUkrHdX6ham7EAOQ7N_eJ5EiacntcwXlWl0w62fNlVogQx-tPLyKH7tBxLQ4nAwtubKdT_vWL7COAjH1n9VqwaMPE70tIT2z"
+        c = strdec(a, "import").decode()
+        log(c)
         input()
         sys.exit(0)
 

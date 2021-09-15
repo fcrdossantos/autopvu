@@ -126,7 +126,7 @@ def claim_reward(reward_type):
     if response["status"] == 0:
         log(f"Conseguimos pegar a recompensa {reward_type}")
         try:
-            rewards = json.loads(response).get("data")
+            rewards = response.get("data")
             if rewards:
                 log(f"=> LE: {rewards.get('le')}")
                 log(f"=> Sapling: {rewards.get('sapling')}")

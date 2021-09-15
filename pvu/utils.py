@@ -20,15 +20,18 @@ def get_headers():
     headers = {
         "authority": "backend-farm-stg.plantvsundead.com",
         "accept": "application/json, text/plain, */*",
+        "accept-encoding": "gzip, deflate, br",
+        "accept-language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
         "authorization": f"{get_bearer_token()}",
-        "sec-ch-ua-mobile": "?0",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
         "origin": "https://marketplace.plantvsundead.com",
+        "referer": "https://marketplace.plantvsundead.com/",
+        "sec-ch-ua": '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "Windows",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
         "sec-fetch-site": "same-site",
         "sec-fetch-mode": "cors",
         "sec-fetch-dest": "empty",
-        "referer": "https://marketplace.plantvsundead.com/",
-        "accept-language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
     }
 
     return headers

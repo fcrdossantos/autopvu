@@ -128,9 +128,12 @@ def claim_reward(reward_type):
         try:
             rewards = response.get("data")
             if rewards:
-                log(f"=> LE: {rewards.get('le')}")
-                log(f"=> Sapling: {rewards.get('sapling')}")
-                log(f"=> Sun Box: {rewards.get('sunBox')}")
+                if rewards.get("le"):
+                    log(f"=> LE: {rewards.get('le')}")
+                if rewards.get("sapling"):
+                    log(f"=> Sapling: {rewards.get('sapling')}")
+                if rewards.get("sunBox"):
+                    log(f"=> Sun Box: {rewards.get('sunBox')}")
                 if rewards.get("sunBox") > 0:
                     sunbox_reward = rewards.get("sunBoxReward")
                     if sunbox_reward:
@@ -157,6 +160,29 @@ def claim_yesterday_rewards():
 
     if response["status"] == 0:
         log("Conseguimos pegar a recompensa de ontem")
+        try:
+            rewards = response.get("data").get("rewards")
+            if rewards:
+                for reward in rewards:
+                    if reward.get("le"):
+                        log(f"=> LE: {reward.get('le')}")
+                    if reward.get("sapling"):
+                        log(f"=> Sapling: {reward.get('sapling')}")
+
+            sunbox_rewards = response.get("data").get("sunBoxRewards")
+            if sunbox_rewards:
+                if len(sunbox_rewards) > 0:
+                    for sunbox_reward in sunbox_rewards:
+                        infos = [x for x in sunbox_reward]
+                        if len(infos) > 1:
+                            log(f"==> Prêmio da Sun Box: {infos[-1]}")
+                        else:
+                            if type(infos) == list:
+                                log(f"==> Prêmio da Sun Box: {infos[0]}")
+                            else:
+                                log(f"==> Prêmio da Sun Box: {infos}")
+        except Exception as e:
+            log("Impossível decifrar a recompensa de ontem:", e)
         return True
 
     log("Erro ao pegar a recompensa de ontem:", response)

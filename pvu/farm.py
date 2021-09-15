@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from pvu.daily import check_daily, get_daily_status
 from pvu.user import get_user
 import time
 import os
@@ -590,7 +591,7 @@ def add_plants():
     log("Fim da rotina de adicionar novas plantas")
 
 
-def check_need_actions(plants=None):
+def check_need_actions(plants=None, daily=None):
 
     log("Verificando se alguma ação será necessária")
 
@@ -604,9 +605,16 @@ def check_need_actions(plants=None):
     need_action = False
     buy_action = False
     need_captcha = False
+    need_daily = False
 
     if plants is None:
         plants = get_plants()
+
+    if daily is None:
+        daily = get_daily_status()
+
+    if daily != -10:
+        need_daily = check_daily(daily)
 
     for plant in plants:
         if plant.get("stage") == "farming" or plant.get("stage") == "paused":
@@ -688,6 +696,12 @@ def check_need_actions(plants=None):
         else:
             log("=> Você não precisa comprar nenhum item")
 
+    if need_daily:
+        log("=> Você precisa terminar a missão diária")
+        need_action = True
+    else:
+        log("=> Você já fez a missão diária")
+
     if need_action:
         log("Ao menos uma ação é necessária!")
         if plant_action:
@@ -706,4 +720,5 @@ def check_need_actions(plants=None):
         "need_news": news,
         "need_harvest": harvest,
         "need_buy": buy,
+        "need_daily": need_daily,
     }

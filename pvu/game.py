@@ -14,7 +14,7 @@ from pvu.farm import (
     get_plants,
     check_need_actions,
 )
-from pvu.daily import do_daily
+from pvu.daily import check_daily_done, do_daily, get_daily_status
 from pvu.user import get_le, get_user, get_user_info, reset_user
 from pvu.utils import random_sleep, reset_backend_url
 from pvu.store import buy_items
@@ -86,8 +86,19 @@ def play_game():
         return False
 
     try:
+        log("Pegando informações da missão diária")
+        if check_daily_done():
+            log("Missão diária já finalizada")
+            daily = -10
+        else:
+            daily = get_daily_status()
+    except:
+        log("Impossível pegar informações da missão diária")
+        return False
+
+    try:
         log("Hora de verificar se o bot precisará fazer algo")
-        need_actions = check_need_actions(plants)
+        need_actions = check_need_actions(plants, daily)
         if need_actions["need_action"]:
             log("Ações necessárias, iniciando rotinas")
         else:
@@ -146,8 +157,27 @@ def play_game():
         return False
 
     try:
+        if need_actions["plant_action"]:
+            log("Recarregando a página da fazenda")
+            driver.refresh()
+    except:
+        log("Impossível recarregar a página da fazenda")
 
-        if harvested:
+    try:
+        daily_rewarded = False
+        if os.getenv("DAILY").lower() in ("true", "1"):
+            log("Hora de fazer a missão diária")
+            random_sleep(3)
+            do_daily()
+            daily_rewarded = True
+    except Exception as e:
+        log("Erro na rotina de missão diária:", e)
+        traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
+        return False
+
+    try:
+        if harvest_plants or daily_rewarded:
             user_info["le"] = get_le()
 
         user_le = user_info["le"]
@@ -215,24 +245,6 @@ def play_game():
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
         return False
-
-    try:
-        if os.getenv("DAILY").lower() in ("true", "1"):
-            log("Hora de fazer a missão diária")
-            random_sleep(3)
-            do_daily()
-    except Exception as e:
-        log("Erro na rotina de missão diária:", e)
-        traceback.print_exc()
-        random_sleep(60 * 8, min_time=60 * 5)
-        return False
-
-    try:
-        if need_actions["plant_action"]:
-            log("Recarregando a página da fazenda")
-            driver.refresh()
-    except:
-        log("Impossível recarregar a página da fazenda")
 
     stop_captcha_solver()
     log(f"Tudo feito! Até mais tarde :)")

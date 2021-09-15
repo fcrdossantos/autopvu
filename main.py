@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from pvu.daily import reset_daily_day
 import sys
 import time
 from threading import Thread
@@ -185,6 +186,7 @@ def start_routines():
                             )
                         sleeping = sleep_pause()
                     log("Não está na hora de dormir, podemos continuar")
+                reset_daily_day()
 
 
 try:

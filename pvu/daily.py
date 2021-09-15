@@ -2,11 +2,74 @@
 import requests
 import json
 
-from pvu.land import water_land
 from pvu.utils import get_backend_url, get_headers, random_sleep
 from browser import get_browser
 from logs import log
 import os
+from datetime import datetime, timedelta
+
+LAST_DAY = None
+DAILY_DONE = False
+
+
+def get_last_daily_day():
+    log("Verificando o dia da última missão diária (UTC)")
+    global LAST_DAY
+
+    if LAST_DAY is None:
+        LAST_DAY = datetime.utcnow()
+
+    log("O último dia (UTC) de missão diária foi:", LAST_DAY.strftime("%d/%m/%Y"))
+
+    return LAST_DAY
+
+
+def reset_daily_day():
+    log("Verificando se estamos em um novo dia para missões diárias (UTC)")
+    global LAST_DAY
+    global DAILY_DONE
+
+    now = datetime.utcnow()
+    daily_day = get_last_daily_day()
+
+    if now.day != daily_day.day:
+        log(f"Estamos num novo dia (UTC): {now.strftime('%d/%m/%Y')}")
+        log("Vamos resetar para fazer a missão diária")
+        LAST_DAY = now
+        DAILY_DONE = False
+    else:
+        log("Ainda estamos no dia da última missão diária")
+
+
+def check_daily_done():
+    global DAILY_DONE
+
+    if DAILY_DONE:
+        log("Já terminamos as missões diárias de hoje")
+    else:
+        log("Ainda temos tarefas da missão diária de hoje")
+
+    return DAILY_DONE
+
+
+def check_daily(datas):
+    global DAILY_DONE
+
+    log("Verificando se completamos todas as missões diária")
+
+    if datas.get("data").get("yesterdayReward"):
+        log("Ainda temos recompensas de ontem para pegar")
+        return True
+
+    for reward in datas.get("data").get("reward"):
+        random_sleep()
+        if reward.get("status") != "rewarded":
+            log("Ainda temos missão de hoje para fazer")
+            return True
+
+    log("Já terminamos a missão diária de hoje")
+    DAILY_DONE = True
+    return False
 
 
 def get_daily_status():
@@ -124,11 +187,12 @@ def claim_rewards(datas):
             log(f"A recompensa {reward.get('type')} ainda não foi concluída")
 
 
-def do_daily():
+def do_daily(daily=None):
     log("Iniciando a Missão Diária")
 
     random_sleep()
 
+    log("Redirecionando para a página da missão diária")
     if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
         try:
             driver = get_browser()
@@ -139,8 +203,11 @@ def do_daily():
         except:
             log("Erro ao redirecionar para a página da árvore global")
 
-    log("Pegando o status atual da Missão Diária")
-    daily = get_daily_status()
+    if daily is None:
+        log("Pegando novo status da Missão Diária")
+        daily = get_daily_status()
+    else:
+        log("Pegando o status atual da Missão Diária")
 
     my_water = daily.get("data").get("myWater")
 
@@ -188,6 +255,13 @@ def do_daily():
 
     log("Fim da rotina de missão diária")
 
+    daily = get_daily_status()
+
+    log("Verificando se ainda tem recompensas faltando")
+
+    check_daily(daily)
+
+    log("Voltando para a página da fazenda")
     if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
         try:
             driver = get_browser()
@@ -196,4 +270,4 @@ def do_daily():
                 random_sleep()
                 driver.get(f"https://marketplace.plantvsundead.com/farm#/farm")
         except:
-            log("Erro ao redirecionar para a página da árvore global")
+            log("Erro ao redirecionar para a página da fazenda")

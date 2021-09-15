@@ -39,7 +39,7 @@ def get_pvu():
     random_sleep()
     driver = get_browser()
 
-    xpath_pvu = "/html/body/div[1]/div/div/div[2]/div/div/div[3]/div[3]/div[1]/div[1]/div[1]/div[2]/div/div[2]"
+    xpath_pvu = "/html/body/div/div/div/div[1]/div[2]/div/div/div[3]/div[3]/div[1]/div[1]/div[1]/div[2]/div/div[2]"
 
     log("Pegando seus PVU's")
 

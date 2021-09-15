@@ -17,8 +17,9 @@ BACKEND_URL = None
 def get_headers():
     random_sleep()
 
+    authority = get_backend_url.replace("https://", "").replace("http://", "")
     headers = {
-        "authority": "backend-farm-stg.plantvsundead.com",
+        "authority": f"{authority}",
         "accept": "application/json, text/plain, */*",
         "accept-encoding": "gzip, deflate, br",
         "accept-language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",

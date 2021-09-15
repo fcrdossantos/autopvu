@@ -57,6 +57,9 @@ def play_game():
         reset_backend_url()
     except:
         log("Impossível reiniciar as informações do usuário")
+        traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
+        return False
 
     try:
         log("Pegando as informações das fazendas e plantas")
@@ -94,6 +97,8 @@ def play_game():
             daily = get_daily_status()
     except:
         log("Impossível pegar informações da missão diária")
+        traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 5)
         return False
 
     try:

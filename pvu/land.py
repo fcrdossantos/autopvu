@@ -9,7 +9,7 @@ import requests
 
 from pvu.captcha import get_captcha, solve_validation_captcha
 from pvu.farm import water_plant
-from pvu.utils import get_headers, random_sleep
+from pvu.utils import get_headers, random_sleep, get_backend_url
 from pvu.owner import get_owner
 from browser import get_browser
 from logs import log
@@ -44,7 +44,7 @@ def get_land_info(owner, page=0, retry=0):
 
     offset = page * 10
 
-    url = f"https://backend-farm-stg.plantvsundead.com/farms/other/{owner}?limit=10&offset={offset}"
+    url = f"{get_backend_url()}/farms/other/{owner}?limit=10&offset={offset}"
 
     if os.getenv("HUMANIZE", "TRUE").lower() in ("true", "1"):
         try:

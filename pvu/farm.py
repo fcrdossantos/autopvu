@@ -419,7 +419,7 @@ def remove_plant(plant_id):
 
     log("Removendo a planta:", plant_id)
 
-    url = f"https://backend-farm-stg.plantvsundead.com/farms/{plant_id}/deactivate"
+    url = f"{get_backend_url()}/farms/{plant_id}/deactivate"
     headers = get_headers()
 
     payload = {}
@@ -441,7 +441,7 @@ def remove_plant(plant_id):
 def harvest_plant(plant_id):
     log("Colhendo a planta:", plant_id)
 
-    url = f"https://backend-farm-stg.plantvsundead.com/farms/{plant_id}/harvest"
+    url = f"{get_backend_url()}/farms/{plant_id}/harvest"
     headers = get_headers()
 
     payload = {}
@@ -505,7 +505,7 @@ def add_plant(plant_id):
     else:
         log("Adicionando uma planta Sunflower Mama")
 
-    url = f"https://backend-farm-stg.plantvsundead.com/farms"
+    url = f"{get_backend_url()}/farms"
     headers = get_headers()
 
     payload = {"landId": 0, "sunflowerId": plant_id}

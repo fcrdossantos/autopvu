@@ -3,7 +3,7 @@ import os
 import random
 import requests
 import json
-from pvu.utils import get_headers, random_sleep
+from pvu.utils import get_headers, random_sleep, get_backend_url
 from browser import get_browser
 from logs import log
 
@@ -11,7 +11,7 @@ from logs import log
 
 
 def get_land_owner(x, y):
-    url = f"https://backend-farm-stg.plantvsundead.com/land/{x}/{y}"
+    url = f"{get_backend_url()}/land/{x}/{y}"
     headers = get_headers()
 
     random_sleep()

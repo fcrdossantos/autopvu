@@ -123,6 +123,10 @@ def buy_items():
                 if tries == 15:
                     log("Você não conseguiu comprar todos os itens")
                     return
+            else:
+                log(
+                    f"Já temos a quantidade suficiente de {item['name']} (temos {current_amount})"
+                )
 
         if cant_buy >= needed and needed != 0 and cant_buy != 0:
             log("Você não conseguiu comprar todos os itens por falta de dinheiro")

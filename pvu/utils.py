@@ -17,7 +17,7 @@ BACKEND_URL = None
 def get_headers():
     random_sleep()
 
-    authority = get_backend_url.replace("https://", "").replace("http://", "")
+    authority = get_backend_url().replace("https://", "").replace("http://", "")
     headers = {
         "authority": f"{authority}",
         "accept": "application/json, text/plain, */*",

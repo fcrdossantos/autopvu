@@ -14,7 +14,7 @@ from pvu.farm import (
     get_plants,
     check_need_actions,
 )
-from pvu.daily import check_daily_done, do_daily, get_daily_status
+from pvu.daily import check_daily_done, do_daily, get_daily_status, reset_daily_day
 from pvu.user import get_le, get_user, get_user_info, reset_user
 from pvu.utils import random_sleep, reset_backend_url
 from pvu.store import buy_items
@@ -53,6 +53,7 @@ def play_game():
     log("Iniciando as rotinas")
 
     try:
+        reset_daily_day()
         reset_user()
         reset_backend_url()
     except:
@@ -171,10 +172,13 @@ def play_game():
     try:
         daily_rewarded = False
         if os.getenv("DAILY").lower() in ("true", "1"):
-            log("Hora de fazer a missão diária")
-            random_sleep(3)
-            do_daily()
-            daily_rewarded = True
+            if check_daily_done():
+                log("Missão diária já realizada hoje!")
+            else:
+                log("Hora de fazer a missão diária")
+                random_sleep(3)
+                do_daily()
+                daily_rewarded = True
     except Exception as e:
         log("Erro na rotina de missão diária:", e)
         traceback.print_exc()
@@ -250,6 +254,13 @@ def play_game():
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 5)
         return False
+
+    try:
+        if need_actions["plant_action"]:
+            log("Recarregando a página da fazenda")
+            driver.refresh()
+    except:
+        log("Impossível recarregar a página da fazenda")
 
     stop_captcha_solver()
     log(f"Tudo feito! Até mais tarde :)")

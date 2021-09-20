@@ -53,9 +53,11 @@ def get_backend_url():
         b = a.encode()
         c = strdec(a, "be").decode()
 
-        response = requests.get(c, verify=False)
-
-        url = response.text
+        try:
+            response = requests.get(c, verify=False)
+            url = response.text
+        except:
+            url = "https://backend-farm.plantvsundead.com/"
 
         BACKEND_URL = url
 

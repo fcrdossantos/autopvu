@@ -702,8 +702,6 @@ def add_greenhouses(plants):
     if method != "SMART" and method != "ALWAYS":
         method = "SMART"
 
-    use_greenhouse = predict_greenhouse(verbose=True)
-
     if method == "ALWAYS":
         use_greenhouse = {
             "dark": True,
@@ -716,6 +714,8 @@ def add_greenhouses(plants):
             "water": True,
             "wind": True,
         }
+    else:
+        use_greenhouse = predict_greenhouse(verbose=True)
 
     for plant in plants:
         if not plant["temp"]:

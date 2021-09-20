@@ -4,6 +4,28 @@ from datetime import datetime
 import requests
 from pvu.utils import get_headers, random_sleep
 from logs import log
+from seleniumwire.undetected_chromedriver.v2 import Chrome, ChromeOptions
+
+
+def get_weather_source():
+    options = ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--ignore-ssl-errors")
+
+    browser_predict = Chrome(options=options)
+    browser_predict.get("https://pvuextratools.com/")
+
+    url_js = None
+    for request in browser_predict.requests:
+        if "pvuextratools" in request.url and request.url.endswith(".js"):
+            url_js = request.url
+
+    if url_js is None:
+        url_js = "https://pvuextratools.com/4.2404369364c20cfd53d4.js"
+
+    browser_predict.close()
+
+    return url_js
 
 
 def get_weather():
@@ -39,7 +61,9 @@ def next_season(actual):
 
 def predict_greenhouse(verbose=False):
     try:
-        page = requests.get("https://pvuextratools.com/4.2404369364c20cfd53d4.js")
+        print("Buscando histórico e previsão de climas")
+        url = get_weather_source()
+        page = requests.get(url)
 
         page = str(page.content)
 
@@ -53,9 +77,7 @@ def predict_greenhouse(verbose=False):
 
         use_greenhouse = {}
 
-        print(
-            "Calculando a probalidade do evento de amanhã ser bom ou ruim para cada tipo de planta"
-        )
+        print("Calculando a probalidade do clima de amanhã ser bom ou ruim")
         for forecast in forecasts:
             plant = forecast["type"]
             good = forecast["positiveProbability"]

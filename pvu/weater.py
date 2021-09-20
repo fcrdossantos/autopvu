@@ -8,22 +8,26 @@ from seleniumwire.undetected_chromedriver.v2 import Chrome, ChromeOptions
 
 
 def get_weather_source():
-    options = ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--ignore-ssl-errors")
 
-    browser_predict = Chrome(options=options)
-    browser_predict.get("https://pvuextratools.com/")
+    try:
+        options = ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--ignore-ssl-errors")
 
-    url_js = None
-    for request in browser_predict.requests:
-        if "pvuextratools" in request.url and request.url.endswith(".js"):
-            url_js = request.url
+        browser_predict = Chrome(options=options)
+        browser_predict.get("https://pvuextratools.com/")
 
-    if url_js is None:
-        url_js = "https://pvuextratools.com/4.2404369364c20cfd53d4.js"
+        url_js = None
+        for request in browser_predict.requests:
+            if "pvuextratools" in request.url and request.url.endswith(".js"):
+                url_js = request.url
 
-    browser_predict.close()
+        if url_js is None:
+            url_js = "https://pvuextratools.com/4.2404369364c20cfd53d4.js"
+
+        browser_predict.close()
+    except:
+        log("Erro: A fonte de previsões climáticas não está mais ativa")
 
     return url_js
 
@@ -61,7 +65,7 @@ def next_season(actual):
 
 def predict_greenhouse(verbose=False):
     try:
-        print("Buscando histórico e previsão de climas")
+        log("Buscando histórico e previsão de climas")
         url = get_weather_source()
         page = requests.get(url)
 
@@ -77,7 +81,7 @@ def predict_greenhouse(verbose=False):
 
         use_greenhouse = {}
 
-        print("Calculando a probalidade do clima de amanhã ser bom ou ruim")
+        log("Calculando a probalidade do clima de amanhã ser bom ou ruim")
         for forecast in forecasts:
             plant = forecast["type"]
             good = forecast["positiveProbability"]
@@ -86,7 +90,7 @@ def predict_greenhouse(verbose=False):
 
             if verbose:
                 use_str = "Usar" if use else "Não usar"
-                print(f"{plant}: {good}% bom x {bad}% ruim => {use_str} estufa")
+                log(f"{plant}: {good}% bom x {bad}% ruim => {use_str} estufa")
 
             use_greenhouse[plant.lower()] = use
 

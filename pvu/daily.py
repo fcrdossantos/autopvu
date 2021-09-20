@@ -82,7 +82,13 @@ def get_daily_status():
 
     response = requests.request("GET", url, headers=headers)
 
-    response = json.loads(response.text)
+    try:
+        response = json.loads(response.text)
+    except:
+        log(
+            "Erro de congestionamento do servidor, tentando novamente em alguns minutos"
+        )
+        return False
 
     return response
 
@@ -100,7 +106,13 @@ def water_world_tree(daily_water):
 
     response = requests.request("POST", url, json=payload, headers=headers)
 
-    response = json.loads(response.text)
+    try:
+        response = json.loads(response.text)
+    except:
+        log(
+            "Erro de congestionamento do servidor, tentando novamente em alguns minutos"
+        )
+        return False
 
     if response["status"] == 0:
         return True
@@ -121,7 +133,13 @@ def claim_reward(reward_type):
 
     response = requests.request("POST", url, json=payload, headers=headers)
 
-    response = json.loads(response.text)
+    try:
+        response = json.loads(response.text)
+    except:
+        log(
+            "Erro de congestionamento do servidor, tentando novamente em alguns minutos"
+        )
+        return False
 
     if response["status"] == 0:
         log(f"Conseguimos pegar a recompensa {reward_type}")
@@ -156,7 +174,13 @@ def claim_yesterday_rewards():
 
     response = requests.request("POST", url, headers=headers)
 
-    response = json.loads(response.text)
+    try:
+        response = json.loads(response.text)
+    except:
+        log(
+            "Erro de congestionamento do servidor, tentando novamente em alguns minutos"
+        )
+        return False
 
     if response["status"] == 0:
         log("Conseguimos pegar a recompensa de ontem")

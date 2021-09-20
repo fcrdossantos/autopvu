@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 import json
+from pvu.weater import predict_greenhouse
 from pvu.daily import check_daily, get_daily_status
 from pvu.user import get_user
 import time
@@ -52,6 +54,8 @@ def get_plants():
                 "stage": "farming",
                 "temp": False,
                 "pot": 0,
+                "greenhouse": 0,
+                "element": None,
             }
 
             for tool in plant["activeTools"]:
@@ -59,6 +63,8 @@ def get_plants():
                     _plant["water"] = tool["count"]
                 if tool["type"] == "POT":
                     _plant["pot"] = tool["count"]
+                if tool["type"] == "GREENHOUSE":
+                    _plant["greenhouse"] = tool["count"]
 
             has_crow = plant.get("hasCrow")
 
@@ -68,6 +74,11 @@ def get_plants():
             _plant["stage"] = plant["stage"]
 
             _plant["temp"] = plant.get("isTempPlant")
+
+            has_element = plant.get("plantElement")
+
+            if has_element:
+                _plant["element"] = has_element
 
             plants.append(_plant)
 
@@ -380,10 +391,11 @@ def use_pots(plants=None):
             if result_pot == 556:
                 result_pot = use_pot(plant["id"], need_captcha=True, temp=plant["temp"])
 
+            if result_pot == 1:
+                plant["pot"] += 1
+
             if result_pot == 404:
                 return
-
-            continue
 
         if plant["temp"]:
             pots_count = 1
@@ -591,6 +603,155 @@ def add_plants():
     log("Fim da rotina de adicionar novas plantas")
 
 
+def check_greenhouses(plants):
+    method = os.getenv("GREENHOUSE_METHOD", "SMART")
+
+    if method != "SMART" and method != "ALWAYS":
+        method = "SMART"
+
+    need = 0
+    if method == "ALWAYS":
+        for plant in plants:
+            if not plant["temp"]:
+                if plant["greenhouse"] == 0:
+                    need += 1
+
+    else:
+        use_greenhouse = predict_greenhouse()
+
+        for plant in plants:
+            if not plant["temp"]:
+                if use_greenhouse[plant["element"]]:
+                    need += 1
+
+    return need
+
+
+def add_greenhouse(plant_id, need_captcha=False):
+    log("Adicionando estufa na planta:", plant_id)
+
+    url = f"{get_backend_url()}/farms/apply-tool"
+
+    items = get_user()["items"]
+    for item in items:
+        if item["id"] == 5 and item["type"] == "tool":
+            if item["current_amount"] == 0:
+                log("Você não tem estufa suficiente para isso")
+                return 404
+
+    if need_captcha:
+        captcha_results = get_captcha()
+        if not captcha_results:
+            raise Exception("Entrou em manutenção")
+    else:
+        captcha_results = {
+            "challenge": "default",
+            "seccode": "default",
+            "validate": "default",
+        }
+
+    if need_captcha:
+        solved = solve_validation_captcha(captcha_results)
+        while not solved:
+            captcha_results = get_captcha()
+            if not captcha_results:
+                raise Exception("Entrou em manutenção")
+            solved = solve_validation_captcha(captcha_results)
+
+    payload = {
+        "farmId": plant_id,
+        "toolId": 5,
+        "token": {
+            "challenge": captcha_results.get("challenge"),
+            "seccode": captcha_results.get("seccode"),
+            "validate": captcha_results.get("validate"),
+        },
+    }
+    headers = get_headers()
+
+    random_sleep()
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    if '"status":0' in response.text:
+        log("Sucesso ao colocar estufa na planta:", plant_id)
+    elif '"status":15' in response.text:
+        log("Você não tem mais Estufas para colocar na planta:", plant_id)
+    elif '"status":20' in response.text:
+        log("Não precisa mais colocar estufa na planta:", plant_id)
+    elif '"status":556' in response.text:
+        log("Precisa de Captcha para colocar na estufa")
+        return 556
+    elif '"status":10' in response.text:
+        log("Deu erro de Status 10. Vou pular essa planta")
+        return 10
+    else:
+        log("Erro ao colocar estuda na planta:", plant_id)
+        log("=> Resposta:", response.text)
+        log("Tentarei novamente mais tarde!")
+        return False
+    return 1
+
+
+def add_greenhouses(plants):
+
+    if plants is None:
+        plants = get_plants()
+
+    method = os.getenv("GREENHOUSE_METHOD", "SMART")
+
+    if method != "SMART" and method != "ALWAYS":
+        method = "SMART"
+
+    use_greenhouse = predict_greenhouse(verbose=True)
+
+    if method == "ALWAYS":
+        use_greenhouse = {
+            "dark": True,
+            "electro": True,
+            "fire": True,
+            "ice": True,
+            "light": True,
+            "metal": True,
+            "parasite": True,
+            "water": True,
+            "wind": True,
+        }
+
+    for plant in plants:
+        if not plant["temp"]:
+            if plant["element"] == None:
+                continue
+
+            if use_greenhouse[plant["element"]]:
+                while plant["greenhouse"] == 0:
+                    log(f"É necessário colocar a planta {plant['id']} na estufa")
+                    random_sleep()
+
+                    result_greenhouse = add_greenhouse(plant["id"])
+
+                    if result_greenhouse == 556:
+                        result_greenhouse = add_greenhouse(
+                            plant["id"], need_captcha=True
+                        )
+
+                    if result_greenhouse == 10:
+                        plant["greenhouse"] += 1
+                        log("Erro 10 ao adicionar na estufa")
+                        continue
+
+                    if result_greenhouse == 1:
+                        plant["greenhouse"] += 1
+
+                    if result_greenhouse == 404:
+                        log("Entrou em manutenção ao colocar na estufa")
+                        return
+
+                log(f"Planta {plant['id']} já está na estufa")
+
+        random_sleep()
+        log(f"Planta {plant['id']} não precisa de mais nenhuma estufa")
+
+
 def check_need_actions(plants=None, daily=None):
 
     log("Verificando se alguma ação será necessária")
@@ -601,6 +762,7 @@ def check_need_actions(plants=None, daily=None):
     news = 0
     harvest = 0
     buy = 0
+    greenhouse = 0
     plant_action = False
     need_action = False
     buy_action = False
@@ -615,6 +777,12 @@ def check_need_actions(plants=None, daily=None):
 
     if daily != -10:
         need_daily = check_daily(daily)
+
+    greenhouse = check_greenhouses(plants=plants)
+
+    if greenhouse > 0:
+        need_action = True
+        plant_action = True
 
     for plant in plants:
         if plant.get("stage") == "farming" or plant.get("stage") == "paused":
@@ -662,6 +830,12 @@ def check_need_actions(plants=None, daily=None):
         log(f"=> Você precisa aguar {water} {plural_singular}")
     else:
         log("=> Você não precisa regar nenhuma planta")
+
+    if greenhouse > 0:
+        plural_singular = "plantas" if greenhouse > 1 else "planta"
+        log(f"=> Você precisa colocar {greenhouse} {plural_singular} na estufa")
+    else:
+        log("=> Você não precisa colocar nenhuma planta na estufa")
 
     if crow > 0:
         plural_singular = "plantas" if crow > 1 else "planta"

@@ -187,6 +187,7 @@ def start_routines():
                         sleeping = sleep_pause()
                     log("Não está na hora de dormir, podemos continuar")
                 reset_daily_day()
+                a()
 
 
 try:

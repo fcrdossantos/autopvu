@@ -82,15 +82,23 @@ def predict_greenhouse(verbose=False):
         use_greenhouse = {}
 
         log("Calculando a probalidade do clima de amanhã ser bom ou ruim")
+        risk = int(os.getenv("GREENHOUSE_RISK_PERCENTAGE", "33"))
+        log(f"=> Risco máximo de {risk}%")
         for forecast in forecasts:
             plant = forecast["type"]
             good = forecast["positiveProbability"]
             bad = forecast["negativeProbability"]
             use = bad >= good and bad > 0
+            neutral = 100 - good - bad
+
+            if bad >= risk:
+                use = True
 
             if verbose:
                 use_str = "Usar" if use else "Não usar"
-                log(f"{plant}: {good}% bom x {bad}% ruim => {use_str} estufa")
+                log(
+                    f"{plant}: {good}% bom x {bad}% ruim x {neutral}% neutro => {use_str} estufa"
+                )
 
             use_greenhouse[plant.lower()] = use
 

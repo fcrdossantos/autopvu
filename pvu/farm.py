@@ -62,7 +62,7 @@ def get_plants():
                 if tool["type"] == "WATER":
                     _plant["water"] = tool["count"]
                 if tool["type"] == "POT":
-                    _plant["pot"] = tool["count"]
+                    _plant["pot"] += tool["count"]
                 if tool["type"] == "GREENHOUSE":
                     _plant["greenhouse"] = tool["count"]
 
@@ -387,6 +387,9 @@ def use_pot(plant_id, need_captcha=False, temp=True):
     elif '"status":444' in response.text:
         log("Jogo entrou em manutenção durante o processo")
         return 444
+    elif '"status":16' in response.text:
+        log("Já atingiu o limites de vasos na planta:", plant_id)
+        return 16
     else:
         log("Erro ao colocar o vaso na planta", plant_id)
         log("=> Resposta:", response.text)
@@ -413,7 +416,10 @@ def use_pots(plants=None):
             if result_pot == 1:
                 plant["pot"] += 1
 
-            if result_pot == 404:
+            if result_pot == 404 or result_pot == 444:
+                return
+
+            if result_pot == 16:
                 return
 
         if plant["temp"]:
@@ -438,6 +444,9 @@ def use_pots(plants=None):
             if result_pot == 10:
                 plant["pot"] += 1
                 continue
+
+            if result_pot == 16:
+                return
 
             if result_pot == 404 or result_pot == 444:
                 return

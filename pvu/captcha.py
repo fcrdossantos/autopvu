@@ -129,7 +129,6 @@ def start_captcha_solver():
         raise Exception("Entrou em manutenção")
 
 
-# Land
 def solve_validation_captcha(captcha_results):
     global ACTIVE_CAPTCHAS
     url = f"{get_backend_url()}/captcha/validate"

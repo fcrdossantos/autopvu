@@ -154,6 +154,9 @@ def water_plant(plant_id, need_captcha=False):
     elif '"status":10' in response.text:
         log("Deu erro de Status 10. Vou pular essa planta")
         return 10
+    elif '"status":444' in response.text:
+        log("Jogo entrou em manutenção durante o processo")
+        return 444
     else:
         log("Erro ao regar a planta", plant_id)
         log("=> Resposta:", response.text)
@@ -186,7 +189,7 @@ def water_plants(plants=None):
                 if result_water == 1:
                     plant["water"] += 1
 
-                if result_water == 404:
+                if result_water == 404 or result_water == 444:
                     return
 
             random_sleep()
@@ -251,6 +254,9 @@ def remove_crow(plant_id, need_captcha=False):
     elif '"status":556' in response.text:
         log("Precisa de Captcha para tirar o corvo")
         return 556
+    elif '"status":444' in response.text:
+        log("Jogo entrou em manutenção durante o processo")
+        return 444
     elif '"status":10' in response.text:
         log("Deu erro de Status 10. Vou pular essa planta")
         return 10
@@ -287,7 +293,7 @@ def remove_crows(plants=None):
                 if result_crow == 1:
                     plant["crow"] = False
 
-                if remove_crow == 404:
+                if result_crow == 404 or result_crow == 444:
                     log("Entrou em manutenção ao remover o corvo")
                     return
 
@@ -368,6 +374,9 @@ def use_pot(plant_id, need_captcha=False, temp=True):
     elif '"status":10' in response.text:
         log("Erro de Status 10. Vou pular essa planta")
         return 10
+    elif '"status":444' in response.text:
+        log("Jogo entrou em manutenção durante o processo")
+        return 444
     else:
         log("Erro ao colocar o vaso na planta", plant_id)
         log("=> Resposta:", response.text)
@@ -418,7 +427,7 @@ def use_pots(plants=None):
                 plant["pot"] += 1
                 continue
 
-            if result_pot == 404:
+            if result_pot == 404 or result_pot == 444:
                 return
 
         random_sleep()
@@ -472,6 +481,9 @@ def harvest_plant(plant_id):
         log("Não precisa colher a planta novamente:", plant_id)
     elif '"status":28' in response.text:
         log("Você já atingiu o limite diário de colher plantas.")
+    elif '"status":444' in response.text:
+        log("Jogo entrou em manutenção durante o processo")
+        return 444
     else:
         log("Erro ao colher a planta", plant_id)
         if response.text.startswith("<!DOCTYPE html>"):
@@ -684,6 +696,9 @@ def add_greenhouse(plant_id, need_captcha=False):
     elif '"status":10' in response.text:
         log("Deu erro de Status 10. Vou pular essa planta")
         return 10
+    elif '"status":444' in response.text:
+        log("Jogo entrou em manutenção durante o processo")
+        return 444
     else:
         log("Erro ao colocar estuda na planta:", plant_id)
         log("=> Resposta:", response.text)
@@ -742,7 +757,7 @@ def add_greenhouses(plants):
                     if result_greenhouse == 1:
                         plant["greenhouse"] += 1
 
-                    if result_greenhouse == 404:
+                    if result_greenhouse == 404 or result_greenhouse == 444:
                         log("Entrou em manutenção ao colocar na estufa")
                         return
 

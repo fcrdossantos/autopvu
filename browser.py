@@ -91,6 +91,7 @@ def close_browser():
 
 
 def close_all_chrome():
+    log("Fechando todas as instâncias abertas do Chrome")
     for process in psutil.process_iter():
         if process.name() == "chrome.exe" or process.name() == "chromedriver.exe":
             process.kill()

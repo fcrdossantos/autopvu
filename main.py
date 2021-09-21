@@ -220,14 +220,3 @@ except Exception as e:
     traceback.print_exc()
     input()
     sys.exit()
-
-
-# Testar:
-#
-# --------- DAILY ---------
-# 1) Na Daily é para regar planta a planta assim que achar
-# --- Evita perder tempo e mudar de página
-# 2) Além disso, cada função da Daily vai retornar quantas plantas foram aguadas
-# --- Temos que ver se está retornando certo e regando certo também
-# --- Funções: water_land(); get_land_plants(); get_page_plants()
-#

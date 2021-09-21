@@ -173,6 +173,7 @@ def water_plants(plants=None):
 
     for plant in plants:
         if plant.get("stage") == "farming" or plant.get("stage") == "paused":
+            tries = 0
             while plant["water"] < 2:
                 log(f"É necessário aguar a planta {plant['id']}")
 
@@ -191,6 +192,10 @@ def water_plants(plants=None):
 
                 if result_water == 404 or result_water == 444:
                     return
+
+                tries += 1
+                if tries == 5:
+                    continue
 
             random_sleep()
             log(f"Planta {plant['id']} terminou de ser regada")
@@ -277,6 +282,7 @@ def remove_crows(plants=None):
     for plant in plants:
 
         if plant.get("stage") == "farming" or plant.get("stage") == "paused":
+            tries = 0
             while plant["crow"]:
                 log(f"É necessário remover o corvo da planta {plant['id']}")
                 random_sleep()
@@ -296,6 +302,10 @@ def remove_crows(plants=None):
                 if result_crow == 404 or result_crow == 444:
                     log("Entrou em manutenção ao remover o corvo")
                     return
+
+                tries += 1
+                if tries == 5:
+                    continue
 
             random_sleep()
             log(f"Planta {plant['id']} não tem mais corvos")
@@ -413,7 +423,9 @@ def use_pots(plants=None):
             if not pots_count:
                 pots_count = 2
 
+        tries = 0
         while plant["pot"] < pots_count:
+
             random_sleep()
             result_pot = use_pot(plant["id"], temp=plant["temp"])
 
@@ -429,6 +441,10 @@ def use_pots(plants=None):
 
             if result_pot == 404 or result_pot == 444:
                 return
+
+            tries += 1
+            if tries == 5:
+                continue
 
         random_sleep()
         log(f"Planta {plant['id']} não precisa de vasos")
@@ -738,6 +754,7 @@ def add_greenhouses(plants):
                 continue
 
             if use_greenhouse[plant["element"]]:
+                tries = 0
                 while plant["greenhouse"] == 0:
                     log(f"É necessário colocar a planta {plant['id']} na estufa")
                     random_sleep()
@@ -761,6 +778,9 @@ def add_greenhouses(plants):
                         log("Entrou em manutenção ao colocar na estufa")
                         return
 
+                    tries += 1
+                    if tries == 5:
+                        continue
                 log(f"Planta {plant['id']} já está na estufa")
 
         random_sleep()

@@ -76,7 +76,7 @@ def can_login_maintenance(next_group_date):
     if now > next_group_date:
         log("Chegou a hora do seu grupo jogar!")
         log("Aguarde mais alguns minutos para iniciar! (evitar lag nos grupos)")
-        random_sleep(60 * 7, min_time=60 * 2, max_time=60 * 5)
+        random_sleep(60 * 6, min_time=60 * 3, max_time=60 * 5)
         return True
     else:
         log("Ainda não é a hora do seu grupo jogar")

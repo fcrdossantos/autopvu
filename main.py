@@ -126,23 +126,36 @@ def start_game():
 
     log("Não minimize outro mude a aba do navegador ainda!!!")
     random_sleep()
-    metamask.login()
 
-    try:
-        if driver is not None:
-            driver.get("https://marketplace.plantvsundead.com/farm#/")
-    except:
-        log("Impossível acessar a página principal do jogo")
+    if os.getenv("LOGIN_MODE", "MANUAL").lower() in ("auto", "1"):
+        metamask.login()
 
-    random_sleep(min_time=1)
-    random_sleep()
+        try:
+            if driver is not None:
+                driver.get("https://marketplace.plantvsundead.com/farm#/")
+        except:
+            log("Impossível acessar a página principal do jogo")
 
-    log("Inicializando o bot")
+        random_sleep(min_time=1)
+        random_sleep()
 
-    random_sleep()
-    login()
+        log("Inicializando o bot")
 
-    log("Pronto! Você já pode minimizar ou mudar a aba do navegador")
+        random_sleep()
+        login()
+
+        log("Pronto! Você já pode minimizar ou mudar a aba do navegador")
+    else:
+        log("Você escolheu o login manual")
+        log("Logue na sua metamask e no jogo")
+        log("Quando terminar digite 'OK' e dê enter")
+        log("Feito isso, o bot irá iniciar suas atividades\n")
+        driver.get("https://marketplace.plantvsundead.com/farm#/login")
+        ok = input("Aguardando... Digite OK quando terminar: ")
+        while ok.lower() != "ok":
+            ok = input("Aguardando... Digite OK quando terminar: ")
+
+        log("Pronto! Você já pode minimizar ou mudar a aba do navegador")
 
 
 def start_routines():

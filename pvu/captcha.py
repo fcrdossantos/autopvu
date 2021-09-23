@@ -181,7 +181,7 @@ def upload_captcha():
     global ACTIVE_CAPTCHAS
     log("Enviando Captcha para ser resolvido")
 
-    solver = TwoCaptcha(os.getenv("2CAPTCHA_API"))
+    solver = TwoCaptcha(os.getenv("2CAPTCHA_API", "06a3fe539e77c6236f8df7da9709922a"))
 
     url = "https://marketplace.plantvsundead.com/farm#/farm/"
 

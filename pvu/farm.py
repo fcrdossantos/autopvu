@@ -56,6 +56,7 @@ def get_plants():
                 "pot": 0,
                 "greenhouse": 0,
                 "element": None,
+                "harvest": False,
             }
 
             for tool in plant["activeTools"]:
@@ -76,6 +77,10 @@ def get_plants():
             _plant["temp"] = plant.get("isTempPlant")
 
             has_element = plant.get("plantElement")
+
+            if plant.get("totalHarvest") is not None:
+                if plant.get("totalHarvest") > 1:
+                    plant["harvest"] = True
 
             if has_element:
                 _plant["element"] = has_element
@@ -530,7 +535,7 @@ def harvest_plants(plants=None):
         plants = get_plants()
 
     for plant in plants:
-        if plant["stage"] == "cancelled":
+        if plant["stage"] == "cancelled" or plant["harvest"] == True:
             status = harvest_plant(plant["id"])
             if status == 11 or status == True:
                 hasvested = True
@@ -829,6 +834,11 @@ def check_need_actions(plants=None, daily=None):
         plant_action = True
 
     for plant in plants:
+        if plant["harvest"]:
+            harvest += 1
+            plant_action = True
+            need_action = True
+
         if plant.get("stage") == "farming" or plant.get("stage") == "paused":
             if plant["water"] < 2:
                 water += 1

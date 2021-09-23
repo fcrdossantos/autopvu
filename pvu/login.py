@@ -60,7 +60,7 @@ def check_logged():
         random_sleep()
         login_btn = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div/div/div/div[1]/div[1]/div/nav/div[3]/button")
+                (By.XPATH, "/html/body/div/div/div/div[1]/div[1]/nav/div[3]/button")
             )
         )
 

@@ -79,8 +79,8 @@ def get_plants():
             has_element = plant.get("plantElement")
 
             if plant.get("totalHarvest") is not None:
-                if plant.get("totalHarvest") > 1:
-                    plant["harvest"] = True
+                if int(plant.get("totalHarvest")) > 1:
+                    _plant["harvest"] = True
 
             if has_element:
                 _plant["element"] = has_element

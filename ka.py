@@ -1,32 +1,26 @@
 # -*- coding: utf-8 -*-
-from decenc.decstr import strdec
-import json as jsond  # json
-
-import time  # sleep before exit
-
 import binascii  # hex encoding
-
-import requests  # https requests
-
+import datetime
+import json as jsond  # json
+import os
+import platform
+import subprocess
+import sys
+import time  # sleep before exit
+import webbrowser
 from uuid import uuid4  # gen random guid
 
+import requests  # https requests
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
 from Crypto.Util.Padding import pad, unpad
-
-# aes + padding, sha256
-
-import webbrowser
-import platform
-import subprocess
-import datetime
-import datetime
-import sys
-import os
-
 from requests_toolbelt.adapters.fingerprint import FingerprintAdapter
+
+from decenc.decstr import strdec
 from decenc.genv import gf
 from logs import log
+
+# aes + padding, sha256
 
 
 class api:
@@ -61,8 +55,7 @@ class api:
         response = self.__do_request(post_data)
 
         if response == "KeyAuth_Invalid":
-            log("The application doesn't exist")
-            input()
+            print("The application doesn't exist")
             sys.exit()
 
         response = encryption.decrypt(response, self.secret, init_iv)
@@ -114,7 +107,6 @@ class api:
             print("successfully registered")
         else:
             print(json["message"])
-            input()
             sys.exit()
 
     def upgrade(self, user, license):
@@ -141,7 +133,6 @@ class api:
             print("successfully upgraded user")
         else:
             print(json["message"])
-            input()
             sys.exit()
 
     def login(self, user, password, hwid=None):
@@ -171,7 +162,6 @@ class api:
             print("successfully logged in")
         else:
             print(json["message"])
-            input()
             sys.exit()
 
     def license(self, key, hwid=None):
@@ -248,7 +238,6 @@ class api:
         else:
             print(json["message"])
             time.sleep(5)
-            input()
             sys.exit()
 
     def file(self, fileid):
@@ -273,7 +262,6 @@ class api:
         if not json["success"]:
             print(json["message"])
             time.sleep(5)
-            input()
             sys.exit()
         return binascii.unhexlify(json["contents"])
 
@@ -301,7 +289,6 @@ class api:
         else:
             print(json["message"])
             time.sleep(5)
-            input()
             sys.exit()
 
     def log(self, message):
@@ -321,14 +308,8 @@ class api:
         self.__do_request(post_data)
 
     def __do_request(self, post_data):
-        headers = {"User-Agent": "KeyAuth"}
 
-        rq_out = requests.post(
-            "https://keyauth.com/api/1.0/",
-            data=post_data,
-            headers=headers,
-            verify=f"{gf(True)}",
-        )
+        rq_out = requests.post("https://keyauth.business/1.0/", data=post_data)
 
         return rq_out.text
 
@@ -398,7 +379,6 @@ class encryption:
             print(
                 "Invalid Application Information. Long text is secret short text is ownerid. Name is supposed to be app name not username"
             )
-            input()
             sys.exit()
 
     @staticmethod
@@ -415,5 +395,4 @@ class encryption:
             print(
                 "Invalid Application Information. Long text is secret short text is ownerid. Name is supposed to be app name not username"
             )
-            input()
             sys.exit()

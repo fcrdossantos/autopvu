@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import os
-from pvu.daily import reset_daily_day
 import sys
 import time
-from threading import Thread
 import traceback
+from datetime import datetime
+from threading import Thread
+
 import dotenv
+
+import admin
 import browser
 import metamask
-import admin
-from hwid import set_hwid, clear_hwid, check_hwid_clean, CHECK
+from decenc.decstr import strdec
+from decenc.genv import gf, gt
+from hwid import CHECK, check_hwid_clean, clear_hwid, set_hwid
+from ka import api
+from logs import log
+from pvu.daily import reset_daily_day
 from pvu.game import play_game
 from pvu.login import login
 from pvu.utils import random_sleep
-from logs import log
-from decenc.genv import gf, gt
-from ka import api
-from decenc.decstr import strdec
-from datetime import datetime
 
 SET_HWID = False
 GET_HWID = False
@@ -41,7 +43,7 @@ def sleep_pause():
         return False
 
 
-def a():
+def a(wx=True):
     try:
         gf()
         t = gt()
@@ -61,14 +63,20 @@ def a():
             a = "uuwa3KblFhYWcfFHZbJSDAABhqCAAAAAAGE8PhB4X7v4hO0tF6sk7bP5Se_swcZeRZwX9Nhh6s445bcmQ3kdTqOEReuCMGySYyiH4WRpSbeTL2JNhiLMGC9M9SspP1rukWNHitvBuBqk8B57tQ=="
             c = strdec(a, "import").decode()
             log(c, result)
-            input()
-            sys.exit(0)
+            if wx:
+                input()
+                sys.exit(0)
+            else:
+                return -94
     except Exception as e:
         a = "4utonguFhRfsT26SkrzlDAABhqCAAAAAAGE8PxUwAWEELgzLU_g0a1bIkxu_w4b-1oECWxB8aBzzePHZhs3tlb9WQ1BxZUkrHdX6ham7EAOQ7N_eJ5EiacntcwXlWl0w62fNlVogQx-tPLyKH7tBxLQ4nAwtubKdT_vWL7COAjH1n9VqwaMPE70tIT2z"
         c = strdec(a, "import").decode()
-        log(c)
-        input()
-        sys.exit(0)
+        log(c, e)
+        if wx:
+            input()
+            sys.exit(0)
+        else:
+            return -94
 
 
 def hwid_set_routine():
@@ -114,11 +122,15 @@ def start_game():
     while not browser_ready:
         try:
             driver = browser.get_browser()
+            driver.get("https://www.google.com")
             random_sleep()
             url = driver.current_url
-            if url is not None:
+            title = driver.title
+            name = driver.name
+            if url is not None or title is not None or name is not None:
                 browser_ready = True
         except:
+            log("Erro ao abrir o Chrome")
             browser.close_browser()
             tries += 1
             if tries >= 5:
@@ -200,7 +212,10 @@ def start_routines():
                         sleeping = sleep_pause()
                     log("Não está na hora de dormir, podemos continuar")
                 reset_daily_day()
-                a()
+                j = a(wx=False)
+                while j == -94:
+                    random_sleep(60)
+                    j = a(wx=False)
 
 
 try:

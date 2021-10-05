@@ -43,7 +43,7 @@ def sleep_pause():
         return False
 
 
-def a(wx=True):
+def a():
     try:
         gf()
         t = gt()
@@ -63,21 +63,14 @@ def a(wx=True):
             a = "uuwa3KblFhYWcfFHZbJSDAABhqCAAAAAAGE8PhB4X7v4hO0tF6sk7bP5Se_swcZeRZwX9Nhh6s445bcmQ3kdTqOEReuCMGySYyiH4WRpSbeTL2JNhiLMGC9M9SspP1rukWNHitvBuBqk8B57tQ=="
             c = strdec(a, "import").decode()
             log(c, result)
-            if wx:
-                input()
-                sys.exit(0)
-            else:
-                return -94
+            input()
+            sys.exit(0)
     except Exception as e:
         a = "4utonguFhRfsT26SkrzlDAABhqCAAAAAAGE8PxUwAWEELgzLU_g0a1bIkxu_w4b-1oECWxB8aBzzePHZhs3tlb9WQ1BxZUkrHdX6ham7EAOQ7N_eJ5EiacntcwXlWl0w62fNlVogQx-tPLyKH7tBxLQ4nAwtubKdT_vWL7COAjH1n9VqwaMPE70tIT2z"
         c = strdec(a, "import").decode()
         log(c, e)
-        if wx:
-            input()
-            sys.exit(0)
-        else:
-            #
-            return -94
+        input()
+        sys.exit(0)
 
 
 def hwid_set_routine():
@@ -213,10 +206,10 @@ def start_routines():
                         sleeping = sleep_pause()
                     log("Não está na hora de dormir, podemos continuar")
                 reset_daily_day()
-                j = a(wx=False)
-                while j == -94:
-                    random_sleep(60)
-                    j = a(wx=False)
+                # j = a(wx=False)
+                # while j == -94:
+                #     random_sleep(60)
+                #     j = a(wx=False)
 
 
 try:

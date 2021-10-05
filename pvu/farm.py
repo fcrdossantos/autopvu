@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 import json
-from pvu.weater import predict_greenhouse
+import os
+import random
+import time
+from datetime import datetime
+
+import requests
+from logs import log
+
+from pvu.captcha import get_captcha, solve_validation_captcha
 from pvu.daily import check_daily, get_daily_status
 from pvu.user import get_user
-import time
-import os
-import requests
-import random
-from pvu.utils import get_headers, random_sleep, get_backend_url
-from pvu.captcha import solve_validation_captcha, get_captcha
-from logs import log
+from pvu.utils import get_backend_url, get_headers, random_sleep
+from pvu.weater import predict_greenhouse
+
 
 # List all farm infos and status
 def get_farm_infos():
@@ -57,6 +60,7 @@ def get_plants():
                 "greenhouse": 0,
                 "element": None,
                 "harvest": False,
+                "has_seed": False,
             }
 
             for tool in plant["activeTools"]:
@@ -84,6 +88,11 @@ def get_plants():
 
             if has_element:
                 _plant["element"] = has_element
+
+            has_seed = plant.get("hasSeed")
+
+            if has_seed is not None:
+                _plant["has_seed"] = plant.get("hasSeed")
 
             plants.append(_plant)
 
@@ -801,6 +810,61 @@ def add_greenhouses(plants):
         log(f"Planta {plant['id']} não precisa de mais nenhuma estufa")
 
 
+def harvest_seed(plant_id, need_captcha=False):
+    log("Colhendo semente da planta:", plant_id)
+
+    url = f"{get_backend_url()}/farms/harvest-seeds/{plant_id}"
+    headers = get_headers()
+
+    payload = {}
+
+    random_sleep()
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    if '"status":0' in response.text:
+        log("Sucesso ao colher semente da planta:", plant_id)
+    elif '"status":11' in response.text:
+        log("A planta não pode mais ter sua semente colhida:", plant_id)
+        return 11
+    elif '"status":15' in response.text:
+        log("A planta já está com o limite de colheita de semente na planta:", plant_id)
+    elif '"status":20' in response.text:
+        log("Não precisa colher semente na planta novamente:", plant_id)
+    elif '"status":28' in response.text:
+        log("Você já atingiu o limite diário de colher semente de plantas.")
+    elif '"status":444' in response.text:
+        log("Jogo entrou em manutenção durante o processo")
+        return 444
+    else:
+        log("Erro ao colher semente da planta", plant_id)
+        if response.text.startswith("<!DOCTYPE html>"):
+            log("Erro HTML => Página/Gateway não alcançável")
+        else:
+            log("=> Resposta:", response.text[:])
+        log("Tentarei novamente mais tarde!")
+        return False
+
+    return True
+
+
+def harvest_seeds(plants=None):
+    log("Iniciando a rotina de colher sementes")
+
+    if plants is None:
+        plants = get_plants()
+
+    for plant in plants:
+        if plant["has_seed"]:
+            harvest_seed(plant["id"])
+
+            log(f"Planta {plant['id']} teve sua semente colhida")
+        else:
+            log(f"Planta {plant['id']} ainda não tem sementes para colher")
+        random_sleep()
+
+    log("Fim da rotina de colher sementes")
+
+
 def check_need_actions(plants=None, daily=None):
 
     log("Verificando se alguma ação será necessária")
@@ -812,6 +876,8 @@ def check_need_actions(plants=None, daily=None):
     harvest = 0
     buy = 0
     greenhouse = 0
+    seeds = 0
+    hasvest_seed = False
     plant_action = False
     need_action = False
     buy_action = False
@@ -836,6 +902,12 @@ def check_need_actions(plants=None, daily=None):
     for plant in plants:
         if plant["harvest"]:
             harvest += 1
+            plant_action = True
+            need_action = True
+
+        if plant["has_seed"]:
+            seeds += 1
+            hasvest_seed = True
             plant_action = True
             need_action = True
 
@@ -914,6 +986,12 @@ def check_need_actions(plants=None, daily=None):
         log(f"=> Você precisa colher {harvest} {plural_singular}")
     else:
         log("=> Você não precisa colher nenhuma planta")
+
+    if seeds > 0:
+        plural_singular = "sementes" if harvest > 1 else "semente"
+        log(f"=> Você precisa colher {harvest} {plural_singular} de plantas NTF")
+    else:
+        log("=> Você não precisa colher nenhuma semente de plantas NFT")
 
     if buy > 0:
         plural_singular = "itens" if buy > 1 else "item"

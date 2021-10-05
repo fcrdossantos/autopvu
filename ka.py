@@ -375,11 +375,9 @@ class encryption:
             return encryption.encrypt_string(
                 message.encode(), _key.encode(), _iv.encode()
             ).decode()
-        except:
-            print(
-                "Invalid Application Information. Long text is secret short text is ownerid. Name is supposed to be app name not username"
-            )
-            sys.exit()
+        except Exception as e:
+            print("Error1", e)
+            return False
 
     @staticmethod
     def decrypt(message, enc_key, iv):
@@ -391,8 +389,6 @@ class encryption:
             return encryption.decrypt_string(
                 message.encode(), _key.encode(), _iv.encode()
             ).decode()
-        except:
-            print(
-                "Invalid Application Information. Long text is secret short text is ownerid. Name is supposed to be app name not username"
-            )
-            sys.exit()
+        except Exception as e:
+            print("Error2", e)
+            return False

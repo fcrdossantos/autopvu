@@ -3,24 +3,20 @@ import os
 import traceback
 from datetime import datetime
 from typing import Tuple
+
 from browser import get_browser
+from logs import log
+
+from pvu.captcha import start_captcha_solver, stop_captcha_solver
+from pvu.daily import (check_daily_done, do_daily, get_daily_status,
+                       reset_daily_day)
+from pvu.farm import (add_greenhouses, add_plants, check_need_actions,
+                      get_plants, harvest_plants, harvest_seeds, remove_crows,
+                      use_pots, water_plants)
 from pvu.maintenance_v2 import wait_maintenance
-from pvu.farm import (
-    add_greenhouses,
-    water_plants,
-    remove_crows,
-    use_pots,
-    harvest_plants,
-    add_plants,
-    get_plants,
-    check_need_actions,
-)
-from pvu.daily import check_daily_done, do_daily, get_daily_status, reset_daily_day
+from pvu.store import buy_items
 from pvu.user import get_le, get_user, get_user_info, reset_user
 from pvu.utils import random_sleep, reset_backend_url
-from pvu.store import buy_items
-from logs import log
-from pvu.captcha import start_captcha_solver, stop_captcha_solver
 
 
 def play_game():
@@ -73,7 +69,7 @@ def play_game():
             else:
                 log("- Não precisa de vaso")
             if plant["water"] < 2:
-                log(f"- Precisa ser aguada {2 - plant['water']}")
+                log(f"- Precisa ser aguada {2 - plant['water']} vezes")
             else:
                 log("- Não precisa ser aguada")
             if plant["crow"]:
@@ -263,6 +259,16 @@ def play_game():
             add_plants()
     except Exception as e:
         log("Erro na rotina de plantas arvores:", e)
+        traceback.print_exc()
+        random_sleep(60 * 8, min_time=60 * 3.6)
+        return False
+
+    try:
+        log("Hora de colher sementes")
+        random_sleep(3)
+        harvest_seeds(plants=plants)
+    except Exception as e:
+        log("Erro na rotina de colher sementes:", e)
         traceback.print_exc()
         random_sleep(60 * 8, min_time=60 * 3.6)
         return False

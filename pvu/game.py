@@ -8,11 +8,18 @@ from browser import get_browser
 from logs import log
 
 from pvu.captcha import start_captcha_solver, stop_captcha_solver
-from pvu.daily import (check_daily_done, do_daily, get_daily_status,
-                       reset_daily_day)
-from pvu.farm import (add_greenhouses, add_plants, check_need_actions,
-                      get_plants, harvest_plants, harvest_seeds, remove_crows,
-                      use_pots, water_plants)
+from pvu.daily import check_daily_done, do_daily, get_daily_status, reset_daily_day
+from pvu.farm import (
+    add_greenhouses,
+    add_plants,
+    check_need_actions,
+    get_plants,
+    harvest_plants,
+    harvest_seeds,
+    remove_crows,
+    use_pots,
+    water_plants,
+)
 from pvu.maintenance_v2 import wait_maintenance
 from pvu.store import buy_items
 from pvu.user import get_le, get_user, get_user_info, reset_user
@@ -29,8 +36,8 @@ def play_game():
             driver.get("https://marketplace.plantvsundead.com/farm#/farm/")
     except:
         log("Impossível acessar a página da fazenda para iniciar as rotinas do bot")
-        random_sleep(60 * 8, min_time=60 * 3.6)
-        return -100
+        # random_sleep(60 * 8, min_time=60 * 3.6)
+        # return -100
 
     random_sleep(min_time=3)
     maintenance = wait_maintenance()
